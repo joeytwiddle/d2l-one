@@ -1,9 +1,12 @@
+var cors = require('cors');
 var express = require('express');
 var { graphqlHTTP } = require('express-graphql');
 var schema = require('./src/schema.js');
 var root = require('./src/root-resolver.js');
 
 var app = express();
+
+app.use(cors());
 
 app.use(
   '/graphql',
