@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prestart": "yarn run codegen",
+    "prestart": "yarn install && yarn run codegen",
     "start": "node .",
     "watch": "nodemon -e '*' -w src -w index.js -w schema.gql -d 2 -x 'yarn start' || exit 1",
     "codegen": "graphql-codegen --config codegen.yml",
