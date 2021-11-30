@@ -6,10 +6,7 @@ import { useGetUserQuery } from '../graphql';
 import { RootTabScreenProps } from '../types';
 
 export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dashboard'>) {
-  const { data, loading, error } = useGetUserQuery({
-    variables: {},
-  });
-  const user = data?.me;
+  const user = useGetUserQuery().data?.me;
 
   if (!user) return null;
 
