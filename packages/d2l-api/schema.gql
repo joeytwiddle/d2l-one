@@ -1,0 +1,53 @@
+scalar Date
+scalar Location
+
+schema {
+  query: Query
+}
+
+type Query {
+  me: User!
+  user(id: ID!): User
+  allUsers: [User]
+  rescues: [Rescue]
+  #search(term: String!): [SearchResult!]!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+type User {
+  id: ID!
+  name: String!
+  telegramName: String!
+  email: String
+  role: Role!
+}
+
+type Rescue {
+  id: String!
+  date: Date!
+  location: Location!
+  rescuers: [User]!
+}
+
+query GetUser {
+  me {
+    id
+    name
+  }
+}
+
+query GetRescues {
+  rescues {
+    id
+    date
+    location
+    rescuers {
+      id
+      name
+    }
+  }
+}
