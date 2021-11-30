@@ -2,11 +2,12 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import { useGetUserQuery } from '../graphql';
+import useUser from '../hooks/useUser';
 import { RootTabScreenProps } from '../types';
 
 export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dashboard'>) {
-  const user = useGetUserQuery().data?.me;
+  //const user = useGetUserQuery().data?.me;
+  const user = useUser();
 
   if (!user) return null;
 
