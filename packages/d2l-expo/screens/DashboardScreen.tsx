@@ -3,12 +3,17 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import useUser from '../hooks/useUser';
 import { RootTabScreenProps } from '../types';
 
 export default function DashBoardScreen({ navigation }: RootTabScreenProps<'DashBoard'>) {
+  const user = useUser();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Dashboard</Text>
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text>Welcome {user.name}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <EditScreenInfo path="/screens/DashBoardScreen.tsx" />
     </View>
