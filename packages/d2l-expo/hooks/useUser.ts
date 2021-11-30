@@ -16,7 +16,7 @@ export default function useUser() {
         sites: ['WL', 'TM'],
       });
     }, 2000);
-  });
+  }, [user?.name]);
 
   // Most callers may assume the user is defined
   // because if it is not defined, then we will show the login screen and nothing else
