@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node .",
+    "codegen": "graphql-codegen --config codegen.yml",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,6 +16,10 @@
     "graphql": "^16.0.1"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.3.0"
+    "@graphql-codegen/cli": "2.3.0",
+    "@graphql-codegen/typescript": "2.4.1",
+    "@graphql-codegen/typescript-operations": "2.2.1",
+    "@graphql-codegen/typescript-react-apollo": "3.2.2",
+    "@graphql-codegen/introspection": "2.1.0"
   }
 }
