@@ -106,3 +106,4 @@ dist
 # Added manually
 
 .expo/
+deployment.cfg
