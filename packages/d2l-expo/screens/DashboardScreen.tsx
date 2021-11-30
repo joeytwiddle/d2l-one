@@ -9,6 +9,8 @@ import { RootTabScreenProps } from '../types';
 export default function DashBoardScreen({ navigation }: RootTabScreenProps<'DashBoard'>) {
   const user = useUser();
 
+  if (!user) return null;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Dashboard</Text>
