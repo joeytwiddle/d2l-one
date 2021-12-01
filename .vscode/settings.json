@@ -11,6 +11,9 @@
     "source.fixAll.eslint": true
   },
 
+  // Get TypeScript assistance in JS files
+  "js/ts.implicitProjectConfig.checkJs": true,
+
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true
 
