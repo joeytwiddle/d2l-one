@@ -11,9 +11,9 @@ generates:
       - 'typescript-operations'
       - 'typescript-react-apollo'
     config:
-      withComponent: true
-      withHOC: true
       withHooks: true
+      withComponent: false
+      withHOC: false
   #./graphql.schema.json:
   #  plugins:
   #    - 'introspection'
