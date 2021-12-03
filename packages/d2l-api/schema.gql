@@ -1,13 +1,16 @@
+scalar UserID
+scalar RescueID
 scalar Date
 scalar Location
 
 schema {
   query: Query
+  mutation: Mutation
 }
 
 type Query {
   me: User!
-  user(id: ID!): User
+  user(id: UserID!): User
   allUsers: [User]
   rescues: [Rescue]
   #search(term: String!): [SearchResult!]!
@@ -19,7 +22,7 @@ enum Role {
 }
 
 type User {
-  id: ID!
+  id: UserID!
   name: String!
   telegramName: String!
   email: String
@@ -27,8 +30,9 @@ type User {
 }
 
 type Rescue {
-  id: String!
+  id: RescueID!
   date: Date!
+  siteName: String!
   location: Location!
   rescuers: [User]!
 }
@@ -40,7 +44,7 @@ query GetUser {
   }
 }
 
-query GetRescues {
+query GetAllRescues {
   rescues {
     id
     date
@@ -50,4 +54,8 @@ query GetRescues {
       name
     }
   }
+}
+
+type Mutation {
+  assignSelfToRescue(rescueId: RescueID!): Rescue!
 }
