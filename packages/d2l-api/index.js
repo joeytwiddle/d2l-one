@@ -16,10 +16,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.raw());
 
-const logRequestMiddleware = async (req, res, next) => {
+const logRequest = async (req, res, next) => {
   // Not sure this code is safe, better wrap it in try-catch!
   try {
-    const { ip, method, url, query, params, body } = req;
+    const { ip, method, url, path, query, params, body } = req;
     const queryString = Object.keys(query).length > 0 ? '?' + JSON.stringify(query) : '';
     const paramsString = Object.keys(params).length > 0 ? JSON.stringify(params) : '';
     // We make a copy of body so that we can cleanup the query string
@@ -27,16 +27,28 @@ const logRequestMiddleware = async (req, res, next) => {
     if (bodyData?.query) bodyData.query = bodyData.query.replace(/[ \n\t]+/g, ' ');
     //const bodyString = bodyData ? `(${typeof body}) ` + JSON.stringify(bodyData) : '';
     const bodyString = bodyData ? JSON.stringify(bodyData) : '';
-    console.log(`${new Date().toISOString()} [${ip}] ${method} ${url}${queryString} ${paramsString || bodyString}`);
+    console.log(`${new Date().toISOString()} >> [${ip}] ${method} ${path}${queryString} ${paramsString || bodyString}`);
   } catch (error) {
     console.error(error);
   }
   next();
 };
 
+const logResponse = (req, res, next) => {
+  let send = res.send;
+  res.send = data => {
+    const { ip, method, url, path, query, params, body } = req;
+    console.log(`${new Date().toISOString()} << [${ip}] ${res.statusCode} ${String(data).slice(0, 1024)}`);
+    res.send = send;
+    return res.send(data);
+  };
+  next();
+};
+
 app.use(
   '/graphql',
-  logRequestMiddleware,
+  logRequest,
+  logResponse,
   graphqlHTTP({
     schema: schema,
     rootValue: root,
