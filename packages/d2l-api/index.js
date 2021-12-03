@@ -9,7 +9,12 @@ var app = express();
 app.use(cors());
 
 // This is only needed so that we can see the value of body in our logging function
-app.use(express.json());
+//app.use(express.json());
+// We can use this if we also want to see data that was passed to us in the wrong format!
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.text());
+app.use(bodyParser.raw());
 
 const logRequestMiddleware = async (req, res, next) => {
   // Not sure this code is safe, better wrap it in try-catch!
@@ -20,6 +25,7 @@ const logRequestMiddleware = async (req, res, next) => {
     // We make a copy of body so that we can cleanup the query string
     const bodyData = JSON.parse(JSON.stringify(body) || 'null');
     if (bodyData?.query) bodyData.query = bodyData.query.replace(/[ \n\t]+/g, ' ');
+    //const bodyString = bodyData ? `(${typeof body}) ` + JSON.stringify(bodyData) : '';
     const bodyString = bodyData ? JSON.stringify(bodyData) : '';
     console.log(`${new Date().toISOString()} [${ip}] ${method} ${url}${queryString} ${paramsString || bodyString}`);
   } catch (error) {
