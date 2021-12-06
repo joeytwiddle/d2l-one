@@ -45,10 +45,11 @@ const logResponse = (req, res, next) => {
   next();
 };
 
+app.use(logRequest);
+app.use(logResponse);
+
 app.use(
   '/graphql',
-  logRequest,
-  logResponse,
   graphqlHTTP({
     schema: schema,
     rootValue: root,
