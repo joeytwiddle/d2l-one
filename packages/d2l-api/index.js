@@ -57,6 +57,9 @@ app.use(
   }),
 );
 
+// To add support for subscriptoins, see here:
+// https://github.com/graphql/express-graphql#setup-with-subscription-support
+
 app.listen(4000);
 
 console.log('Running a GraphQL API server at http://localhost:4000/graphql');
