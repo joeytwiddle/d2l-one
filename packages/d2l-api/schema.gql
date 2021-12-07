@@ -1,7 +1,7 @@
 scalar UserID
 scalar RescueID
+scalar SiteID
 scalar Date
-scalar Location
 
 schema {
   query: Query
@@ -32,9 +32,14 @@ type User {
 type Rescue {
   id: RescueID!
   date: Date!
-  siteName: String!
-  location: Location!
+  site: Site!
   rescuers: [User]!
+}
+
+type Site {
+  id: SiteID!
+  name: String!
+  geoLocation: String!
 }
 
 query GetUser {
@@ -48,7 +53,10 @@ query GetAllRescues {
   rescues {
     id
     date
-    location
+    site {
+      id
+      name
+    }
     rescuers {
       id
       name
