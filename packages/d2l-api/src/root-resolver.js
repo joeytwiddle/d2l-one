@@ -12,7 +12,7 @@ var root = {
   },
 
   async rescues() {
-    return await db.getAllRescues();
+    return (await db.getAllRescues()).allRescues;
   },
 };
 
