@@ -1,10 +1,18 @@
 const db = require('./db-gsheet/db.js');
 
 // The root provides a resolver function for each API endpoint
-var root = {
-  async me() {
+const root = {
+  async logIn(args, request) {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    return null;
+  },
+
+  async me(args, request) {
+    console.log('request.session:', request.session);
     //console.log('arguments:', arguments);
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    //await new Promise(resolve => setTimeout(resolve, 5000));
+    return null;
+    return { id: 'NONE', name: 'NO_USER' };
     return {
       id: 'User1',
       name: 'Your Name',

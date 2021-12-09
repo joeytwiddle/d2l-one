@@ -12,12 +12,18 @@ schema {
 }
 
 type Query {
-  me: User!
+  me: User
   user(id: UserID!): User
   allUsers: [User]
   rescues: [Rescue]
   allRescuesForMonth(month: String!): [Rescue]
   #search(term: String!): [SearchResult!]!
+}
+
+type Mutation {
+  # NOTE: I actually want to return Boolean here, or nothing, but neither worked
+  logIn(username: String!, password: String!): User
+  assignSelfToRescue(rescueId: RescueID!): Rescue!
 }
 
 enum Role {
@@ -94,8 +100,10 @@ query GetAllRescues {
   }
 }
 
-type Mutation {
-  assignSelfToRescue(rescueId: RescueID!): Rescue!
+mutation LogIn($username: String!, $password: String!) {
+  logIn(username: $username, password: $password) {
+    id
+  }
 }
 
 mutation AssignSelfToRescue($rescueId: RescueID!) {
