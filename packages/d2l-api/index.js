@@ -4,6 +4,9 @@ const { graphqlHTTP } = require('express-graphql');
 const schema = require('./src/schema.js');
 const session = require('express-session');
 const root = require('./src/root-resolver.js');
+const db = require('./src/db-gsheet/db.js');
+const bodyParser = require('body-parser');
+const config = require('./src/config.js');
 
 const app = express();
 
@@ -12,8 +15,6 @@ app.use(cors());
 // This is only needed so that we can see the value of body in our logging function
 //app.use(express.json());
 // We can use this if we also want to see data that was passed to us in the wrong format!
-const bodyParser = require('body-parser');
-const db = require('./src/db-gsheet/db.js');
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.raw());
@@ -47,7 +48,12 @@ const logResponse = (req, res, next) => {
   next();
 };
 
-app.use(session({ secret: 'house overleaf feeder listlessness nugget flood', cookie: { maxAge: 60_000 } }));
+app.use(
+  session({
+    secret: 'house overleaf feeder listlessness nugget flood',
+    cookie: { maxAge: config.cookieMaxAge },
+  }),
+);
 
 app.use(logRequest);
 app.use(logResponse);
