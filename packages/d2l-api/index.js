@@ -3,6 +3,7 @@ const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./src/schema.js');
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const root = require('./src/root-resolver.js');
 const db = require('./src/db-gsheet/db.js');
 const bodyParser = require('body-parser');
@@ -52,6 +53,9 @@ app.use(
   session({
     secret: 'house overleaf feeder listlessness nugget flood',
     cookie: { maxAge: config.cookieMaxAge },
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    store: new FileStore({}),
   }),
 );
 
