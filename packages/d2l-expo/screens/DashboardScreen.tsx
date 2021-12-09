@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import { useGetAllRescuesQuery } from '../graphql';
 import useUser from '../hooks/useUser';
 import { RootTabScreenProps } from '../types';
 
@@ -9,7 +10,14 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   //const user = useGetUserQuery().data?.me;
   const user = useUser();
 
+  // TODO: Get my rescues
+  const rescues = useGetAllRescuesQuery().data?.rescues;
+
+  console.log('user:', user);
+  console.log('rescues:', rescues);
+
   if (!user) return null;
+  if (!rescues) return null;
 
   return (
     <View style={styles.container}>
