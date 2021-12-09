@@ -12,6 +12,7 @@ app.use(cors());
 //app.use(express.json());
 // We can use this if we also want to see data that was passed to us in the wrong format!
 const bodyParser = require('body-parser');
+const db = require('./src/db-gsheet/db.js');
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.raw());
@@ -63,3 +64,12 @@ app.use(
 app.listen(4000);
 
 console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+
+// On startup, do a quick query of the DB, to check everything is fine
+setTimeout(() => {
+  (async () => {
+    //require('../google-sheets-quickstart/index');
+    const rescues = (await db.getAllRescues()).allRescues;
+    console.log('rescues[0]:', rescues[0]);
+  })().catch(console.error);
+}, 1000);
