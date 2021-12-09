@@ -1,16 +1,36 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
-import { View } from '../components/Themed';
+import { Text, View } from '../components/Themed';
+import { useGetAllRescuesForMonthQuery } from '../graphql';
+
+function callD2LAPI(hook: any, ...args: any[]) {
+  const result = hook(...args);
+  if (result.error) {
+    console.error(`Error from server: ${String(result.error.message)}`);
+    //toast.error(...);
+  }
+  return result;
+}
 
 export default function RescuesScreen() {
+  //const rescues = useGetAllRescuesQuery().data?.rescues;
+  //const rescues = useGetAllRescuesForMonthQuery({ variables: { month: 'JAN 2021' } }).data?.allRescuesForMonth;
+  const rescues = callD2LAPI(useGetAllRescuesForMonthQuery, { variables: { month: 'DEC 2021' } }).data
+    ?.allRescuesForMonth;
+
+  if (!rescues) return null;
+
+  // TODO: This scrolls on Android but not on web.  We may fix this by using multipe pages.  (But can multiple pages have different headers?)
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Rescues</Text>
+      <Text>{rescues.length} rescues</Text>
       {/*
       <Text style={styles.title}>Rescues</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       */}
-      <ScrollView horizontal>
+      <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
         <DataTable>
           <DataTable.Header>
             <DataTable.Title style={styles.cell}>Date</DataTable.Title>
@@ -73,6 +93,94 @@ export default function RescuesScreen() {
             <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
           </DataTable.Row>
         </DataTable>
+        {/*
+        <ScrollView horizontal>
+          <View>
+            <Text style={styles.rowTitle}>Date</Text>
+            <Text style={styles.cell}>Mon 1 Dec</Text>
+            <Text style={styles.cell}>Tue 2 Dec</Text>
+            <Text style={styles.cell}>Wed 3 Dec</Text>
+            <Text style={styles.cell}>Mon 1 Dec</Text>
+            <Text style={styles.cell}>Tue 2 Dec</Text>
+            <Text style={styles.cell}>Wed 3 Dec</Text>
+            <Text style={styles.cell}>Mon 1 Dec</Text>
+            <Text style={styles.cell}>Tue 2 Dec</Text>
+            <Text style={styles.cell}>Wed 3 Dec</Text>
+          </View>
+          <View>
+            <Text style={styles.rowTitle}>TM</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+          </View>
+          <View>
+            <Text style={styles.rowTitle}>PS</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+          </View>
+          <View>
+            <Text style={styles.rowTitle}>TM</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+          </View>
+          <View>
+            <Text style={styles.rowTitle}>PS</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+          </View>
+          <View>
+            <Text style={styles.rowTitle}>TM</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+          </View>
+          <View>
+            <Text style={styles.rowTitle}>PS</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+            <Text style={styles.cell}>Jennifer</Text>
+            <Text style={styles.cell}>Steve</Text>
+            <Text style={styles.cell}>Max</Text>
+          </View>
+        </ScrollView>
+        */}
       </ScrollView>
       {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
     </View>
@@ -95,6 +203,10 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   cell: {
+    width: 80,
+    padding: 6,
+  },
+  rowTitle: {
     width: 80,
     padding: 6,
   },
