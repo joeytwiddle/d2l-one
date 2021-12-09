@@ -1,10 +1,10 @@
-var cors = require('cors');
-var express = require('express');
-var { graphqlHTTP } = require('express-graphql');
-var schema = require('./src/schema.js');
-var root = require('./src/root-resolver.js');
+const cors = require('cors');
+const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./src/schema.js');
+const root = require('./src/root-resolver.js');
 
-var app = express();
+const app = express();
 
 app.use(cors());
 
@@ -36,7 +36,7 @@ const logRequest = async (req, res, next) => {
 };
 
 const logResponse = (req, res, next) => {
-  let send = res.send;
+  const send = res.send;
   res.send = data => {
     const { ip, method, url, path, query, params, body } = req;
     console.log(`${new Date().toISOString()} << [${ip}] ${res.statusCode} ${String(data).slice(0, 1024)}`);
