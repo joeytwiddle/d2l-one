@@ -4,7 +4,7 @@ import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+import AppRoot from './navigation/AppRoot';
 
 // TODO: Change url depending on deployment
 const client = new ApolloClient({
@@ -22,7 +22,7 @@ export default function App() {
     return (
       <ApolloProvider client={client}>
         <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
+          <AppRoot colorScheme={colorScheme} />
           <StatusBar />
         </SafeAreaProvider>
       </ApolloProvider>
