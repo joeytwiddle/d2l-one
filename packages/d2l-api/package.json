@@ -10,6 +10,7 @@
     "precodegen": "cp -af ../d2l-expo/graphql.tsx ./graphql.last.tsx || true",
     "codegen": "graphql-codegen --config codegen.yml",
     "postcodegen": "( diff --color=always graphql.last.tsx ../d2l-expo/graphql.tsx || true )",
+    "lint": "npx eslint *.js src/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
