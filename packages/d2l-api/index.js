@@ -2,6 +2,7 @@ const cors = require('cors');
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./src/schema.js');
+const session = require('express-session');
 const root = require('./src/root-resolver.js');
 
 const app = express();
@@ -45,6 +46,8 @@ const logResponse = (req, res, next) => {
   };
   next();
 };
+
+app.use(session({ secret: 'house overleaf feeder listlessness nugget flood', cookie: { maxAge: 60_000 } }));
 
 app.use(logRequest);
 app.use(logResponse);
