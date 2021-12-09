@@ -97,3 +97,9 @@ query GetAllRescues {
 type Mutation {
   assignSelfToRescue(rescueId: RescueID!): Rescue!
 }
+
+mutation AssignSelfToRescue($rescueId: RescueID!) {
+  assignSelfToRescue(rescueId: $rescueId) {
+    id
+  }
+}
