@@ -22,8 +22,8 @@ async function callAPI(obj, methodName, ...args) {
 }
 
 module.exports = {
-  async getAllRescues() {
-    const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'DEC 2021' });
+  async getAllRescues(month = 'DEC 2021') {
+    const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
     const siteRow = sheetData[0];
     //console.log('siteRow:', JSON.stringify(siteRow));

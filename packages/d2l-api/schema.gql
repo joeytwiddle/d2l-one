@@ -3,6 +3,9 @@ scalar RescueID
 scalar SiteID
 scalar Date
 
+# Fixes an issue with allRescuesForMonth()
+scalar String
+
 schema {
   query: Query
   mutation: Mutation
@@ -13,6 +16,7 @@ type Query {
   user(id: UserID!): User
   allUsers: [User]
   rescues: [Rescue]
+  allRescuesForMonth(month: String!): [Rescue]
   #search(term: String!): [SearchResult!]!
 }
 
@@ -46,6 +50,32 @@ query GetUser {
   me {
     id
     name
+  }
+}
+
+#query GetMyRescues {
+#  myRescues {
+#    id
+#    date
+#    site {
+#      id
+#      name
+#    }
+#  }
+#}
+
+query GetAllRescuesForMonth($month: String!) {
+  allRescuesForMonth(month: $month) {
+    id
+    date
+    site {
+      id
+      name
+    }
+    rescuers {
+      id
+      name
+    }
   }
 }
 

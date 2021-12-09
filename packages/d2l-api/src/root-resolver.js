@@ -14,6 +14,10 @@ var root = {
   async rescues() {
     return (await db.getAllRescues()).allRescues;
   },
+
+  async allRescuesForMonth(args) {
+    return (await db.getAllRescues(args.month)).allRescues;
+  },
 };
 
 module.exports = root;
