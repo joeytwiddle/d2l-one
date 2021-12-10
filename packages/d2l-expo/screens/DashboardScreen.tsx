@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import { useGetAllRescuesQuery } from '../graphql';
+import { useGetAllRescuesQuery, useGetMyRescuesQuery } from '../graphql';
 import useUser from '../hooks/useUser';
 import { RootTabScreenProps } from '../types';
 
@@ -10,22 +10,25 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   //const user = useGetUserQuery().data?.me;
   const user = useUser();
 
-  // TODO: Get my rescues
-  const rescues = useGetAllRescuesQuery().data?.rescues;
+  const myRescues = useGetMyRescuesQuery().data?.myRescues;
 
   console.log('[Dashboard] user:', user);
-  console.log('[Dashboard] rescues:', rescues);
+  console.log('[Dashboard] myRescues:', myRescues);
 
   if (!user) return null;
-  if (!rescues) return null;
+  if (!myRescues) return null;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text>Welcome {user.name}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/DashboardScreen.tsx" />
+      <Text style={styles.title}>Your upcoming rescues</Text>
+      {myRescues.map(({ id, date, site }) => (
+        <Text key={id}>
+          {site.name} at {date}
+        </Text>
+      ))}
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     </View>
   );
 }
