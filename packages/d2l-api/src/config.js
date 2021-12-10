@@ -1,11 +1,15 @@
 const nodeEnv = process.env.NODE_ENV || 'development';
 
 const defaultConfig = {
+  listenPort: 4000,
+
   cookieMaxAge: 60 * 1000,
 };
 
 const configsByEnv = {
   production: {
+    listenPort: 2020,
+
     cookieMaxAge: 365 * 24 * 60 * 60 * 1000,
   },
 };

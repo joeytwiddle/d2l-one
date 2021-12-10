@@ -83,9 +83,9 @@ app.use(
 // To add support for subscriptoins, see here:
 // https://github.com/graphql/express-graphql#setup-with-subscription-support
 
-app.listen(4000);
+app.listen(config.listenPort);
 
-console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+console.log(`Running a GraphQL API server at http://localhost:${config.listenPort}/graphql`);
 
 // On startup, do a quick query of the DB, to check everything is fine
 setTimeout(() => {
