@@ -2,13 +2,10 @@ import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from '@ap
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { apiUrl } from './config/config';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import AppRoot from './navigation/AppRoot';
-
-//export const apiDomain = 'localhost';
-export const apiDomain = '192.168.0.195';
-export const apiUrl = `http://${apiDomain}:4000/graphql`;
 
 const link = createHttpLink({
   uri: apiUrl,
