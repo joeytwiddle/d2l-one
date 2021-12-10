@@ -8,20 +8,19 @@ const root = {
     if (!args.username) {
       // Message does not get passed to caller, only status 500
       //throw new Error('Please provide a username');
-      return {
-        success: false,
-        reason: 'Please provide a username',
-      };
+      return { success: false, reason: 'Please provide a username' };
     }
 
     const user = await db.getUserByCredentials(args.username, args.password);
     console.log('user:', user);
 
+    if (!user) {
+      return { success: false, reason: 'No user found with that username and password' };
+    }
+
     request.session.user = user;
 
-    return {
-      success: user != null,
-    };
+    return { success: true };
   },
 
   async me(args, request) {

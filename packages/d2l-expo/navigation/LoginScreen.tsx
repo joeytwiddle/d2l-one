@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, StyleSheet, TextInput } from 'react-native';
+import { Button, NativeSyntheticEvent, StyleSheet, TextInput, TextInputKeyPressEventData } from 'react-native';
 import { apiDomain } from '../App';
 import { Text, View } from '../components/Themed';
 import { useGetUserQuery, useLogInMutation } from '../graphql';
@@ -27,8 +27,9 @@ export default function LoginScreen() {
     // Oh, it also returns a promise!  We should probably catch that.
   };
 
+  // This temporarily flashes on the screen after a successful login, before the page changes
   const loginProcessFailureMessage =
-    logInMutation.data?.logIn.success && userQuery.data && userQuery.data.me == null
+    logInMutation.data?.logIn.success && !userQuery.loading && userQuery.data && userQuery.data.me == null
       ? `Login succeeded but user not fetched. Possibly a same-domain cookie issue. (Make sure your webpage is on the same domain as the API: ${apiDomain})`
       : '';
 
@@ -43,7 +44,20 @@ export default function LoginScreen() {
       <Text style={styles.title}>Login</Text>
       <View style={styles.container}>
         <View style={styles.container}>
-          <TextInput style={styles.larger} placeholder="Name" value={username} onChangeText={setUsername} />
+          <TextInput
+            style={styles.larger}
+            placeholder="Name"
+            value={username}
+            onChangeText={setUsername}
+            // Hitting the tick icon in the keyboard on mobile
+            onEndEditing={submit}
+            // For web
+            onKeyPress={(e: any) => {
+              if (e.key === 'Enter') {
+                submit();
+              }
+            }}
+          />
         </View>
         {/*
         <View style={styles.container}>
@@ -52,8 +66,6 @@ export default function LoginScreen() {
          */}
         <View style={styles.container}>
           <Button title="Log in" onPress={submit} disabled={!username || logInMutation.loading || userQuery.loading} />
-        </View>
-        <View style={styles.smallContainer}>
           <Text>{errorMessage}</Text>
         </View>
       </View>
@@ -73,7 +85,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   larger: {
+    minWidth: '60%',
     fontSize: 24,
+    borderColor: '#888888',
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
   },
   title: {
     fontSize: 20,
