@@ -11,7 +11,12 @@ const config = require('./src/config.js');
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+);
 
 // This is only needed so that we can see the value of body in our logging function
 //app.use(express.json());
@@ -52,7 +57,11 @@ const logResponse = (req, res, next) => {
 app.use(
   session({
     secret: 'house overleaf feeder listlessness nugget flood',
-    cookie: { maxAge: config.cookieMaxAge },
+    cookie: {
+      maxAge: config.cookieMaxAge,
+      sameSite: true,
+      secure: 'auto',
+    },
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
     store: new FileStore({}),
