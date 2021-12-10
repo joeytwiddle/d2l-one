@@ -5,13 +5,17 @@ const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
 async function callAPI(obj, methodName, ...args) {
   // Explicit
-  return new Promise((resolve, reject) => {
+  // I really wanted (string|undefined)[][], to force me to check a cell is defined before doing string operations on it
+  // However JSDoc seems to ignore undefined and null.  false was the closest stand-in that achieves what I wanted (we can easily || it to solve concerns)
+  /** @type {string[][] | false[][]} */
+  const data = await new Promise((resolve, reject) => {
     obj[methodName](...args)
       .then(result => {
         resolve(result.data.values);
       })
       .catch(reject);
   });
+  return data;
 
   // Same thing, but using util.promisify
   /*
@@ -31,7 +35,7 @@ module.exports = {
     const mapSiteToColumn = {};
     for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
       /** @type {string} */
-      const cellData = siteRow[colIndex];
+      const cellData = siteRow[colIndex] || '';
       const siteName = (cellData.match(/^[A-Z0-9]*/) || [])[0];
       //console.log('siteName:', siteName);
       if (siteName) {
@@ -101,7 +105,7 @@ module.exports = {
     for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
       const row = sheetData[rowIndex];
       const [name, telegramName, telegramUsername, email, role, passwordSalt, passwordHash] = row;
-      if (name.toLowercase() === (username || '').toLowercase()) {
+      if ((name || '').toLowerCase() === username.toLowerCase()) {
         // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
         if (passwordHash === password || !passwordHash) {
           // User found
