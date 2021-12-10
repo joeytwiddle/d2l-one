@@ -107,3 +107,4 @@ dist
 
 .expo/
 deployment.cfg
+/packages/d2l-expo/web-build/
