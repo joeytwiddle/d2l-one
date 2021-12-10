@@ -14,9 +14,10 @@ schema {
 type Query {
   me: User
   user(id: UserID!): User
-  allUsers: [User]
-  rescues: [Rescue]
-  allRescuesForMonth(month: String!): [Rescue]
+  allUsers: [User!]
+  rescues: [Rescue!]
+  allRescuesForMonth(month: String!): [Rescue!]
+  myRescues: [Rescue!]
   #search(term: String!): [SearchResult!]!
 }
 
@@ -64,16 +65,16 @@ query GetUser {
   }
 }
 
-#query GetMyRescues {
-#  myRescues {
-#    id
-#    date
-#    site {
-#      id
-#      name
-#    }
-#  }
-#}
+query GetMyRescues {
+  myRescues {
+    id
+    date
+    site {
+      id
+      name
+    }
+  }
+}
 
 query GetAllRescuesForMonth($month: String!) {
   allRescuesForMonth(month: $month) {

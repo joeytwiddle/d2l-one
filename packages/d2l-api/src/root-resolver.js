@@ -36,6 +36,11 @@ const root = {
   async allRescuesForMonth(args) {
     return (await db.getAllRescues(args.month)).allRescues;
   },
+
+  async myRescues(args, request) {
+    const rescuerId = request.session.user.id;
+    return (await db.getAllRescues()).rescuesByRescuer[rescuerId];
+  },
 };
 
 module.exports = root;
