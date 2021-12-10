@@ -65,7 +65,7 @@ function BottomTabNavigator() {
         component={DashboardScreen}
         options={({ navigation }: RootTabScreenProps<'Dashboard'>) => ({
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
@@ -83,7 +83,7 @@ function BottomTabNavigator() {
         component={RescuesScreen}
         options={{
           title: 'Rescues',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
     </BottomTab.Navigator>
