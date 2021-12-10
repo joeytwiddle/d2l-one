@@ -94,6 +94,42 @@ module.exports = {
       rescuesByRescuer,
     };
   },
+
+  async getUserByCredentials(username, password) {
+    const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'NameRef' });
+
+    for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
+      const row = sheetData[rowIndex];
+      const [name, telegramName, telegramUsername, email, role, passwordSalt, passwordHash] = row;
+      if (name === username) {
+        // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
+        if (passwordHash === password || !passwordHash) {
+          // User found
+
+          // TODO: If the user provided a password, but no password is set, then we can set the one they provided!
+
+          const id = name;
+
+          const user = {
+            id: id,
+            name: name,
+            telegramName: telegramName || 'unknown',
+            telegramUsername: telegramUsername || '@unknown',
+            email: email || 'unknown@unknown.com',
+            role: role || 'USER',
+          };
+
+          return user;
+        } else {
+          //throw new Error('Incorrect password');
+          console.warn(`Incorrect password for ${username}`);
+          return null;
+        }
+      }
+    }
+
+    return null;
+  },
 };
 
 function shortDateString(date) {

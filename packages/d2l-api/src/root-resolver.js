@@ -14,30 +14,19 @@ const root = {
       };
     }
 
-    if (Math.random() < 0.2) {
-      return {
-        success: false,
-        reason: 'Username or password not recognised. Please try again.',
-      };
-    }
+    const user = await db.getUserByCredentials(args.username, args.password);
+    console.log('user:', user);
 
-    // TODO: We should check with gsheets, whether this user exists
-
-    request.session.user = {
-      id: args.username,
-      name: args.username,
-      // TODO: Should be more fields here really
-    };
+    request.session.user = user;
 
     return {
-      success: true,
+      success: user != null,
     };
   },
 
   async me(args, request) {
-    //console.log('request.session:', request.session);
-    //console.log('arguments:', arguments);
     //await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log('request.session.user:', request.session.user);
     return request.session.user;
   },
 
