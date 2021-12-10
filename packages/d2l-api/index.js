@@ -1,3 +1,6 @@
+console.log();
+console.log(`------------------------------------------------------------`);
+
 const cors = require('cors');
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
