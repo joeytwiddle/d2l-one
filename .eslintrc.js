@@ -13,8 +13,8 @@ module.exports = {
   },
   rules: {
     //'no-unused-vars': 1,
-    'no-unused-vars': 0,
-    'no-unreachable': 'warn',
+    'no-unused-vars': 'off',
+    'no-unreachable': 'off',
     'no-var': 'warn',
     'prefer-const': [
       'error',
