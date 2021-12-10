@@ -13,8 +13,8 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   // TODO: Get my rescues
   const rescues = useGetAllRescuesQuery().data?.rescues;
 
-  console.log('user:', user);
-  console.log('rescues:', rescues);
+  console.log('[Dashboard] user:', user);
+  console.log('[Dashboard] rescues:', rescues);
 
   if (!user) return null;
   if (!rescues) return null;

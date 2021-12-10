@@ -21,8 +21,7 @@ type Query {
 }
 
 type Mutation {
-  # NOTE: I actually want to return Boolean here, or nothing, but neither worked
-  logIn(username: String!, password: String!): User
+  logIn(username: String!, password: String!): BooleanResponse!
   assignSelfToRescue(rescueId: RescueID!): Rescue!
 }
 
@@ -50,6 +49,11 @@ type Site {
   id: SiteID!
   name: String!
   geoLocation: String!
+}
+
+type BooleanResponse {
+  success: Boolean!
+  reason: String
 }
 
 query GetUser {
@@ -102,7 +106,8 @@ query GetAllRescues {
 
 mutation LogIn($username: String!, $password: String!) {
   logIn(username: $username, password: $password) {
-    id
+    success
+    reason
   }
 }
 
