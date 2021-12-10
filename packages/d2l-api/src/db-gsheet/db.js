@@ -101,7 +101,7 @@ module.exports = {
     for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
       const row = sheetData[rowIndex];
       const [name, telegramName, telegramUsername, email, role, passwordSalt, passwordHash] = row;
-      if (name === username) {
+      if (name.toLowercase() === (username || '').toLowercase()) {
         // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
         if (passwordHash === password || !passwordHash) {
           // User found
