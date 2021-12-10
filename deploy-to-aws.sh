@@ -11,6 +11,10 @@ then
 	exit 1
 fi
 
+cd packages/d2l-expo
+yarn build:web --no-pwa
+cd ../..
+
 if [ -n "$START_FRESH_SSH_AGENT" ]
 then
 	# I now have too many keys in my ssh-agent, which causes login attempts to fail with "Too many authentication failures" after a few keys are attempted
@@ -29,6 +33,8 @@ sudo_rsync() {
 
 sudo_rsync -ai --delete ./deployment_scripts/ "${SERVER_AUTH}:/root/deployment_scripts" "$@"
 
-sudo_rsync -ai --delete ./packages/d2l-website/ "${SERVER_AUTH}:/usr/share/nginx/html" "$@"
+sudo_rsync -ai ./packages/d2l-website/* "${SERVER_AUTH}:/usr/share/nginx/html/" "$@"
+
+sudo_rsync -ai --delete ./packages/d2l-expo/web-build/ "${SERVER_AUTH}:/usr/share/nginx/html/app" "$@"
 
 ssh "${SERVER_AUTH}" sudo bash /root/deployment_scripts/set_up_new_deployment.sh
