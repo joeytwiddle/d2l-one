@@ -11,6 +11,13 @@ then
 	exit 1
 fi
 
+if [ -z "$NODE_USER" ]
+then
+	echo "I cannot deploy without a NODE_USER"
+	exit 1
+fi
+
+# --no-pwa doesn't seem to save much time
 cd packages/d2l-expo
 yarn build:web --no-pwa
 cd ../..
@@ -33,8 +40,13 @@ sudo_rsync() {
 
 sudo_rsync -ai --delete ./deployment_scripts/ "${SERVER_AUTH}:/root/deployment_scripts" "$@"
 
+ssh "${SERVER_AUTH}" sudo env NODE_USER="$NODE_USER" bash /root/deployment_scripts/set_up_new_deployment_1.sh
+
 sudo_rsync -ai ./packages/d2l-website/* "${SERVER_AUTH}:/usr/share/nginx/html/" "$@"
 
 sudo_rsync -ai --delete ./packages/d2l-expo/web-build/ "${SERVER_AUTH}:/usr/share/nginx/html/app" "$@"
 
-ssh "${SERVER_AUTH}" sudo bash /root/deployment_scripts/set_up_new_deployment.sh
+sudo_rsync -ai --delete --exclude=node_modules --no-owner --no-group ./packages/d2l-api/ "${SERVER_AUTH}:/home/${NODE_USER}/d2l-api" "$@"
+# I could not get `--chown "$NODE_USER:$NODE_USER"` to work, so instead the set_up_new_deployment_2.sh script will chown the files
+
+ssh "${SERVER_AUTH}" sudo env NODE_USER="$NODE_USER" bash /root/deployment_scripts/set_up_new_deployment_2.sh
