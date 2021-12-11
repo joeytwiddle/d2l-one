@@ -23,11 +23,13 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
       <Text>Welcome {user.name}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.title}>Your upcoming rescues</Text>
-      {myRescues.map(({ id, date, site }) => (
-        <Text key={id}>
-          {site.name} at {date}
-        </Text>
-      ))}
+      <View style={styles.upcomingRescue}>
+        {myRescues.map(({ id, date, site }) => (
+          <Text key={id} style={styles.upcomingRescue}>
+            {date}: {site.name}
+          </Text>
+        ))}
+      </View>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     </View>
   );
@@ -47,5 +49,8 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  upcomingRescue: {
+    paddingVertical: 10,
   },
 });
