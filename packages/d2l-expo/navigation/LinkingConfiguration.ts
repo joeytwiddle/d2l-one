@@ -13,6 +13,10 @@ const linking: LinkingOptions<RootStackParamList> = {
   config: {
     screens: {
       Root: {
+        // Makes the entire app appear in a subfolder
+        // This should match where you want the app to appear on the website
+        // https://reactnavigation.org/docs/5.x/configuring-links/#matching-exact-paths
+        path: 'app',
         screens: {
           Dashboard: {
             screens: {
