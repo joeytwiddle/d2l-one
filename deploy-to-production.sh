@@ -3,6 +3,12 @@ set -e
 
 cd "$(dirname "$0")"
 
+if [ ! -f deployment.cfg ]
+then
+	echo "File deployment.cfg is missing"
+	exit 1
+fi
+
 source ./deployment.cfg
 
 if [ -z "$SERVER_AUTH" ]
@@ -16,11 +22,6 @@ then
 	echo "I cannot deploy without a NODE_USER"
 	exit 1
 fi
-
-# --no-pwa doesn't seem to save much time
-cd packages/d2l-expo
-yarn build:web --no-pwa
-cd ../..
 
 if [ -n "$START_FRESH_SSH_AGENT" ]
 then
