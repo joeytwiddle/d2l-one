@@ -99,12 +99,13 @@ module.exports = {
     };
   },
 
+  // TODO: We might want to extract getAllUserData() into its own function, and then consume that here
   async getUserByCredentials(username, password) {
     const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'NameRef' });
 
     for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
       const row = sheetData[rowIndex];
-      const [name, telegramName, telegramUsername, email, role, passwordSalt, passwordHash] = row;
+      const [name, telegramName, telegramUsername, email, role, notes, passwordSalt, passwordHash] = row;
       if ((name || '').toLowerCase() === username.toLowerCase()) {
         // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
         if (passwordHash === password || !passwordHash) {
