@@ -51,3 +51,59 @@ You will need two terminals open
 I recommend using VSCode because we have already configured some things in the `.vscode` folder. (Format code with prettier, auto-organise imports.)
 
 Open the repo root folder (`code .`), not the individual subfolders, to benefit from the shared configuration. You can do all the coding in one window.
+
+### Authentication with Google Sheets
+
+You may be able to get these files from an existing developer, but if not, here are instructions to recreate them.
+
+To create `packages/d2l-api/google-api-credentials.json`:
+
+1. You will need to be logged in to Google Cloud Console as`d2l.sg.dev@gmail.com`.
+
+2. Visit the [OAuth conent screen](https://console.cloud.google.com/apis/credentials/consent?project=d2l-one-334008) settings and register yourself as a Test User (if you are not listed there already).
+
+3. Visit the [Credentials](https://console.cloud.google.com/apis/credentials?project=d2l-one-334008) page and Create a new credential
+
+   Type: "OAuth Client ID"
+
+   Application type: This should be type "Desktop" (even though were are developing an API server)
+
+4. Download the JSON, and save it to the aforementioned filename.
+
+To create `packages/d2l-api/google-api-token.json`:
+
+1. Delete the existing token file
+
+2. Run the d2l-api server (you need terminal access, so don't run it as a daemon through init)
+
+3. On the console, you will be prompted to open a URL
+
+4. Follow the instructions on the URL, then copy the code it gives you, and paste it to the d2l-api process
+
+Note: After a couple of weeks, my token was revoked. I think Google did that auomatically because our app is still in testing phase. (Source: 3. [here](https://stackoverflow.com/a/67456685))
+
+## Deployment
+
+### Secret files
+
+These files are not stored in the repo, but you may need them to run the service in production. I am noting them here, so you won't miss any of them.
+
+If you need some of these files, contact one of the existing admins.
+
+- `~/.ssh/d2l_sg_dev_aws.pem` - Access key for AWS server
+
+- `/deployment.cfg` - Some environment variables for the `deploy-to-production.sh` script
+
+- `/packages/d2l-api/google-api-credentials.json` - General OAuth account for the app
+
+- `/packages/d2l-api/google-api-token.json` - Token offering access to a specific Google Drive
+
+- `d2l.sg.secrets.txt` - Contains account details for the Google account, domain registrar account, CloudFlare account, etc.
+
+  The Google account `d2l.sg.dev@gmail.com` is used for:
+
+  - GMail, for general admin tasks
+
+  - The Google Sheet we use is hosted on that Google Drive
+
+  - The Google API for our app (which can theoretically access any Google Drive, if the target account authorizes us)
