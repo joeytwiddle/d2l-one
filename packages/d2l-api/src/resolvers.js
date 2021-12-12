@@ -32,17 +32,17 @@ const root = {
     return request.session.user;
   },
 
+  async myRescues(args, request) {
+    const rescuerId = request.session.user.id;
+    return (await db.getAllRescues()).rescuesByRescuer[rescuerId];
+  },
+
   async rescues() {
     return (await db.getAllRescues()).allRescues;
   },
 
   async allRescuesForMonth(args) {
     return (await db.getAllRescues(args.month)).allRescues;
-  },
-
-  async myRescues(args, request) {
-    const rescuerId = request.session.user.id;
-    return (await db.getAllRescues()).rescuesByRescuer[rescuerId];
   },
 };
 
