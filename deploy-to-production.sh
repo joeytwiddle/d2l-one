@@ -43,9 +43,12 @@ sudo_rsync -ai --delete ./deployment_scripts/ "${SERVER_AUTH}:/root/deployment_s
 
 ssh "${SERVER_AUTH}" sudo env NODE_USER="$NODE_USER" bash /root/deployment_scripts/set_up_new_deployment_1.sh
 
+# This assumes the default nginx install shares files from this folder (was true for CentOS)
 sudo_rsync -ai ./packages/d2l-website/* "${SERVER_AUTH}:/usr/share/nginx/html/" "$@"
 
 sudo_rsync -ai --delete ./packages/d2l-expo/web-build/ "${SERVER_AUTH}:/usr/share/nginx/html/app" "$@"
+
+sudo_rsync -ai ./deployment_scripts/etc/nginx/default.d/d2l-api.conf "${SERVER_AUTH}:/etc/nginx/default.d/" "$@"
 
 sudo_rsync -ai --delete --exclude=node_modules --no-owner --no-group ./packages/d2l-api/ "${SERVER_AUTH}:/home/${NODE_USER}/d2l-api" "$@"
 # I could not get `--chown "$NODE_USER:$NODE_USER"` to work, so instead the set_up_new_deployment_2.sh script will chown the files

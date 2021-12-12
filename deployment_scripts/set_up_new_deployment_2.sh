@@ -9,6 +9,8 @@ then
 	exit 1
 fi
 
+nginx -s reload
+
 chown -R "$NODE_USER:$NODE_USER" "/home/${NODE_USER}/d2l-api/"
 
 su - "$NODE_USER" << !!!
