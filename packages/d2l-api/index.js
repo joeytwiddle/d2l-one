@@ -57,6 +57,26 @@ const logResponse = (req, res, next) => {
   next();
 };
 
+// This middleware only allows operations from authenticated users
+// With the exception of two operations related to login
+//
+// NOTE: For more fine-grained authorization, add wrappers to individual resolvers in resolvers.js
+//
+const authenticatedOrLoggingIn = (req, res, next) => {
+  const { ip, method, url, path, query, params, body } = req;
+  const operationName = body && body.operationName;
+  if (req.session.user || operationName === 'GetUser' || operationName === 'LogIn') {
+    next();
+  } else {
+    console.warn(
+      `${new Date().toISOString()} XX [${ip}] Trying to access unauthorized route: ${path} ${JSON.stringify(req.body)}`,
+    );
+    //next(new Error('Forbidden'));
+    res.status(403);
+    res.end();
+  }
+};
+
 app.use(
   session({
     secret: 'house overleaf feeder listlessness nugget flood',
@@ -76,6 +96,7 @@ app.use(logResponse);
 
 app.use(
   '/graphql',
+  authenticatedOrLoggingIn,
   graphqlHTTP({
     schema: schema,
     rootValue: root,

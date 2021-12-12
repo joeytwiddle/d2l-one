@@ -1,5 +1,8 @@
 const db = require('./db-gsheet/db.js');
 
+// To add authorization, e.g. some routes only for ADMINs, consider using an ifAdmin() wrapper
+// Example using authenticated() and validateRole(): https://the-guild.dev/blog/graphql-modules-auth
+
 // The root provides a resolver function for each API endpoint
 const root = {
   async logIn(args, request) {
