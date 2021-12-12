@@ -26,6 +26,67 @@ async function callAPI(obj, methodName, ...args) {
 }
 
 module.exports = {
+  async getUserByCredentials(username, password) {
+    const { allUsers } = await this.getAllUserData();
+
+    const userData = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
+
+    if (!userData) {
+      console.warn(`No user found with name: ${username}`);
+      return null;
+    }
+
+    // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
+    if (userData.passwordHash === password || !userData.passwordHash) {
+      // User found
+
+      // TODO: If the user provided a password, but no password is set, then we can set the one they provided!
+
+      // The object we return will contain most of the user fields, but not the sensitive password data
+      const user = JSON.parse(JSON.stringify(userData));
+      delete user.passwordSalt;
+      delete user.passwordHash;
+      return user;
+    } else {
+      //throw new Error('Incorrect password');
+      console.warn(`Incorrect password for: ${username}`);
+      return null;
+    }
+  },
+
+  async getAllUserData() {
+    const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'NameRef' });
+
+    const allUsers = [];
+    const usersById = {};
+    for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
+      const row = sheetData[rowIndex];
+      const [name, telegramName, telegramUsername, email, role, notes, passwordSalt, passwordHash] = row;
+
+      const id = name;
+
+      const user = {
+        id: id || 'NO_ID',
+        name: name || 'Name Unknown',
+        telegramName: telegramName || 'unknown',
+        telegramUsername: telegramUsername || '@unknown',
+        email: email || 'unknown@unknown.com',
+        role: role || 'USER',
+        notes,
+        passwordSalt,
+        passwordHash,
+      };
+
+      allUsers.push(user);
+      usersById[id] = user;
+    }
+
+    return {
+      allUsers,
+      usersById,
+    };
+  },
+
   async getAllRescues(month = 'DEC 2021') {
     const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
@@ -97,43 +158,6 @@ module.exports = {
       rescuesByDate,
       rescuesByRescuer,
     };
-  },
-
-  // TODO: We might want to extract getAllUserData() into its own function, and then consume that here
-  async getUserByCredentials(username, password) {
-    const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'NameRef' });
-
-    for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
-      const row = sheetData[rowIndex];
-      const [name, telegramName, telegramUsername, email, role, notes, passwordSalt, passwordHash] = row;
-      if ((name || '').toLowerCase() === username.toLowerCase()) {
-        // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
-        if (passwordHash === password || !passwordHash) {
-          // User found
-
-          // TODO: If the user provided a password, but no password is set, then we can set the one they provided!
-
-          const id = name;
-
-          const user = {
-            id: id,
-            name: name,
-            telegramName: telegramName || 'unknown',
-            telegramUsername: telegramUsername || '@unknown',
-            email: email || 'unknown@unknown.com',
-            role: role || 'USER',
-          };
-
-          return user;
-        } else {
-          //throw new Error('Incorrect password');
-          console.warn(`Incorrect password for ${username}`);
-          return null;
-        }
-      }
-    }
-
-    return null;
   },
 };
 
