@@ -50,7 +50,7 @@ sudo_rsync -ai --delete ./packages/d2l-expo/web-build/ "${SERVER_AUTH}:/usr/shar
 
 sudo_rsync -ai ./deployment_scripts/etc/nginx/default.d/d2l-api.conf "${SERVER_AUTH}:/etc/nginx/default.d/" "$@"
 
-sudo_rsync -ai --delete --exclude=node_modules --no-owner --no-group ./packages/d2l-api/ "${SERVER_AUTH}:/home/${NODE_USER}/d2l-api" "$@"
+sudo_rsync -ai --delete --exclude=node_modules --exclude=sessions --no-owner --no-group ./packages/d2l-api/ "${SERVER_AUTH}:/home/${NODE_USER}/d2l-api" "$@"
 # I could not get `--chown "$NODE_USER:$NODE_USER"` to work, so instead the set_up_new_deployment_2.sh script will chown the files
 
 ssh "${SERVER_AUTH}" sudo env NODE_USER="$NODE_USER" bash /root/deployment_scripts/set_up_new_deployment_2.sh
