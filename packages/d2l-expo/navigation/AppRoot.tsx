@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ColorSchemeName, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
+import { apiUrl } from '../config/config';
 import { useGetUserQuery } from '../graphql';
 import useUser from '../hooks/useUser';
 import Navigation from './Navigation';
@@ -23,6 +24,7 @@ export default function AppRoot({ colorScheme }: { colorScheme: ColorSchemeName 
       <View style={styles.container}>
         <Text>Initial startup failed:</Text>
         <Text>{userQueryResult.error.message}</Text>
+        <Text>(apiUrl: {apiUrl})</Text>
       </View>
     );
   }
