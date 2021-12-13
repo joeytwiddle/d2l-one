@@ -43,6 +43,39 @@ async function callAPI(obj, methodName, ...args) {
 	*/
 }
 
+const getGeneralData = memoizeFunction(getGeneralDataUncached, oneMinute);
+
+async function getGeneralDataUncached() {
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'General' });
+
+  const map = {};
+  for (const row of sheetData) {
+    const key = row[0];
+    const value = row[1];
+    if (!key) continue;
+    map[key] = value;
+  }
+
+  console.log('map:', map);
+  return map;
+}
+
+async function getCurrentBookingMonth() {
+  const generalData = await getGeneralDataUncached();
+  console.log('generalData:', generalData);
+  return generalData['Current Booking Month'];
+}
+
+async function getCurrentBookingPhase() {
+  const generalData = await getGeneralData();
+  return generalData['Current Booking Phase'];
+}
+
+async function getSiteGroups(month, phase) {
+  month = month || (await getCurrentBookingMonth());
+  phase = phase || (await getCurrentBookingPhase());
+}
+
 const db = {
   async getUserByCredentials(username, password) {
     const { allUsers } = await db.getAllUserData();
@@ -105,8 +138,10 @@ const db = {
     };
   },
 
-  async getAllRescues(month = 'DEC 2021') {
+  async getAllRescues(month) {
     const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
+
+    month = month || (await getCurrentBookingMonth());
 
     const siteRow = sheetData[0];
     //console.log('siteRow:', JSON.stringify(siteRow));
