@@ -1,7 +1,21 @@
 //const util = require('util');
 const gsheet = require('./gsheet.js');
+const memoize = require('memoize');
 
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
+
+// If we call memoize() directly, typescript-jsdoc thinks that it returns {}
+// So we use this wrapper function, so that typescript sees the right types
+/**
+ * @template T
+ * @template U
+ * @param {(...fnArgs: T[]) => U} func The function to memoize
+ * @returns {(...fnArgs: T[]) => U} a memoized copy of the function
+ */
+function memoizeFunction(func) {
+  // @ts-ignore
+  return memoize(func);
+}
 
 async function callAPI(obj, methodName, ...args) {
   // Explicit
