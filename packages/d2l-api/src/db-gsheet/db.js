@@ -74,6 +74,51 @@ async function getCurrentBookingPhase() {
 async function getSiteGroups(month, phase) {
   month = month || (await getCurrentBookingMonth());
   phase = phase || (await getCurrentBookingPhase());
+
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Groups Phase ${phase}` });
+  //console.log('sheetData:', sheetData);
+
+  const siteGroups = {};
+  const siteGroupForSite = {};
+  const cols = sheetData[2].length;
+  for (let colIndex = 1; colIndex < cols; colIndex++) {
+    const groupName = sheetData[2][colIndex] || '';
+    const memberTier = sheetData[3][colIndex] || '';
+
+    if (!groupName.match(/^G[0-9]+$/) /*|| !memberTier.match(/^M[0-9]+$/)*/) {
+      continue;
+    }
+
+    const bookLimit = Number(sheetData[4][colIndex] || 'NaN');
+
+    const sites = sheetData
+      .slice(5)
+      .map(row => row[colIndex])
+      .filter(cell => !!cell);
+
+    const siteGroup = {
+      groupName,
+      memberTier,
+      bookLimit,
+      sites,
+    };
+
+    siteGroups[groupName] = siteGroup;
+
+    for (const site of sites) {
+      //siteGroupForSite[site] = siteGroup;
+      siteGroupForSite[site] = groupName;
+    }
+  }
+
+  return {
+    siteGroups,
+    siteGroupForSite,
+  };
+}
+
+async function getAvailableRescuesForUser(userId) {
+  const siteGroups = await getSiteGroups();
 }
 
 const db = {
@@ -212,6 +257,9 @@ const db = {
       rescuesByRescuer,
     };
   },
+
+  getSiteGroups,
+  getAvailableRescuesForUser,
 };
 
 db.getAllUserData = memoizeFunction(db.getAllUserData, oneMinute);

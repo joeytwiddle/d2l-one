@@ -33,8 +33,13 @@ const root = {
   },
 
   async myRescues(args, request) {
-    const rescuerId = request.session.user.id;
-    return (await db.getAllRescues()).rescuesByRescuer[rescuerId];
+    const userId = request.session.user.id;
+    return (await db.getAllRescues()).rescuesByRescuer[userId];
+  },
+
+  async availableRescues(args, request) {
+    const userId = request.session.user.id;
+    return await db.getAvailableRescuesForUser(userId);
   },
 
   async rescues() {
