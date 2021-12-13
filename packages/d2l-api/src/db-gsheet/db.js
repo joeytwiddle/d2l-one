@@ -1,8 +1,11 @@
 //const util = require('util');
 const gsheet = require('./gsheet.js');
-const memoize = require('memoize');
+// Docs: https://www.npmjs.com/package/memoizee
+const memoize = require('memoizee');
 
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
+
+const oneMinute = 60 * 1000;
 
 // If we call memoize() directly, typescript-jsdoc thinks that it returns {}
 // So we use this wrapper function, so that typescript sees the right types
@@ -10,11 +13,12 @@ const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
  * @template T
  * @template U
  * @param {(...fnArgs: T[]) => U} func The function to memoize
+ * @param {number} [expireMs] Expiry time
  * @returns {(...fnArgs: T[]) => U} a memoized copy of the function
  */
-function memoizeFunction(func) {
+function memoizeFunction(func, expireMs) {
   // @ts-ignore
-  return memoize(func);
+  return memoize(func, { promise: true, maxAge: expireMs });
 }
 
 async function callAPI(obj, methodName, ...args) {
@@ -174,6 +178,9 @@ const db = {
     };
   },
 };
+
+db.getAllUserData = memoizeFunction(db.getAllUserData, oneMinute);
+db.getAllRescues = memoizeFunction(db.getAllRescues, oneMinute);
 
 function shortDateString(date) {
   date = date || new Date();
