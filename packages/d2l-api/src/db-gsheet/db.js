@@ -39,9 +39,9 @@ async function callAPI(obj, methodName, ...args) {
 	*/
 }
 
-module.exports = {
+const db = {
   async getUserByCredentials(username, password) {
-    const { allUsers } = await this.getAllUserData();
+    const { allUsers } = await db.getAllUserData();
 
     const userData = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
 
@@ -188,3 +188,5 @@ function padLeft(str, len, padChar) {
   }
   return str;
 }
+
+module.exports = db;
