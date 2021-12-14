@@ -217,9 +217,9 @@ async function getSiteGroups(month, phase) {
   const cols = sheetData[2].length;
   for (let colIndex = 1; colIndex < cols; colIndex++) {
     const groupName = sheetData[2][colIndex] || '';
-    const memberTier = sheetData[3][colIndex] || '';
+    const memberGroup = sheetData[3][colIndex] || '';
 
-    if (!groupName.match(/^G[0-9]+$/) /*|| !memberTier.match(/^M[0-9]+$/)*/) {
+    if (!groupName.match(/^G[0-9]+$/) /*|| !memberGroup.match(/^M[0-9]+$/)*/) {
       continue;
     }
 
@@ -232,7 +232,7 @@ async function getSiteGroups(month, phase) {
 
     const siteGroup = {
       groupName,
-      memberTier,
+      memberGroup,
       bookLimit,
       sites,
     };
