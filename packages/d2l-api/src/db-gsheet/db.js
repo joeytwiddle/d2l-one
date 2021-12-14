@@ -5,8 +5,6 @@ const memoize = require('memoizee');
 
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
-const oneMinute = 60 * 1000;
-
 /**
  * @typedef {Object} Rescue
  * @property {string} id
@@ -33,6 +31,12 @@ const oneMinute = 60 * 1000;
  * @property {memberGroup} memberGroup
  * @property {number} bookLimit
  * @property {[string]} sites
+ */
+
+/**
+ * @typedef {Object} MemberGroup
+ * @property {string} name
+ * @property {Record<string, string>} members
  */
 
 // If we call memoize() directly, typescript-jsdoc thinks that it returns {}
@@ -74,11 +78,13 @@ async function callAPI(obj, methodName, ...args) {
 	*/
 }
 
-const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, oneMinute);
-const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, oneMinute);
-const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, oneMinute);
-const getSiteGroupsCached = memoizeFunction(getSiteGroupsUncached, oneMinute);
-const getSiteMembersCached = memoizeFunction(getSiteMembersUncached, oneMinute);
+const standardCacheDuration = 15 * 1000;
+
+const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, standardCacheDuration);
+const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, standardCacheDuration);
+const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, standardCacheDuration);
+const getSiteGroupsCached = memoizeFunction(getSiteGroupsUncached, standardCacheDuration);
+const getMemberGroupsCached = memoizeFunction(getMemberGroupsUncached, standardCacheDuration);
 
 async function getUserByCredentials(username, password) {
   const { allUsers } = await getAllUserDataCached();
@@ -142,6 +148,7 @@ async function getAllUserDataUncached() {
 }
 
 const siteCodeRegexp = /^[A-Z0-9]*/;
+const memberGroupRegexp = /^M[0-9A-Za-z]*/;
 
 async function getAllRescueDataUncached(month) {
   month = month || (await getCurrentBookingMonth());
@@ -306,47 +313,56 @@ async function getSiteGroupsUncached(month, phase) {
   };
 }
 
-async function getSiteMembersUncached(month, phase) {
+async function getMemberGroupsUncached(month, phase) {
   month = month || (await getCurrentBookingMonth());
   phase = phase || (await getCurrentBookingPhase());
 
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Members Phase ${phase}` });
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Member Groups Phase ${phase}` });
   //console.log('sheetData:', sheetData);
 
-  /** @type {Record<string, Record<string, 1>>} */
-  const siteMembersForSite = {};
+  /** @type {Record<string, MemberGroup>} */
+  const memberGroups = {};
 
-  /** @type {Record<string, string>} */
-  const memberGroupForSite = {};
+  /** @type {Record<string, string[]>} */
+  const memberGroupsByUser = {};
 
-  const cols = sheetData[0].length;
+  const cols = sheetData[1].length;
   for (let colIndex = 1; colIndex < cols; colIndex++) {
-    const siteCode = sheetData[0][colIndex] || '';
-    if (siteCode.match(siteCodeRegexp)) {
-      const memberGroup = sheetData[1][colIndex];
-      memberGroupForSite[siteCode] = memberGroup;
-
+    const memberGroupName = sheetData[1][colIndex] || '';
+    if (memberGroupName.match(memberGroupRegexp)) {
       const members = {};
       for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
         const cell = sheetData[rowIndex][colIndex];
         if (cell && !cell.match(/^[*]/)) {
           const userId = cell;
           members[userId] = 1;
+          //
+          memberGroupsByUser[userId] = memberGroupsByUser[userId] || [];
+          memberGroupsByUser[userId].push(memberGroupName);
         }
       }
-      siteMembersForSite[siteCode] = members;
+
+      const memberGroup = {
+        name: memberGroupName,
+        members: members,
+      };
+      memberGroups[memberGroupName] = memberGroup;
     }
   }
 
   return {
-    memberGroupForSite,
-    siteMembersForSite,
+    memberGroups,
+    memberGroupsByUser,
   };
 }
 
 async function getAvailableRescuesForUser(userId) {
   const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
-  const { siteMembersForSite, memberGroupForSite } = await getSiteMembersCached();
+  const { memberGroups, memberGroupsByUser } = await getMemberGroupsCached();
+
+  // TODO: Investigate why VSCode only highlights these errors with a dotted line, not in red
+  //const siteGroup = siteGroups.siteGroupsForSite.siteGroupForSite['foo'];
+  //const sg = siteGroupForSite.fluff.foo.siteGroupForSite['foo'];
 
   const rescuesForUser = await getAllRescuesForUser(userId);
 
@@ -372,17 +388,19 @@ async function getAvailableRescuesForUser(userId) {
     const siteCode = rescue.site.id;
 
     // Is this user even a member of that site?
-    const siteMembers = siteMembersForSite[siteCode];
-    const isMember = !siteMembers || siteMembers[userId];
-    if (!isMember) {
-      return false;
-    }
-
     const siteGroup = siteGroupForSite[siteCode];
     if (!siteGroup) {
       // UNRESTRICTED site
       return true;
     }
+    const memberGroup = memberGroups[siteGroup.memberGroup];
+    //console.log('memberGroup:', memberGroup);
+    const isMember = memberGroup && memberGroup.members[userId];
+    //console.log('isMember:', isMember);
+    if (!isMember) {
+      return false;
+    }
+
     const usersExistingBookingsForThisGroup = rescuesBySiteGroup[siteGroup.groupName];
     const countExisting = usersExistingBookingsForThisGroup ? usersExistingBookingsForThisGroup.length : 0;
     const remaining = siteGroup.bookLimit - countExisting;
