@@ -141,9 +141,9 @@ async function getAllUserDataUncached() {
 const siteCodeRegexp = /^[A-Z0-9]*/;
 
 async function getAllRescueDataUncached(month) {
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
-
   month = month || (await getCurrentBookingMonth());
+
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
   const siteRow = sheetData[0];
   //console.log('siteRow:', JSON.stringify(siteRow));
