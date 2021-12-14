@@ -40,7 +40,7 @@ const logRequest = async (req, res, next) => {
     if (bodyData?.query) bodyData.query = bodyData.query.replace(/[ \n\t]+/g, ' ');
     //const bodyString = bodyData ? `(${typeof body}) ` + JSON.stringify(bodyData) : '';
     const bodyString = bodyData ? JSON.stringify(bodyData) : '';
-    console.log(`${new Date().toISOString()} >> [${ip}] ${method} ${path}${queryString} ${paramsString || bodyString}`);
+    console.log(`${isoDate()} (express) << [${ip}] ${method} ${path}${queryString} ${paramsString || bodyString}`);
   } catch (error) {
     console.error(error);
   }
@@ -51,7 +51,7 @@ const logResponse = (req, res, next) => {
   const send = res.send;
   res.send = data => {
     const { ip, method, url, path, query, params, body } = req;
-    console.log(`${new Date().toISOString()} << [${ip}] ${res.statusCode} ${String(data).slice(0, 1024)}`);
+    console.log(`${isoDate()} (express) >> [${ip}] ${res.statusCode} ${String(data).slice(0, 1024)}`);
     res.send = send;
     return res.send(data);
   };
@@ -70,7 +70,7 @@ const authenticatedOrLoggingIn = (req, res, next) => {
     next();
   } else {
     console.warn(
-      `${new Date().toISOString()} XX [${ip}] Trying to access unauthorized route: ${path} ${JSON.stringify(req.body)}`,
+      `${isoDate()} (express) XX [${ip}] Trying to access unauthorized route: ${path} ${JSON.stringify(req.body)}`,
     );
     //next(new Error('Forbidden'));
     res.status(403);
@@ -127,3 +127,7 @@ setTimeout(() => {
     console.log('siteGroups:', siteGroups);
   })().catch(console.error);
 }, 1000);
+
+function isoDate() {
+  return new Date().toISOString();
+}

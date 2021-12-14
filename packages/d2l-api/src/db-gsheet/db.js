@@ -59,12 +59,18 @@ async function callAPI(obj, methodName, ...args) {
   // However JSDoc seems to ignore undefined and null.  false was the closest stand-in that achieves what I wanted (we can easily || it to solve concerns)
   /** @type {string[][] | false[][]} */
   const data = await new Promise((resolve, reject) => {
+    console.log(`${isoDate()} (gsheet) >> Fetching ${obj.constructor.name}.${methodName}(${inspectOneLine(args)})`);
     obj[methodName](...args)
       .then(result => {
+        console.log(`${isoDate()} (gsheet) << ${inspectOneLine(result.data).length}`);
         resolve(result.data.values);
       })
       .catch(error => {
-        console.warn(`Error while executing ${methodName}(${JSON.stringify(args)})`);
+        console.warn(
+          `${isoDate()} (gsheet) !! Error while executing ${obj.constructor.name}.${methodName}(${inspectOneLine(
+            args,
+          )})`,
+        );
         reject(error);
       });
   });
@@ -76,6 +82,18 @@ async function callAPI(obj, methodName, ...args) {
   const result = await util.promisify((...arguments) => obj[methodName](...arguments))(...args);
   return result.data.values;
 	*/
+}
+
+function isoDate() {
+  return new Date().toISOString();
+}
+
+function deepInspect(data) {
+  return require('util').inspect(data, { showHidden: false, depth: null, colors: true });
+}
+
+function inspectOneLine(data) {
+  return require('util').inspect(data, { showHidden: false, depth: 4, colors: true, breakLength: Infinity });
 }
 
 const standardCacheDuration = 15 * 1000;
