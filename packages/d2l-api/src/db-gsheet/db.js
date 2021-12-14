@@ -179,6 +179,11 @@ async function getAllRescuesUncached(month) {
   };
 }
 
+async function getAllRescuesForUser(userId) {
+  const allRescueData = await getAllRescuesCached();
+  return allRescueData.rescuesByRescuer[userId];
+}
+
 async function getGeneralDataUncached() {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'General' });
 
@@ -264,6 +269,7 @@ const db = {
   getUserByCredentials,
   //getAllUserDataCached,
   getAllRescues: getAllRescuesCached,
+  getAllRescuesForUser,
   getSiteGroups,
   getAvailableRescuesForUser,
 };

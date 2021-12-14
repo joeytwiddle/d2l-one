@@ -34,7 +34,7 @@ const root = {
 
   async myRescues(args, request) {
     const userId = request.session.user.id;
-    return (await db.getAllRescues()).rescuesByRescuer[userId];
+    return await db.getAllRescuesForUser(userId);
   },
 
   async availableRescues(args, request) {
