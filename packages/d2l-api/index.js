@@ -11,6 +11,7 @@ const root = require('./src/resolvers.js');
 const db = require('./src/db-gsheet/db.js');
 const bodyParser = require('body-parser');
 const config = require('./src/config.js');
+const { formatError } = require('graphql');
 
 const app = express();
 
@@ -101,6 +102,11 @@ app.use(
     schema: schema,
     rootValue: root,
     graphiql: true,
+    customFormatErrorFn: error => {
+      // I find this easier to read, and find the line where the error occurred
+      console.error(error);
+      return error.toString();
+    },
   }),
 );
 
