@@ -59,7 +59,10 @@ async function callAPI(obj, methodName, ...args) {
       .then(result => {
         resolve(result.data.values);
       })
-      .catch(reject);
+      .catch(error => {
+        console.warn(`Error while executing ${methodName}(${JSON.stringify(args)})`);
+        reject(error);
+      });
   });
   return data;
 
