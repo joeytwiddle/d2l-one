@@ -7,6 +7,34 @@ const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
 const oneMinute = 60 * 1000;
 
+/**
+ * @typedef {Object} Rescue
+ * @property {string} id
+ * @property {string} date
+ * @property {RescueUser[]} rescuers
+ * @property {RescueSite} site
+ */
+
+/**
+ * @typedef {Object} RescueUser
+ * @property {string} id
+ * @property {string} name
+ */
+
+/**
+ * @typedef {Object} RescueSite
+ * @property {string} id
+ * @property {string} name
+ */
+
+/**
+ * @typedef {Object} SiteGroup
+ * @property {string} groupName
+ * @property {memberGroup} memberGroup
+ * @property {number} bookLimit
+ * @property {[string]} sites
+ */
+
 // If we call memoize() directly, typescript-jsdoc thinks that it returns {}
 // So we use this wrapper function, so that typescript sees the right types
 /**
@@ -126,8 +154,11 @@ async function getAllRescueDataUncached(month) {
   console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
   console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
 
+  /** @type {[Rescue]} */
   const allRescues = [];
+  /** @type {Record<string, [Rescue]>} */
   const rescuesByDate = {};
+  /** @type {Record<string, [Rescue]>} */
   const rescuesByRescuer = {};
   for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
     const row = sheetData[rowIndex];
@@ -152,6 +183,7 @@ async function getAllRescueDataUncached(month) {
           : null;
         const rescueId = `${siteName}@${shortDateString(date)}`;
         const shortDate = shortDateString(date);
+        /** @type {Rescue} */
         const rescue = {
           id: rescueId,
           date: shortDate,
@@ -222,7 +254,9 @@ async function getSiteGroups(month, phase) {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Groups Phase ${phase}` });
   //console.log('sheetData:', sheetData);
 
+  /** @type {[SiteGroup]} */
   const siteGroups = {};
+  /** @type {Record<string, SiteGroup>} */
   const siteGroupForSite = {};
   const cols = sheetData[2].length;
   for (let colIndex = 1; colIndex < cols; colIndex++) {
@@ -250,8 +284,8 @@ async function getSiteGroups(month, phase) {
     siteGroups[groupName] = siteGroup;
 
     for (const site of sites) {
-      //siteGroupForSite[site] = siteGroup;
-      siteGroupForSite[site] = groupName;
+      //siteGroupForSite[site] = groupName;
+      siteGroupForSite[site] = siteGroup;
     }
   }
 
