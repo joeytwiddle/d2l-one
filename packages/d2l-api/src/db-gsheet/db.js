@@ -44,7 +44,7 @@ async function callAPI(obj, methodName, ...args) {
 }
 
 async function getUserByCredentials(username, password) {
-  const { allUsers } = await getAllUserData();
+  const { allUsers } = await getAllUserDataCached();
 
   const userData = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
 
@@ -71,7 +71,7 @@ async function getUserByCredentials(username, password) {
   }
 }
 
-async function getAllUserData() {
+async function getAllUserDataUncached() {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'NameRef' });
 
   const allUsers = [];
@@ -104,7 +104,7 @@ async function getAllUserData() {
   };
 }
 
-async function getAllRescues(month) {
+async function getAllRescuesUncached(month) {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
   month = month || (await getCurrentBookingMonth());
@@ -179,8 +179,6 @@ async function getAllRescues(month) {
   };
 }
 
-const getGeneralData = memoizeFunction(getGeneralDataUncached, oneMinute);
-
 async function getGeneralDataUncached() {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'General' });
 
@@ -197,13 +195,13 @@ async function getGeneralDataUncached() {
 }
 
 async function getCurrentBookingMonth() {
-  const generalData = await getGeneralDataUncached();
+  const generalData = await getGeneralDataCached();
   console.log('generalData:', generalData);
   return generalData['Current Booking Month'];
 }
 
 async function getCurrentBookingPhase() {
-  const generalData = await getGeneralData();
+  const generalData = await getGeneralDataCached();
   return generalData['Current Booking Phase'];
 }
 
@@ -257,16 +255,18 @@ async function getAvailableRescuesForUser(userId) {
   const siteGroups = await getSiteGroups();
 }
 
+const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, oneMinute);
+const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, oneMinute);
+const getAllRescuesCached = memoizeFunction(getAllRescuesUncached, oneMinute);
+
 const db = {
+  //getGeneralDataCached,
   getUserByCredentials,
-  //getAllUserData,
-  getAllRescues,
+  //getAllUserDataCached,
+  getAllRescues: getAllRescuesCached,
   getSiteGroups,
   getAvailableRescuesForUser,
 };
-
-db.getAllUserData = memoizeFunction(db.getAllUserData, oneMinute);
-db.getAllRescues = memoizeFunction(db.getAllRescues, oneMinute);
 
 function shortDateString(date) {
   date = date || new Date();
