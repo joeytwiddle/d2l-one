@@ -71,6 +71,12 @@ async function callAPI(obj, methodName, ...args) {
 	*/
 }
 
+const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, oneMinute);
+const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, oneMinute);
+const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, oneMinute);
+const getSiteGroupsCached = memoizeFunction(getSiteGroupsUncached, oneMinute);
+const getSiteMembersCached = memoizeFunction(getSiteMembersUncached, oneMinute);
+
 async function getUserByCredentials(username, password) {
   const { allUsers } = await getAllUserDataCached();
 
@@ -132,6 +138,8 @@ async function getAllUserDataUncached() {
   };
 }
 
+const siteCodeRegexp = /^[A-Z0-9]*/;
+
 async function getAllRescueDataUncached(month) {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
@@ -144,7 +152,7 @@ async function getAllRescueDataUncached(month) {
   for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
     /** @type {string} */
     const cellData = siteRow[colIndex] || '';
-    const siteName = (cellData.match(/^[A-Z0-9]*/) || [])[0];
+    const siteName = (cellData.match(siteCodeRegexp) || [])[0];
     //console.log('siteName:', siteName);
     if (siteName) {
       mapColumnToSite[colIndex] = siteName;
@@ -247,7 +255,7 @@ async function getCurrentBookingPhase() {
   return generalData['Current Booking Phase'];
 }
 
-async function getSiteGroups(month, phase) {
+async function getSiteGroupsUncached(month, phase) {
   month = month || (await getCurrentBookingMonth());
   phase = phase || (await getCurrentBookingPhase());
 
@@ -295,13 +303,91 @@ async function getSiteGroups(month, phase) {
   };
 }
 
-async function getAvailableRescuesForUser(userId) {
-  const siteGroups = await getSiteGroups();
+async function getSiteMembersUncached(month, phase) {
+  month = month || (await getCurrentBookingMonth());
+  phase = phase || (await getCurrentBookingPhase());
+
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Members Phase ${phase}` });
+  //console.log('sheetData:', sheetData);
+
+  /** @type {Record<string, Record<string, 1>>} */
+  const siteMembersForSite = {};
+
+  /** @type {Record<string, string>} */
+  const memberGroupForSite = {};
+
+  const cols = sheetData[0].length;
+  for (let colIndex = 1; colIndex < cols; colIndex++) {
+    const siteCode = sheetData[0][colIndex] || '';
+    if (siteCode.match(siteCodeRegexp)) {
+      const memberGroup = sheetData[1][colIndex];
+      memberGroupForSite[siteCode] = memberGroup;
+
+      const members = {};
+      for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
+        const cell = sheetData[rowIndex][colIndex];
+        if (cell && !cell.match(/^[*]/)) {
+          const userId = cell;
+          members[userId] = 1;
+        }
+      }
+      siteMembersForSite[siteCode] = members;
+    }
+  }
+
+  return {
+    memberGroupForSite,
+    siteMembersForSite,
+  };
 }
 
-const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, oneMinute);
-const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, oneMinute);
-const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, oneMinute);
+async function getAvailableRescuesForUser(userId) {
+  const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
+  const { siteMembersForSite, memberGroupForSite } = await getSiteMembersCached();
+
+  const rescuesForUser = await getAllRescuesForUser(userId);
+
+  const rescuesBySiteGroup = {};
+  for (const rescue of rescuesForUser) {
+    const siteId = rescue.site.id;
+    const siteGroup = siteGroupForSite[siteId];
+    const siteGroupName = (siteGroup && siteGroup.groupName) || 'UNRESTRICTED';
+    rescuesBySiteGroup[siteGroupName] = rescuesBySiteGroup[siteGroupName] || [];
+    rescuesBySiteGroup[siteGroupName].push(rescue);
+  }
+
+  // Gather all available rescues, and categorise them by siteGroup
+  const allRescues = await getAllRescues();
+  const allUnbookedRescues = allRescues.filter(rescue => !rescue.rescuer);
+
+  // For each unbooked rescue, get its siteGroup
+  // 1. Check if the user is allowed to book that site
+  // 2. Calculate how many remaining bookings the user is allowed for that siteGroup
+  // 3. If > 0, or unrestriced, then return that as an available rescue
+
+  const rescuesAvailableToUser = allUnbookedRescues.filter(rescue => {
+    const siteCode = rescue.site.id;
+
+    // Is this user even a member of that site?
+    const siteMembers = siteMembersForSite[siteCode];
+    const isMember = !siteMembers || siteMembers[userId];
+    if (!isMember) {
+      return false;
+    }
+
+    const siteGroup = siteGroupForSite[siteCode];
+    if (!siteGroup) {
+      // UNRESTRICTED site
+      return true;
+    }
+    const usersExistingBookingsForThisGroup = rescuesBySiteGroup[siteGroup.groupName];
+    const countExisting = usersExistingBookingsForThisGroup ? usersExistingBookingsForThisGroup.length : 0;
+    const remaining = siteGroup.bookLimit - countExisting;
+    return remaining > 0;
+  });
+
+  return rescuesAvailableToUser;
+}
 
 const db = {
   //getGeneralDataCached,
@@ -309,7 +395,8 @@ const db = {
   //getAllUserDataCached,
   getAllRescues,
   getAllRescuesForUser,
-  getSiteGroups,
+  //getSiteGroups: getSiteGroupsCached,
+  //getSiteMembers: getSiteMembersCached,
   getAvailableRescuesForUser,
 };
 
