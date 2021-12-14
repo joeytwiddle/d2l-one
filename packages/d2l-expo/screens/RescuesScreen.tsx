@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { Text, View } from '../components/Themed';
-import { useGetAllRescuesForMonthQuery } from '../graphql';
+import { useGetAllRescuesForMonthQuery, useGetAvailableRescuesForCurrentUserQuery } from '../graphql';
 
 function callD2LAPI(hook: any, ...args: any[]) {
   const result = hook(...args);
@@ -16,16 +16,18 @@ function callD2LAPI(hook: any, ...args: any[]) {
 export default function RescuesScreen() {
   //const rescues = useGetAllRescuesQuery().data?.rescues;
   //const rescues = useGetAllRescuesForMonthQuery({ variables: { month: 'JAN 2021' } }).data?.allRescuesForMonth;
-  const rescues = callD2LAPI(useGetAllRescuesForMonthQuery, { variables: { month: 'DEC 2021' } }).data
-    ?.allRescuesForMonth;
+  //const rescues = callD2LAPI(useGetAllRescuesForMonthQuery, { variables: { month: 'DEC 2021' } }).data
+  //  ?.allRescuesForMonth;
 
-  if (!rescues) return null;
+  const availableRescues = useGetAvailableRescuesForCurrentUserQuery().data?.availableRescuesForCurrentUser;
+
+  if (!availableRescues) return null;
 
   // TODO: This scrolls on Android but not on web.  We may fix this by using multipe pages.  (But can multiple pages have different headers?)
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Rescues</Text>
-      <Text>{rescues.length} rescues</Text>
+      <Text>{availableRescues.length} rescues</Text>
       {/*
       <Text style={styles.title}>Rescues</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
