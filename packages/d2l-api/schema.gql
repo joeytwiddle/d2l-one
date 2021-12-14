@@ -44,7 +44,7 @@ type Rescue {
   id: RescueID!
   date: Date!
   site: Site!
-  rescuers: [User]!
+  rescuer: User
 }
 
 type Site {
@@ -84,7 +84,7 @@ query GetAllRescuesForMonth($month: String!) {
       id
       name
     }
-    rescuers {
+    rescuer {
       id
       name
     }
@@ -99,7 +99,7 @@ query GetAllRescues {
       id
       name
     }
-    rescuers {
+    rescuer {
       id
       name
     }

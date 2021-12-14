@@ -11,7 +11,7 @@ const oneMinute = 60 * 1000;
  * @typedef {Object} Rescue
  * @property {string} id
  * @property {string} date
- * @property {RescueUser[]} rescuers
+ * @property {RescueUser} rescuer
  * @property {RescueSite} site
  */
 
@@ -191,7 +191,7 @@ async function getAllRescueDataUncached(month) {
             id: siteName,
             name: siteName,
           },
-          rescuers: rescuer ? [rescuer] : [],
+          rescuer: rescuer || null,
         };
         allRescues.push(rescue);
         rescuesByDate[shortDate] = rescuesByDate[shortDate] || [];
