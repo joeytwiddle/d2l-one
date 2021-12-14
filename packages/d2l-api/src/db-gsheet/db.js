@@ -104,7 +104,7 @@ async function getAllUserDataUncached() {
   };
 }
 
-async function getAllRescuesUncached(month) {
+async function getAllRescueDataUncached(month) {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
   month = month || (await getCurrentBookingMonth());
@@ -179,8 +179,13 @@ async function getAllRescuesUncached(month) {
   };
 }
 
+async function getAllRescues(month) {
+  const allRescueData = await getAllRescueDataCached(month);
+  return allRescueData.allRescues;
+}
+
 async function getAllRescuesForUser(userId) {
-  const allRescueData = await getAllRescuesCached();
+  const allRescueData = await getAllRescueDataCached();
   return allRescueData.rescuesByRescuer[userId];
 }
 
@@ -262,13 +267,13 @@ async function getAvailableRescuesForUser(userId) {
 
 const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, oneMinute);
 const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, oneMinute);
-const getAllRescuesCached = memoizeFunction(getAllRescuesUncached, oneMinute);
+const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, oneMinute);
 
 const db = {
   //getGeneralDataCached,
   getUserByCredentials,
   //getAllUserDataCached,
-  getAllRescues: getAllRescuesCached,
+  getAllRescues,
   getAllRescuesForUser,
   getSiteGroups,
   getAvailableRescuesForUser,

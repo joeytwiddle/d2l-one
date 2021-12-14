@@ -43,11 +43,11 @@ const root = {
   },
 
   async rescues() {
-    return (await db.getAllRescues()).allRescues;
+    return await db.getAllRescues();
   },
 
   async allRescuesForMonth(args) {
-    return (await db.getAllRescues(args.month)).allRescues;
+    return await db.getAllRescues(args.month);
   },
 };
 
