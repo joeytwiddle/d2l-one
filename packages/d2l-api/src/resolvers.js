@@ -49,6 +49,10 @@ const root = {
   async allRescuesForMonth(args) {
     return await db.getAllRescues(args.month);
   },
+
+  async availableRescuesForCurrentUser(args, request) {
+    return await db.getAvailableRescuesForUser(request.session.user.id);
+  },
 };
 
 module.exports = root;

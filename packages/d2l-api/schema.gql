@@ -18,6 +18,7 @@ type Query {
   rescues: [Rescue!]
   allRescuesForMonth(month: String!): [Rescue!]
   myRescues: [Rescue!]
+  availableRescuesForCurrentUser: [Rescue!]
   #search(term: String!): [SearchResult!]!
 }
 
@@ -100,6 +101,17 @@ query GetAllRescues {
       name
     }
     rescuer {
+      id
+      name
+    }
+  }
+}
+
+query GetAvailableRescuesForCurrentUser {
+  availableRescuesForCurrentUser {
+    id
+    date
+    site {
       id
       name
     }
