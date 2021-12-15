@@ -1,7 +1,8 @@
 scalar UserID
 scalar RescueID
 scalar SiteID
-scalar Date
+# A string of the form YYYYMMDD, e.g. "20211231"
+scalar DateDayString
 
 # Fixes an issue with allRescuesForMonth()
 scalar String
@@ -43,7 +44,7 @@ type User {
 
 type Rescue {
   id: RescueID!
-  date: Date!
+  date: DateDayString!
   site: Site!
   rescuer: User
 }
