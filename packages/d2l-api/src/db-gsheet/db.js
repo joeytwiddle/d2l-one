@@ -28,15 +28,15 @@ const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 /**
  * @typedef {Object} SiteGroup
  * @property {string} groupName
- * @property {memberGroup} memberGroup
+ * @property {string} memberGroup
  * @property {number} bookLimit
- * @property {[string]} sites
+ * @property {string[]} sites
  */
 
 /**
  * @typedef {Object} MemberGroup
  * @property {string} name
- * @property {Record<string, string>} members
+ * @property {Record<string, 1>} members
  */
 
 // If we call memoize() directly, typescript-jsdoc thinks that it returns {}
@@ -190,11 +190,11 @@ async function getAllRescueDataUncached(month) {
   console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
   console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
 
-  /** @type {[Rescue]} */
+  /** @type {Rescue[]} */
   const allRescues = [];
-  /** @type {Record<string, [Rescue]>} */
+  /** @type {Record<string, Rescue[]>} */
   const rescuesByDate = {};
-  /** @type {Record<string, [Rescue]>} */
+  /** @type {Record<string, Rescue[]>} */
   const rescuesByRescuer = {};
   for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
     const row = sheetData[rowIndex];
@@ -210,7 +210,8 @@ async function getAllRescueDataUncached(month) {
       const siteName = mapColumnToSite[colIndex];
       if (siteName) {
         const rescuerName = row[colIndex];
-        const rescuerId = rescuerName;
+        const rescuerId = rescuerName || 'NO_ID';
+        /** @type {RescueUser} */
         const rescuer = rescuerName
           ? {
               id: rescuerId,
@@ -290,7 +291,7 @@ async function getSiteGroupsUncached(month, phase) {
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Groups Phase ${phase}` });
   //console.log('sheetData:', sheetData);
 
-  /** @type {[SiteGroup]} */
+  /** @type {Record<string, SiteGroup>} */
   const siteGroups = {};
   /** @type {Record<string, SiteGroup>} */
   const siteGroupForSite = {};
@@ -310,6 +311,7 @@ async function getSiteGroupsUncached(month, phase) {
       .map(row => row[colIndex])
       .filter(cell => !!cell);
 
+    /** @type SiteGroup */
     const siteGroup = {
       groupName,
       memberGroup,
@@ -348,6 +350,7 @@ async function getMemberGroupsUncached(month, phase) {
   for (let colIndex = 1; colIndex < cols; colIndex++) {
     const memberGroupName = sheetData[1][colIndex] || '';
     if (memberGroupName.match(memberGroupRegexp)) {
+      /** @type {Record<string, 1>} */
       const members = {};
       for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
         const cell = sheetData[rowIndex][colIndex];
@@ -378,7 +381,7 @@ async function getAvailableRescuesForUser(userId) {
   const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
   const { memberGroups, memberGroupsByUser } = await getMemberGroupsCached();
 
-  // TODO: Investigate why VSCode only highlights these errors with a dotted line, not in red
+  // NOTE: Errors like this get shown when jsconfig.json is configured, but without it they just appear as little dotted lines (hardly noticeable)
   //const siteGroup = siteGroups.siteGroupsForSite.siteGroupForSite['foo'];
   //const sg = siteGroupForSite.fluff.foo.siteGroupForSite['foo'];
 

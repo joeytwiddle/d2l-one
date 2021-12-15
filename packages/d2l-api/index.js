@@ -102,6 +102,7 @@ app.use(
     schema: schema,
     rootValue: root,
     graphiql: true,
+    // @ts-ignore
     customFormatErrorFn: error => {
       // I find this easier to read, and find the line where the error occurred
       console.error(error);
