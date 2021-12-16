@@ -254,15 +254,15 @@ async function getAllRescueDataUncached(month) {
           : null;
         const rescueId = `${siteId}@${shortDate}`;
 
+        if (!sitesById[siteId]) {
+          //console.warn(`No site found with id: ${siteId}`);
+        }
         /** @type {RescueSite} */
         const site = sitesById[siteId] || {
           id: siteId,
           fullName: siteId,
           geoLocation: 'unknown',
         };
-        if (!sitesById[siteId]) {
-          console.warn(`No site found with id: ${siteId}`);
-        }
 
         /** @type {Rescue} */
         const rescue = {
