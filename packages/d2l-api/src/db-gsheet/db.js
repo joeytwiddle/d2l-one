@@ -217,8 +217,8 @@ async function getAllRescueDataUncached(month) {
       mapSiteToColumn[siteName] = colIndex;
     }
   }
-  console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
-  console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
+  //console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
+  //console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
 
   /** @type {Rescue[]} */
   const allRescues = [];
@@ -226,6 +226,7 @@ async function getAllRescueDataUncached(month) {
   const rescuesByDate = {};
   /** @type {Record<string, Rescue[]>} */
   const rescuesByRescuer = {};
+  const mapDateToRow = {};
   for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
     const row = sheetData[rowIndex];
     //console.log('row:', JSON.stringify(row));
@@ -235,6 +236,9 @@ async function getAllRescueDataUncached(month) {
     // Skip the row if it isn't a real day
     if (!isRealDate) continue;
     //console.log('row:', JSON.stringify(row));
+
+    const shortDate = shortDateString(date);
+    mapDateToRow[shortDate] = rowIndex;
 
     for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
       const siteId = mapColumnToSite[colIndex];
@@ -248,8 +252,7 @@ async function getAllRescueDataUncached(month) {
               name: rescuerName,
             }
           : null;
-        const rescueId = `${siteId}@${shortDateString(date)}`;
-        const shortDate = shortDateString(date);
+        const rescueId = `${siteId}@${shortDate}`;
 
         /** @type {RescueSite} */
         const site = sitesById[siteId] || {
@@ -283,6 +286,8 @@ async function getAllRescueDataUncached(month) {
     allRescues,
     rescuesByDate,
     rescuesByRescuer,
+    mapSiteToColumn,
+    mapDateToRow,
   };
 }
 
