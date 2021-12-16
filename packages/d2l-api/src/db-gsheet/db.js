@@ -510,7 +510,7 @@ async function assignUserToRescue(month, userId, rescueId) {
     resource: { values: [[userId]] },
   });
 
-  // @ts-ignore
+  // @ts-ignore We could fix this
   getAllRescueDataCached.clear();
   // TODO: Any more to clear?  Make a convenience function.
 

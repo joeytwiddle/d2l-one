@@ -19,12 +19,11 @@ export default function LoginScreen() {
   //console.log('userQuery:', userQuery);
 
   const submit = () => {
+    // When logIn() completes, logInMutation changes from undefined to { logIn: null }
+    // But instead of watching for that, we detect the promise instead.
     logIn({ variables: { username, password } })
       .then(() => userQuery.refetch())
       .catch(handleGlobalError);
-    // When it completes, logInMutation changes from undefined to { logIn: null }
-    // At that point, perhaps we could request a refetch of the user query, so the page will change?
-    // Oh, it also returns a promise!  We should probably catch that.
   };
 
   // This temporarily flashes on the screen after a successful login, before the page changes

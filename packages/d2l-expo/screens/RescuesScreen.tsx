@@ -4,7 +4,12 @@ import { DataTable } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
 import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
-import { useGetAllRescuesForMonthQuery, useGetAvailableRescuesForCurrentUserQuery } from '../graphql';
+import {
+  useAssignSelfToRescueMutation,
+  useGetAllRescuesForMonthQuery,
+  useGetAvailableRescuesForCurrentUserQuery,
+} from '../graphql';
+import { handleGlobalError } from '../navigation/LoginScreen';
 
 function callD2LAPI(hook: any, ...args: any[]) {
   const result = hook(...args);
@@ -21,7 +26,10 @@ export default function RescuesScreen() {
   //const rescues = callD2LAPI(useGetAllRescuesForMonthQuery, { variables: { month: 'DEC 2021' } }).data
   //  ?.allRescuesForMonth;
 
-  const availableRescues = useGetAvailableRescuesForCurrentUserQuery().data?.availableRescuesForCurrentUser;
+  const availableRescuesQuery = useGetAvailableRescuesForCurrentUserQuery();
+  const availableRescues = availableRescuesQuery.data?.availableRescuesForCurrentUser;
+
+  const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation();
 
   if (!availableRescues) return null;
 
@@ -31,7 +39,14 @@ export default function RescuesScreen() {
   rescuesSorted.sort((ra, rb) => (ra > rb ? +1 : -1));
 
   const bookRescue = (rescue: PartialRescue) => {
-    alert('booking...');
+    console.log('Booking rescue:', rescue);
+    assignSelfToRescue({ variables: { rescueId: rescue.id } })
+      .then(() => {
+        // TODO: Toast the successful booking
+        //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+        availableRescuesQuery.refetch();
+      })
+      .catch(handleGlobalError);
   };
 
   return (
