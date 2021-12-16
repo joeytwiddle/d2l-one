@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "yarn install && yarn run codegen",
     "start": "node .",
-    "watch": "nodemon -e '*' -w src -w index.js -w schema.gql -d 1 -x 'yarn start' || exit 1",
+    "watch": "nodemon -e '*' -w src -w index.js -w schema.gql -w codegen.yml -i src/graphql-types.d.ts -d 1 -x 'yarn start' || exit 1",
     "precodegen": "cp -af ../d2l-expo/graphql.tsx ./graphql.last.tsx || true",
     "codegen": "graphql-codegen --config codegen.yml",
     "postcodegen": "( diff --color=always graphql.last.tsx ../d2l-expo/graphql.tsx || true )",

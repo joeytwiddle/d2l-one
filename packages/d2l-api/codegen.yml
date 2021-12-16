@@ -5,6 +5,11 @@ documents:
   - schema.gql
   - src/**/*.gql
 generates:
+  # NOTE: I only want to generate _object_ types for the back-end, but this is actually generating types for queries and mutations too
+  src/graphql-types.d.ts:
+    plugins:
+      - 'typescript'
+  # For the front-end / clients
   ../d2l-expo/graphql.tsx:
     plugins:
       - 'typescript'
