@@ -259,6 +259,8 @@ async function getAllRescueDataUncached(month) {
 
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
+  const formatData = await getFormattedSpreadsheetCached(month);
+
   const sitesById = await getAllSiteDataCached();
 
   const siteRow = sheetData[0];
@@ -301,8 +303,25 @@ async function getAllRescueDataUncached(month) {
     for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
       const siteId = mapColumnToSite[colIndex];
       if (siteId) {
-        const rescuerName = row[colIndex];
-        const rescuerId = rescuerName || 'NO_ID';
+        const cellData = row[colIndex];
+
+        // Skip cells which have been marked as unavailable, or greyed out
+        if (cellData === 'XXX') {
+          continue;
+        }
+        const cellBackgroundColor =
+          formatData.data[0].rowData[rowIndex]?.values[colIndex]?.userEnteredFormat?.backgroundColor;
+        if (cellBackgroundColor) {
+          const { red, green, blue } = cellBackgroundColor;
+          const cellIsGrey = green === red && blue === red && red < 0.9;
+          if (cellIsGrey) {
+            //console.log(`Skipping ${colIndex} x ${rowIndex}`);
+            continue;
+          }
+        }
+
+        const rescuerId = cellData;
+        const rescuerName = rescuerId;
         /** @type {RescueUser} */
         const rescuer = rescuerName
           ? {
