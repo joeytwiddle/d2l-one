@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
 import { PartialRescue } from '../client-types';
 import RescueCard from '../components/RescueCard';
-import { Text } from '../components/Themed';
+import { Text, View } from '../components/Themed';
 import {
   useAssignSelfToRescueMutation,
   useGetAvailableRescuesForCurrentUserQuery,
@@ -64,30 +64,32 @@ export default function RescuesScreen() {
   };
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-      {/*<Text style={styles.title}>Rescues</Text>*/}
+    <View style={styles.container}>
       <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
-      {/*
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        {/*<Text style={styles.title}>Rescues</Text>*/}
+        {/*
       <Text style={styles.title}>Rescues</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       */}
 
-      {availableRescues.map(rescue => (
-        <RescueCard
-          key={rescue.id}
-          rescue={rescue}
-          additional={() => (
-            <Button
-              title="Book"
-              // This is only half working
-              disabled={makingBooking}
-              onPress={() => bookRescue(rescue)}
-            />
-          )}
-        />
-      ))}
-      {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
-    </ScrollView>
+        {availableRescues.map(rescue => (
+          <RescueCard
+            key={rescue.id}
+            rescue={rescue}
+            additional={() => (
+              <Button
+                title="Book"
+                // This is only half working
+                disabled={makingBooking}
+                onPress={() => bookRescue(rescue)}
+              />
+            )}
+          />
+        ))}
+        {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -96,9 +98,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 10,
+    backgroundColor: '#f2f2f2',
   },
   scrollView: {
-    margin: 10,
+    width: '100%',
+    height: '100%',
   },
   scrollViewContent: {
     alignItems: 'center',
