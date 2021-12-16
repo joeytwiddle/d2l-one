@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
+import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
 import { useGetAllRescuesQuery, useGetMyRescuesQuery } from '../graphql';
 import useUser from '../hooks/useUser';
@@ -24,10 +25,8 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.title}>Your upcoming rescues</Text>
       <View style={styles.upcomingRescue}>
-        {myRescues.map(({ id, date, site }) => (
-          <Text key={id} style={styles.upcomingRescue}>
-            {date}: {site.fullName}
-          </Text>
+        {myRescues.map(rescue => (
+          <RescueCard key={rescue.id} rescue={rescue} />
         ))}
       </View>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
