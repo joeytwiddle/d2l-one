@@ -6,18 +6,18 @@ const memoize = require('memoizee');
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
 /**
- * @typedef {Object} Rescue
- * @property {string} id
- * @property {string} date
- * @property {RescueUser} rescuer
- * @property {RescueSite} site
- */
+@typedef {{
+  id: string;
+  date: string;
+  rescuer: RescueUser;
+  site: RescueSite;
+}} Rescue
 
-/**
- * @typedef {Object} RescueUser
- * @property {string} id
- * @property {string} name
- */
+@typedef {{
+  id: string;
+  name: string;
+}} RescueUser
+*/
 
 /**
  * @typedef {Object} RescueSite
