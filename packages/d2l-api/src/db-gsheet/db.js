@@ -95,6 +95,7 @@ function inspectOneLine(data) {
   return require('util').inspect(data, { showHidden: false, depth: 4, colors: true, breakLength: Infinity });
 }
 
+const oneMinute = 60 * 1000;
 const standardCacheDuration = 15 * 1000;
 
 const getAllSiteDataCached = memoizeFunction(getAllSiteDataUncached, standardCacheDuration);
@@ -103,6 +104,7 @@ const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, standardCac
 const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, standardCacheDuration);
 const getSiteGroupsCached = memoizeFunction(getSiteGroupsUncached, standardCacheDuration);
 const getMemberGroupsCached = memoizeFunction(getMemberGroupsUncached, standardCacheDuration);
+const getFormattedSpreadsheetCached = memoizeFunction(getFormattedSpreadsheetUncached, 15 * oneMinute);
 
 async function getUserByCredentials(username, password) {
   const { allUsers } = await getAllUserDataCached();
@@ -194,6 +196,62 @@ async function getAllSiteDataUncached() {
   }
 
   return siteData;
+}
+
+/**
+ * @param {string} sheetName
+ */
+async function getFormattedSpreadsheetUncached(sheetName) {
+  /** @type any */
+  const formatData = await callAPI(gsheet.spreadsheets(), 'get', {
+    spreadsheetId,
+    includeGridData: true,
+    ranges: sheetName,
+  });
+  //console.log('formatData:', formatData);
+  const targetSheet = formatData.find(sheet => sheet.properties.title === sheetName);
+  if (!targetSheet) {
+    throw new Error(`Could not find targetSheet: ${sheetName}`);
+  }
+  //console.log('relevant.data[0].rowMetadata:', relevant.data[0].rowMetadata);
+  //console.log('relevant.data[0].columnMetadata:', relevant.data[0].columnMetadata);
+  //console.log('relevant.properties.gridData:', relevant.properties.gridData);
+  //console.log('relevant.merges:', relevant.merges);
+  //console.log('relevant.data[0].rowData[6].values[19]:', targetSheet.data[0].rowData[6].values[19]);
+  /*
+  relevant.data[0].rowData[6].values[12]: {
+    userEnteredValue: { stringValue: 'Sandra Tan' },
+    effectiveValue: { stringValue: 'Sandra Tan' },
+    formattedValue: 'Sandra Tan',
+    userEnteredFormat: {
+      backgroundColor: { red: 1, green: 1, blue: 1 },
+      horizontalAlignment: 'CENTER',
+      verticalAlignment: 'BOTTOM',
+      textFormat: { fontFamily: 'Arial' },
+      backgroundColorStyle: { rgbColor: [Object] }
+    },
+    effectiveFormat: {
+      backgroundColor: { red: 1, green: 1, blue: 1 },
+      padding: { top: 2, right: 3, bottom: 2, left: 3 },
+      horizontalAlignment: 'CENTER',
+      verticalAlignment: 'BOTTOM',
+      wrapStrategy: 'OVERFLOW_CELL',
+      textFormat: {
+        foregroundColor: {},
+        fontFamily: 'Arial',
+        fontSize: 10,
+        bold: false,
+        italic: false,
+        strikethrough: false,
+        underline: false,
+        foregroundColorStyle: [Object]
+      },
+      hyperlinkDisplayType: 'PLAIN_TEXT',
+      backgroundColorStyle: { rgbColor: [Object] }
+    }
+  }
+  */
+  return targetSheet;
 }
 
 async function getAllRescueDataUncached(month) {
