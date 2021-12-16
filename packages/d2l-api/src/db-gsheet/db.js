@@ -250,11 +250,22 @@ async function getAllRescueDataUncached(month) {
           : null;
         const rescueId = `${siteId}@${shortDateString(date)}`;
         const shortDate = shortDateString(date);
+
+        /** @type {RescueSite} */
+        const site = sitesById[siteId] || {
+          id: siteId,
+          fullName: siteId,
+          geoLocation: 'unknown',
+        };
+        if (!sitesById[siteId]) {
+          console.warn(`No site found with id: ${siteId}`);
+        }
+
         /** @type {Rescue} */
         const rescue = {
           id: rescueId,
           date: shortDate,
-          site: sitesById[siteId],
+          site: site,
           rescuer: rescuer || null,
         };
         allRescues.push(rescue);
