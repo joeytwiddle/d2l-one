@@ -201,6 +201,8 @@ async function getAllRescueDataUncached(month) {
 
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
+  const sitesById = await getAllSiteDataCached();
+
   const siteRow = sheetData[0];
   //console.log('siteRow:', JSON.stringify(siteRow));
   const mapColumnToSite = {};
@@ -235,8 +237,8 @@ async function getAllRescueDataUncached(month) {
     //console.log('row:', JSON.stringify(row));
 
     for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
-      const siteName = mapColumnToSite[colIndex];
-      if (siteName) {
+      const siteId = mapColumnToSite[colIndex];
+      if (siteId) {
         const rescuerName = row[colIndex];
         const rescuerId = rescuerName || 'NO_ID';
         /** @type {RescueUser} */
@@ -246,16 +248,13 @@ async function getAllRescueDataUncached(month) {
               name: rescuerName,
             }
           : null;
-        const rescueId = `${siteName}@${shortDateString(date)}`;
+        const rescueId = `${siteId}@${shortDateString(date)}`;
         const shortDate = shortDateString(date);
         /** @type {Rescue} */
         const rescue = {
           id: rescueId,
           date: shortDate,
-          site: {
-            id: siteName,
-            name: siteName,
-          },
+          site: sitesById[siteId],
           rescuer: rescuer || null,
         };
         allRescues.push(rescue);

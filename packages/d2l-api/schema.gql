@@ -51,7 +51,6 @@ type Rescue {
 
 type Site {
   id: SiteID!
-  name: String!
   fullName: String!
   geoLocation: String!
   directions: String
@@ -78,7 +77,7 @@ query GetMyRescues {
     date
     site {
       id
-      name
+      fullName
     }
   }
 }
@@ -89,7 +88,7 @@ query GetAllRescuesForMonth($month: String!) {
     date
     site {
       id
-      name
+      fullName
     }
     rescuer {
       id
@@ -104,7 +103,7 @@ query GetAllRescues {
     date
     site {
       id
-      name
+      fullName
     }
     rescuer {
       id
@@ -119,7 +118,7 @@ query GetAvailableRescuesForCurrentUser {
     date
     site {
       id
-      name
+      fullName
     }
   }
 }
