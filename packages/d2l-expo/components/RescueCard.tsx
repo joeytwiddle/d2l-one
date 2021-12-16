@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
   card: {
     margin: 10,
     padding: 10,
-    width: '100%',
+    // Leaves room for scrollbar(s) on web
+    width: '90%',
     maxWidth: 600,
   },
 });

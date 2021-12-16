@@ -25,6 +25,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.title}>Your upcoming rescues</Text>
       <View style={styles.upcomingRescue}>
+        {myRescues.length === 0 && <Text>No rescues booked</Text>}
         {myRescues.map(rescue => (
           <RescueCard key={rescue.id} rescue={rescue} />
         ))}

@@ -52,7 +52,7 @@ export default function RescuesScreen() {
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
       {/*<Text style={styles.title}>Rescues</Text>*/}
-      <Text>{availableRescues.length} rescues</Text>
+      <Text>{availableRescues.length} rescues available</Text>
       {/*
       <Text style={styles.title}>Rescues</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
