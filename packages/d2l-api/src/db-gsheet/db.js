@@ -39,8 +39,11 @@ const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
  * @property {Record<string, 1>} members
  */
 
-// If we call memoize() directly, typescript-jsdoc thinks that it returns {}
-// So we use this wrapper function, so that typescript sees the right types
+// If we call memoize() directly, typescript-jsdoc thinks that it returns {}.
+// So we use this wrapper function, with enough JSDoc to help typescript see the right types.
+//
+// However, we have now switched to the memoizee package, which seems to return better types, so we might not need this function.
+// Still it may have other uses (convenient passing of expireMs, central place for logging, ...) so let's keep using it.
 /**
  * @template T
  * @template U
