@@ -97,6 +97,7 @@ function inspectOneLine(data) {
 
 const standardCacheDuration = 15 * 1000;
 
+const getAllSiteDataCached = memoizeFunction(getAllSiteDataUncached, standardCacheDuration);
 const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, standardCacheDuration);
 const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, standardCacheDuration);
 const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, standardCacheDuration);
@@ -166,6 +167,34 @@ async function getAllUserDataUncached() {
 
 const siteCodeRegexp = /^[A-Z0-9]*/;
 const memberGroupRegexp = /^M[0-9A-Za-z]*/;
+
+// @type {() => Promise<Record<string, RescueSite>>} */
+async function getAllSiteDataUncached() {
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: 'Site Data' });
+
+  const keys = sheetData[1].map(cell => {
+    if (!cell) return cell;
+    return cell.charAt(0).toLowerCase() + cell.slice(1);
+  });
+
+  /** @type {Record<string, RescueSite>} */
+  const siteData = {};
+  for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
+    const row = sheetData[rowIndex];
+    /** @type RescueSite */
+    const site = {};
+    for (let colIndex = 0; colIndex < keys.length; colIndex++) {
+      const key = keys[colIndex];
+      const value = row[colIndex] || '';
+      site[key] = value;
+    }
+    // Sanitisation
+    site.fullName = site.fullName || site.id;
+    siteData[site.id] = site;
+  }
+
+  return siteData;
+}
 
 async function getAllRescueDataUncached(month) {
   month = month || (await getCurrentBookingMonth());
