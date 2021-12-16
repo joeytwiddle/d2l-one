@@ -122,10 +122,13 @@ console.log(`Running a GraphQL API server at http://localhost:${config.listenPor
 setTimeout(() => {
   (async () => {
     //require('../google-sheets-quickstart/index');
-    //const rescues = (await db.getAllRescues()).allRescues;
+    const rescues = await db.getAllRescues();
+    console.log('rescues.length:', rescues.length);
     //console.log('rescues[0]:', rescues[0]);
-    const siteGroups = await db.getSiteGroups();
-    console.log('siteGroups:', siteGroups);
+    //const siteGroups = await db.getSiteGroups();
+    //console.log('siteGroups:', siteGroups);
+    //const siteData = await db.getAllSiteData();
+    //console.log('siteData:', siteData);
   })().catch(console.error);
 }, 1000);
 
