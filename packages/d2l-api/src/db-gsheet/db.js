@@ -62,7 +62,7 @@ async function callAPI(obj, methodName, ...args) {
     obj[methodName](...args)
       .then(result => {
         console.log(`${isoDate()} (gsheet) << ${inspectOneLine(result.data).length}`);
-        resolve(result.data.values);
+        resolve(result.data.values || result.data.sheets);
       })
       .catch(error => {
         console.warn(

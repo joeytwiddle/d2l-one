@@ -95,6 +95,9 @@ function getSheets() {
 }
 
 module.exports = {
+  spreadsheets: () => {
+    return getSheets().spreadsheets;
+  },
   sheets: () => {
     return getSheets().spreadsheets.sheets;
   },
