@@ -53,6 +53,10 @@ const root = {
   async availableRescuesForCurrentUser(args, request) {
     return await db.getAvailableRescuesForUser(request.session.user.id);
   },
+
+  async assignSelfToRescue(args, request) {
+    return await db.assignUserToRescue(undefined, request.session.user.id, args.rescueId);
+  },
 };
 
 module.exports = root;

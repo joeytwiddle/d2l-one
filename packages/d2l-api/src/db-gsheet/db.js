@@ -481,6 +481,44 @@ async function getAvailableRescuesForUser(userId) {
   return rescuesAvailableToUser;
 }
 
+async function assignUserToRescue(month, userId, rescueId) {
+  month = month || (await getCurrentBookingMonth());
+
+  const rescueData = await getAllRescueDataUncached(month);
+
+  const existingRescue = rescueData.allRescues.find(rescue => rescue.id === rescueId);
+  if (!existingRescue) {
+    throw new Error(`That rescue does not exist for month '${month}'`);
+  }
+  if (existingRescue.rescuer && existingRescue.rescuer.id !== userId) {
+    throw new Error(`Rescue ${rescueId} is already booked by another user!`);
+  }
+
+  const [siteId, date] = rescueId.split('@');
+  console.log('siteId:', siteId);
+  console.log('date:', date);
+  const rowIndex = rescueData.mapDateToRow[date];
+  const colIndex = rescueData.mapSiteToColumn[siteId];
+  // TODO: Sanity check
+  console.log('rowIndex:', rowIndex);
+  console.log('colIndex:', colIndex);
+
+  const response = await callAPI(gsheet.values(), 'update', {
+    spreadsheetId,
+    range: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+    valueInputOption: 'RAW', // 'USER_ENTERED',
+    resource: { values: [[userId]] },
+  });
+
+  // @ts-ignore
+  getAllRescueDataCached.clear();
+  // TODO: Any more to clear?  Make a convenience function.
+
+  const newRescueData = getAllRescueDataCached();
+  console.log('newRescueData:', newRescueData);
+  return rescueData.allRescues.find(rescue => rescue.id === rescueId);
+}
+
 const db = {
   //getGeneralDataCached,
   getUserByCredentials,
@@ -491,6 +529,7 @@ const db = {
   //getSiteGroups: getSiteGroupsCached,
   //getSiteMembers: getSiteMembersCached,
   getAvailableRescuesForUser,
+  assignUserToRescue,
 };
 
 function shortDateString(date) {
