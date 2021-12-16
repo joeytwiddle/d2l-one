@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Button, ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import { PartialRescue } from '../client-types';
+import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
 import { useGetAllRescuesForMonthQuery, useGetAvailableRescuesForCurrentUserQuery } from '../graphql';
 
@@ -23,175 +25,46 @@ export default function RescuesScreen() {
 
   if (!availableRescues) return null;
 
-  // TODO: This scrolls on Android but not on web.  We may fix this by using multipe pages.  (But can multiple pages have different headers?)
+  // TODO: Split rescues up into days, so we can rescues available day-by-day
+
+  const rescuesSorted = availableRescues.slice(0);
+  rescuesSorted.sort((ra, rb) => (ra > rb ? +1 : -1));
+
+  const bookRescue = (rescue: PartialRescue) => {
+    alert('booking...');
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Rescues</Text>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+      {/*<Text style={styles.title}>Rescues</Text>*/}
       <Text>{availableRescues.length} rescues</Text>
       {/*
       <Text style={styles.title}>Rescues</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       */}
-      <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title style={styles.cell}>Date</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-          </DataTable.Header>
-          <DataTable.Row>
-            <DataTable.Cell style={styles.cell}>Mon 1 Dec</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell style={styles.cell}>Tue 2 Dec</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell style={styles.cell}>Wed 3 Dec</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-          </DataTable.Row>
-        </DataTable>
-        {/*
-        <ScrollView horizontal>
-          <View>
-            <Text style={styles.rowTitle}>Date</Text>
-            <Text style={styles.cell}>Mon 1 Dec</Text>
-            <Text style={styles.cell}>Tue 2 Dec</Text>
-            <Text style={styles.cell}>Wed 3 Dec</Text>
-            <Text style={styles.cell}>Mon 1 Dec</Text>
-            <Text style={styles.cell}>Tue 2 Dec</Text>
-            <Text style={styles.cell}>Wed 3 Dec</Text>
-            <Text style={styles.cell}>Mon 1 Dec</Text>
-            <Text style={styles.cell}>Tue 2 Dec</Text>
-            <Text style={styles.cell}>Wed 3 Dec</Text>
-          </View>
-          <View>
-            <Text style={styles.rowTitle}>TM</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-          </View>
-          <View>
-            <Text style={styles.rowTitle}>PS</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-          </View>
-          <View>
-            <Text style={styles.rowTitle}>TM</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-          </View>
-          <View>
-            <Text style={styles.rowTitle}>PS</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-          </View>
-          <View>
-            <Text style={styles.rowTitle}>TM</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-          </View>
-          <View>
-            <Text style={styles.rowTitle}>PS</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-            <Text style={styles.cell}>Jennifer</Text>
-            <Text style={styles.cell}>Steve</Text>
-            <Text style={styles.cell}>Max</Text>
-          </View>
-        </ScrollView>
-        */}
-      </ScrollView>
+
+      {availableRescues.map(rescue => (
+        <RescueCard
+          key={rescue.id}
+          rescue={rescue}
+          additional={() => <Button title="Book" onPress={() => bookRescue(rescue)} />}
+        />
+      ))}
       {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    margin: 10,
+  },
+  scrollViewContent: {
     alignItems: 'center',
     justifyContent: 'center',
   },
