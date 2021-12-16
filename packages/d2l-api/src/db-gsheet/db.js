@@ -19,11 +19,7 @@ const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 }} RescueUser
 */
 
-/**
- * @typedef {Object} RescueSite
- * @property {string} id
- * @property {string} name
- */
+/** @typedef { import("../graphql-types").Site } RescueSite */
 
 /**
  * @typedef {Object} SiteGroup
