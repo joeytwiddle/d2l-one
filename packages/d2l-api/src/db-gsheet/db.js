@@ -292,6 +292,7 @@ async function getAllRescueDataUncached(month) {
     for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
       const siteId = mapColumnToSite[colIndex];
       if (siteId) {
+        const rescueId = `${siteId}@${shortDate}`;
         const cellData = row[colIndex];
 
         // Skip cells which have been marked as unavailable, or greyed out
@@ -302,9 +303,15 @@ async function getAllRescueDataUncached(month) {
           formatData.data[0].rowData[rowIndex]?.values[colIndex]?.userEnteredFormat?.backgroundColor;
         if (cellBackgroundColor) {
           const { red, green, blue } = cellBackgroundColor;
-          const cellIsGrey = green === red && blue === red && red < 0.9;
-          if (cellIsGrey) {
-            //console.log(`Skipping ${colIndex} x ${rowIndex}`);
+          //if (siteId === 'KA' || siteId === 'PL') {
+          //  console.log('cellBackgroundColor:', cellBackgroundColor);
+          //}
+          // Cells with a black background have no data: cellBackgroundColor = {}
+          const cellIsGreyOrBlack =
+            (green === red && blue === red && red < 1) ||
+            (red === undefined && blue === undefined && green === undefined);
+          if (cellIsGreyOrBlack) {
+            //console.log(`Skipping ${rescueId} ${colIndex} x ${rowIndex}`);
             continue;
           }
         }
@@ -318,7 +325,6 @@ async function getAllRescueDataUncached(month) {
               name: rescuerName,
             }
           : null;
-        const rescueId = `${siteId}@${shortDate}`;
 
         if (!sitesById[siteId]) {
           //console.warn(`No site found with id: ${siteId}`);
