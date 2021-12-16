@@ -282,16 +282,23 @@ async function getCurrentBookingMonth() {
   return generalData['Current Booking Month'];
 }
 
+/* This is what we show to users */
 async function getCurrentBookingPhase() {
   const generalData = await getGeneralDataCached();
   return generalData['Current Booking Phase'];
 }
 
-async function getSiteGroupsUncached(month, phase) {
-  month = month || (await getCurrentBookingMonth());
-  phase = phase || (await getCurrentBookingPhase());
+/* This is what we use to look up the "Site Groups" and "Member Groups" sheets */
+async function getCurrentBookingPhaseCode() {
+  const generalData = await getGeneralDataCached();
+  return generalData['Current Booking Phase Code'];
+}
 
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Groups Phase ${phase}` });
+async function getSiteGroupsUncached(month, phaseCode) {
+  month = month || (await getCurrentBookingMonth());
+  phaseCode = phaseCode || (await getCurrentBookingPhaseCode());
+
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Groups ${phaseCode}` });
   //console.log('sheetData:', sheetData);
 
   /** @type {Record<string, SiteGroup>} */
@@ -336,11 +343,11 @@ async function getSiteGroupsUncached(month, phase) {
   };
 }
 
-async function getMemberGroupsUncached(month, phase) {
+async function getMemberGroupsUncached(month, phaseCode) {
   month = month || (await getCurrentBookingMonth());
-  phase = phase || (await getCurrentBookingPhase());
+  phaseCode = phaseCode || (await getCurrentBookingPhaseCode());
 
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Member Groups Phase ${phase}` });
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Member Groups ${phaseCode}` });
   //console.log('sheetData:', sheetData);
 
   /** @type {Record<string, MemberGroup>} */
@@ -440,6 +447,7 @@ const db = {
   //getAllUserDataCached,
   getAllRescues,
   getAllRescuesForUser,
+  getCurrentBookingPhase,
   //getSiteGroups: getSiteGroupsCached,
   //getSiteMembers: getSiteMembersCached,
   getAvailableRescuesForUser,
