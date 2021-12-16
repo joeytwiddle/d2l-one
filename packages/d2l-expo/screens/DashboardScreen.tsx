@@ -26,7 +26,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
       <View style={styles.upcomingRescue}>
         {myRescues.map(({ id, date, site }) => (
           <Text key={id} style={styles.upcomingRescue}>
-            {date}: {site.name}
+            {date}: {site.fullName}
           </Text>
         ))}
       </View>
