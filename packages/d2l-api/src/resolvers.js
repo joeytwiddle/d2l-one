@@ -5,16 +5,16 @@ const db = require('./db-gsheet/db.js');
 
 // The root provides a resolver function for each API endpoint
 const root = {
-  async logIn([username, password], request) {
+  async logIn(args, request) {
     //await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (!username) {
+    if (!args.username) {
       // Message does not get passed to caller, only status 500
       //throw new Error('Please provide a username');
       return { success: false, reason: 'Please provide a username' };
     }
 
-    const user = await db.getUserByCredentials(username, password);
+    const user = await db.getUserByCredentials(args.username, args.password);
     console.log('user:', user);
 
     if (!user) {
@@ -26,18 +26,18 @@ const root = {
     return { success: true };
   },
 
-  async me(_, request) {
+  async me(args, request) {
     //await new Promise(resolve => setTimeout(resolve, 5000));
     console.log('request.session.user:', request.session.user);
     return request.session.user;
   },
 
-  async myRescues(_, request) {
+  async myRescues(args, request) {
     const userId = request.session.user.id;
     return await db.getAllRescuesForUser(userId);
   },
 
-  async availableRescues(_, request) {
+  async availableRescues(args, request) {
     const userId = request.session.user.id;
     return await db.getAvailableRescuesForUser(userId);
   },
@@ -46,11 +46,11 @@ const root = {
     return await db.getAllRescues();
   },
 
-  async allRescuesForMonth([month]) {
-    return await db.getAllRescues(month);
+  async allRescuesForMonth(args) {
+    return await db.getAllRescues(args.month);
   },
 
-  async availableRescuesForCurrentUser(_, request) {
+  async availableRescuesForCurrentUser(args, request) {
     return await db.getAvailableRescuesForUser(request.session.user.id);
   },
 };
