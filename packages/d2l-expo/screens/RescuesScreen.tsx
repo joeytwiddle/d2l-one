@@ -8,6 +8,7 @@ import {
   useAssignSelfToRescueMutation,
   useGetAllRescuesForMonthQuery,
   useGetAvailableRescuesForCurrentUserQuery,
+  useGetMyRescuesQuery,
 } from '../graphql';
 import { handleGlobalError } from '../navigation/LoginScreen';
 
@@ -28,6 +29,7 @@ export default function RescuesScreen() {
 
   const availableRescuesQuery = useGetAvailableRescuesForCurrentUserQuery();
   const availableRescues = availableRescuesQuery.data?.availableRescuesForCurrentUser;
+  const myRescuesQuery = useGetMyRescuesQuery();
 
   const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation();
 
@@ -45,6 +47,8 @@ export default function RescuesScreen() {
         // TODO: Toast the successful booking
         //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
         availableRescuesQuery.refetch();
+        // I don't especially want to refresh this.  But I do want to invalidate it.
+        myRescuesQuery.refetch();
       })
       .catch(handleGlobalError);
   };
