@@ -298,7 +298,7 @@ async function getAllRescues(month) {
 
 async function getAllRescuesForUser(userId) {
   const allRescueData = await getAllRescueDataCached();
-  return allRescueData.rescuesByRescuer[userId];
+  return allRescueData.rescuesByRescuer[userId] || [];
 }
 
 async function getGeneralDataUncached() {
