@@ -52,7 +52,12 @@ type Rescue {
 type Site {
   id: SiteID!
   name: String!
+  fullName: String!
   geoLocation: String!
+  directions: String
+  siteAmbaddasadors: String
+  siteContacts: String
+  rules: String
 }
 
 type BooleanResponse {
