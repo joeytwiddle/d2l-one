@@ -394,17 +394,21 @@ async function getCurrentBookingPhase() {
   return generalData['Current Booking Phase'];
 }
 
-/* This is what we use to look up the "Site Groups" and "Member Groups" sheets */
-async function getCurrentBookingPhaseCode() {
+async function getCurrentSiteGroupsSheet() {
   const generalData = await getGeneralDataCached();
-  return generalData['Current Booking Phase Code'];
+  return generalData['Current Site Groups Sheet'];
 }
 
-async function getSiteGroupsUncached(month, phaseCode) {
-  month = month || (await getCurrentBookingMonth());
-  phaseCode = phaseCode || (await getCurrentBookingPhaseCode());
+async function getCurrentMemberGroupsSheet() {
+  const generalData = await getGeneralDataCached();
+  return generalData['Current Member Groups Sheet'];
+}
 
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Site Groups ${phaseCode}` });
+async function getSiteGroupsUncached(month, siteGroupsSheet) {
+  month = month || (await getCurrentBookingMonth());
+  siteGroupsSheet = siteGroupsSheet || (await getCurrentSiteGroupsSheet());
+
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: siteGroupsSheet });
   //console.log('sheetData:', sheetData);
 
   /** @type {Record<string, SiteGroup>} */
@@ -449,11 +453,11 @@ async function getSiteGroupsUncached(month, phaseCode) {
   };
 }
 
-async function getMemberGroupsUncached(month, phaseCode) {
+async function getMemberGroupsUncached(month, memberGroupsSheet) {
   month = month || (await getCurrentBookingMonth());
-  phaseCode = phaseCode || (await getCurrentBookingPhaseCode());
+  memberGroupsSheet = memberGroupsSheet || (await getCurrentMemberGroupsSheet());
 
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: `Member Groups ${phaseCode}` });
+  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: memberGroupsSheet });
   //console.log('sheetData:', sheetData);
 
   /** @type {Record<string, MemberGroup>} */
