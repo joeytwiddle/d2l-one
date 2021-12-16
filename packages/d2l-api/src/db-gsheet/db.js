@@ -2,6 +2,7 @@
 const gsheet = require('./gsheet.js');
 // Docs: https://www.npmjs.com/package/memoizee
 const memoize = require('memoizee');
+const { isoDate, inspectOneLine, shortDateString } = require('../lib/util.js');
 
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
@@ -81,18 +82,6 @@ async function callAPI(obj, methodName, ...args) {
   const result = await util.promisify((...arguments) => obj[methodName](...arguments))(...args);
   return result.data.values;
 	*/
-}
-
-function isoDate() {
-  return new Date().toISOString();
-}
-
-function deepInspect(data) {
-  return require('util').inspect(data, { showHidden: false, depth: null, colors: true });
-}
-
-function inspectOneLine(data) {
-  return require('util').inspect(data, { showHidden: false, depth: 4, colors: true, breakLength: Infinity });
 }
 
 const oneMinute = 60 * 1000;
@@ -608,19 +597,5 @@ const db = {
   getAvailableRescuesForUser,
   assignUserToRescue,
 };
-
-function shortDateString(date) {
-  date = date || new Date();
-  return date.getFullYear() + '/' + padLeft(date.getMonth() + 1, 2, '0') + '/' + padLeft(date.getDate(), 2, '0');
-}
-
-function padLeft(str, len, padChar) {
-  padChar = padChar || ' ';
-  str = '' + str;
-  while (str.length < len) {
-    str = padChar + str;
-  }
-  return str;
-}
 
 module.exports = db;
