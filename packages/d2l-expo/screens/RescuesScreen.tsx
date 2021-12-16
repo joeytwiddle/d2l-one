@@ -1,12 +1,11 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
-import { DataTable } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
 import RescueCard from '../components/RescueCard';
-import { Text, View } from '../components/Themed';
+import { Text } from '../components/Themed';
 import {
   useAssignSelfToRescueMutation,
-  useGetAllRescuesForMonthQuery,
   useGetAvailableRescuesForCurrentUserQuery,
   useGetMyRescuesQuery,
 } from '../graphql';
@@ -33,6 +32,9 @@ export default function RescuesScreen() {
 
   const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation();
 
+  const [makingBooking, setMakingBooking] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
   if (!availableRescues) return null;
 
   // TODO: Split rescues up into days, so we can rescues available day-by-day
@@ -42,21 +44,29 @@ export default function RescuesScreen() {
 
   const bookRescue = (rescue: PartialRescue) => {
     console.log('Booking rescue:', rescue);
+    setMakingBooking(true);
     assignSelfToRescue({ variables: { rescueId: rescue.id } })
       .then(() => {
         // TODO: Toast the successful booking
         //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+        setToastMessage(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
         availableRescuesQuery.refetch();
         // I don't especially want to refresh this.  But I do want to invalidate it.
         myRescuesQuery.refetch();
+        // Without the delay, the buttons appear enabled again, before we see the updated list
+        setTimeout(() => setMakingBooking(false), 1000);
       })
-      .catch(handleGlobalError);
+      .catch(error => {
+        handleGlobalError(error);
+        setToastMessage(String(error));
+        setMakingBooking(false);
+      });
   };
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
       {/*<Text style={styles.title}>Rescues</Text>*/}
-      <Text>{availableRescues.length} rescues available</Text>
+      <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
       {/*
       <Text style={styles.title}>Rescues</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -66,7 +76,14 @@ export default function RescuesScreen() {
         <RescueCard
           key={rescue.id}
           rescue={rescue}
-          additional={() => <Button title="Book" onPress={() => bookRescue(rescue)} />}
+          additional={() => (
+            <Button
+              title="Book"
+              // This is only half working
+              disabled={makingBooking}
+              onPress={() => bookRescue(rescue)}
+            />
+          )}
         />
       ))}
       {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
