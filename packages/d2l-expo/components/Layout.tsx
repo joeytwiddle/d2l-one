@@ -11,6 +11,10 @@ export function PaddedBlock(props: any) {
   return <UnstyledView style={styles.paddedBlock} {...props} />;
 }
 
+export function FullWidth(props: any) {
+  return <View style={styles.fullWidth} {...props} />;
+}
+
 export function PullRightView(props: any) {
   return <View style={styles.pullRightView} {...props} />;
 }
@@ -20,6 +24,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  fullWidth: {
+    width: '100%',
+    textAlign: 'center',
   },
   paddedBlock: {
     padding: 10,

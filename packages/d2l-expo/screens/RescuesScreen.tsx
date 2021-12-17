@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
-import { CentralizingContainer, PaddedBlock, PullRightView } from '../components/Layout';
+import { CentralizingContainer, FullWidth, PaddedBlock, PullRightView } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, View } from '../components/Themed';
 import {
@@ -148,7 +148,9 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
   return (
     <View style={styles.tableContainer}>
       <PaddedBlock>
-        <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+        <FullWidth>
+          <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+        </FullWidth>
       </PaddedBlock>
       <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
