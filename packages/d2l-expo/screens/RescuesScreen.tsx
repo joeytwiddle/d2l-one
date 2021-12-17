@@ -105,8 +105,8 @@ export default function RescuesScreen() {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen name="calendar" component={() => <RescuesCalendar {...passProps} />} />
-      <Tab.Screen name="favourites" component={() => <RescuesList {...passProps} />} />
+      <Tab.Screen name="Calendar" component={() => <RescuesCalendar {...passProps} />} />
+      <Tab.Screen name="Favourites" component={() => <RescuesList {...passProps} />} />
     </Tab.Navigator>
   );
 }
