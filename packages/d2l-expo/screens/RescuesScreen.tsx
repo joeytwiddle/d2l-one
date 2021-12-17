@@ -1,9 +1,9 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/core';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as React from 'react';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
+import { DataTable } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
 import { CentralizingContainer, PaddedBlock, PullRightView } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
@@ -104,7 +104,8 @@ export default function RescuesScreen() {
   const passProps = { toastMessage, availableRescues, makingBooking, bookRescue };
 
   return (
-    <Tab.Navigator>
+    // We disable swiping so that we can scroll the table horizontally
+    <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
       <Tab.Screen name="Calendar" component={() => <RescuesCalendar {...passProps} />} />
       <Tab.Screen name="Favourites" component={() => <RescuesList {...passProps} />} />
     </Tab.Navigator>
@@ -117,41 +118,87 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
   if (route.name !== 'Calendar') return null;
 
   return (
-    <View style={styles.container}>
+    <View style={styles.tableContainer}>
       <PaddedBlock>
         <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
       </PaddedBlock>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-        {/*<Text style={styles.title}>Rescues</Text>*/}
-        {/*
-      <Text style={styles.title}>Rescues</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      */}
-
-        {availableRescues.map((rescue: PartialRescue) => (
-          <RescueCard
-            key={rescue.id}
-            rescue={rescue}
-            additional={() => (
-              <Button
-                title="Book"
-                // This is only half working
-                disabled={makingBooking}
-                onPress={() => bookRescue(rescue)}
-              />
-            )}
-          />
-        ))}
-        {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
+      {/*<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>*/}
+      <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title style={styles.cell}>Date</DataTable.Title>
+            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
+            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
+            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
+            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
+            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
+            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
+            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+          </DataTable.Header>
+          <DataTable.Row>
+            <DataTable.Cell style={styles.cell}>Mon 1 Dec</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell style={styles.cell}>Tue 2 Dec</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell style={styles.cell}>Wed 3 Dec</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
+            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
+          </DataTable.Row>
+        </DataTable>
       </ScrollView>
     </View>
   );
 }
 
-function RescuesList({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
+function RescuesList({ toastMessage, availableRescues: allAvailableRescues, makingBooking, bookRescue }: any) {
   // Try to reduce sluggishness
   const route = useRoute();
   if (route.name !== 'Favourites') return null;
+
+  // Also to reduce sliggishness
+  // TODO: This can't stay!
+  const availableRescues = allAvailableRescues.slice(0, 20);
 
   return (
     <View style={styles.container}>
@@ -194,6 +241,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     //padding: 10,
     backgroundColor: '#f2f2f2',
+  },
+  tableContainer: {
+    width: '100%',
+    height: '100%',
   },
   scrollView: {
     width: '100%',
