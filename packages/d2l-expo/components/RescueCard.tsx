@@ -2,8 +2,6 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Card, Title } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
-import { Rescue, Site } from '../graphql';
-import { Text, View } from './Themed';
 
 export default function RescueCard({
   rescue,
@@ -17,7 +15,11 @@ export default function RescueCard({
       <Title>
         {rescue.site.fullName} at {rescue.date}
       </Title>
-      {Additional && <Additional />}
+      {Additional && (
+        <Card.Actions>
+          <Additional />
+        </Card.Actions>
+      )}
     </Card>
   );
 }
