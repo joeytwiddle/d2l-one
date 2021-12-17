@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Button, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { PartialRescue } from '../client-types';
 import { CentralizingContainer, PaddedBlock } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
-import { LoadingSpinner, Text, View } from '../components/Themed';
+import { Button, LoadingSpinner, Text, View } from '../components/Themed';
 import {
   GetAvailableRescuesForCurrentUserDocument,
   useAssignSelfToRescueMutation,

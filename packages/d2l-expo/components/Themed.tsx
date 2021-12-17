@@ -4,8 +4,7 @@
  */
 
 import * as React from 'react';
-import { ActivityIndicator, Text as DefaultText, View as DefaultView } from 'react-native';
-
+import { ActivityIndicator, Button as DefaultButton, Text as DefaultText, View as DefaultView } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 
@@ -30,6 +29,7 @@ type ThemeProps = {
 
 export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
+export type ButtonProps = ThemeProps & DefaultButton['props'];
 
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
@@ -45,6 +45,15 @@ export function View(props: ViewProps) {
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
+export function Button(props: ButtonProps) {
+  const { lightColor, darkColor, ...otherProps } = props;
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'tint');
+
+  return <DefaultButton color={color} {...otherProps} />;
+}
+
 export function LoadingSpinner() {
-  return <ActivityIndicator size="large" color="#4db748" />;
+  const theme = useColorScheme();
+
+  return <ActivityIndicator size={70} color={Colors[theme].tint} />;
 }

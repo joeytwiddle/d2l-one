@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, NativeSyntheticEvent, StyleSheet, TextInput, TextInputKeyPressEventData } from 'react-native';
-import { Text, View } from '../components/Themed';
+import { StyleSheet, TextInput } from 'react-native';
+import { Button, Text, View } from '../components/Themed';
 import { apiDomain } from '../config/config';
 import { useGetUserQuery, useLogInMutation } from '../graphql';
 
