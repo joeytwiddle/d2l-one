@@ -19,11 +19,13 @@ const linking: LinkingOptions<RootStackParamList> = {
         path: 'app',
         screens: {
           Dashboard: {
+            path: 'dashboard',
             screens: {
               DashboardScreen: 'home',
             },
           },
           Rescues: {
+            path: 'rescues',
             screens: {
               RescuesScreen: 'booking',
             },
