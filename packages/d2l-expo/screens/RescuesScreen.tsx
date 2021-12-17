@@ -5,6 +5,7 @@ import { PartialRescue } from '../client-types';
 import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
 import {
+  GetAvailableRescuesForCurrentUserDocument,
   useAssignSelfToRescueMutation,
   useGetAvailableRescuesForCurrentUserQuery,
   useGetMyRescuesQuery,
@@ -30,7 +31,21 @@ export default function RescuesScreen() {
   const availableRescues = availableRescuesQuery.data?.availableRescuesForCurrentUser;
   const myRescuesQuery = useGetMyRescuesQuery();
 
-  const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation();
+  const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation({
+    update(cache, data) {
+      // Adapeted from: https://hasura.io/learn/graphql/typescript-react-apollo/optimistic-update-mutations/3.1-mutation-update-cache/
+      // NOTE that this need optimisticResponse in the query, otherwise it won't update the UI until the mutation responds, which may be too slow.
+      const rescueId = data.data?.assignSelfToRescue.id;
+      const existingRescues = cache.readQuery({ query: GetAvailableRescuesForCurrentUserDocument }) as {
+        availableRescuesForCurrentUser: PartialRescue[];
+      };
+      const availableRescuesUpdated = existingRescues!.availableRescuesForCurrentUser.filter(r => r.id !== rescueId);
+      cache.writeQuery({
+        query: GetAvailableRescuesForCurrentUserDocument,
+        data: { availableRescuesForCurrentUser: availableRescuesUpdated },
+      });
+    },
+  });
 
   const [makingBooking, setMakingBooking] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -45,7 +60,16 @@ export default function RescuesScreen() {
   const bookRescue = (rescue: PartialRescue) => {
     console.log('Booking rescue:', rescue);
     setMakingBooking(true);
-    assignSelfToRescue({ variables: { rescueId: rescue.id } })
+    assignSelfToRescue({
+      variables: { rescueId: rescue.id },
+      // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
+      optimisticResponse: {
+        assignSelfToRescue: {
+          __typename: 'Rescue',
+          id: rescue.id,
+        },
+      },
+    })
       .then(() => {
         // TODO: Toast the successful booking
         //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
