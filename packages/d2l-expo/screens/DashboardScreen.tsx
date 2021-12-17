@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { PaddedBlock } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
-import { Text, View } from '../components/Themed';
+import { LoadingSpinner, Text, View } from '../components/Themed';
 import { useGetAllRescuesQuery, useGetMyRescuesQuery } from '../graphql';
 import useUser from '../hooks/useUser';
 import { RootTabScreenProps } from '../types';
@@ -18,7 +18,6 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   console.log('[Dashboard] myRescues:', myRescues);
 
   if (!user) return null;
-  if (!myRescues) return null;
 
   return (
     <ScrollView>
@@ -29,10 +28,9 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.title}>Your upcoming rescues</Text>
         <View style={styles.upcomingRescues}>
-          {myRescues.length === 0 && <Text>No rescues booked</Text>}
-          {myRescues.map(rescue => (
-            <RescueCard key={rescue.id} rescue={rescue} />
-          ))}
+          {!myRescues && <LoadingSpinner />}
+          {myRescues && myRescues.length === 0 && <Text>No rescues booked</Text>}
+          {myRescues && myRescues.map(rescue => <RescueCard key={rescue.id} rescue={rescue} />)}
         </View>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       </View>
