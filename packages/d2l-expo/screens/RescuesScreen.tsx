@@ -1,8 +1,10 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as React from 'react';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { PartialRescue } from '../client-types';
-import { CentralizingContainer, PaddedBlock } from '../components/Layout';
+import { CentralizingContainer, PaddedBlock, PullRightView } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, View } from '../components/Themed';
 import {
@@ -21,6 +23,8 @@ function callD2LAPI(hook: any, ...args: any[]) {
   }
   return result;
 }
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function RescuesScreen() {
   //const rescues = useGetAllRescuesQuery().data?.rescues;
@@ -96,6 +100,17 @@ export default function RescuesScreen() {
       });
   };
 
+  const passProps = { toastMessage, availableRescues, makingBooking, bookRescue };
+
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Calendar" component={() => <RescuesCalendar {...passProps} />} />
+      <Tab.Screen name="Favourites" component={() => <RescuesList {...passProps} />} />
+    </Tab.Navigator>
+  );
+}
+
+function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
   return (
     <View style={styles.container}>
       <PaddedBlock>
@@ -108,7 +123,7 @@ export default function RescuesScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       */}
 
-        {availableRescues.map(rescue => (
+        {availableRescues.map((rescue: PartialRescue) => (
           <RescueCard
             key={rescue.id}
             rescue={rescue}
@@ -119,6 +134,41 @@ export default function RescuesScreen() {
                 disabled={makingBooking}
                 onPress={() => bookRescue(rescue)}
               />
+            )}
+          />
+        ))}
+        {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
+      </ScrollView>
+    </View>
+  );
+}
+
+function RescuesList({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
+  return (
+    <View style={styles.container}>
+      <PaddedBlock>
+        <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+      </PaddedBlock>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        {/*<Text style={styles.title}>Rescues</Text>*/}
+        {/*
+      <Text style={styles.title}>Rescues</Text>
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      */}
+
+        {availableRescues.map((rescue: PartialRescue) => (
+          <RescueCard
+            key={rescue.id}
+            rescue={rescue}
+            additional={() => (
+              <PullRightView>
+                <Button
+                  title="Book"
+                  // This is only half working
+                  disabled={makingBooking}
+                  onPress={() => bookRescue(rescue)}
+                />
+              </PullRightView>
             )}
           />
         ))}
