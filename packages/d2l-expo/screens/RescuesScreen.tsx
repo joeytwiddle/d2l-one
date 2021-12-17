@@ -143,6 +143,9 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
 
   const sitesToShow = Object.keys(rescuesBySiteThenDate);
 
+  // Until we have a fixed order, we shall order alphabetically (otherwise they tend to jump about when we make bookings!)
+  sitesToShow.sort();
+
   const datesToShow = Array.from(allDates.values());
 
   return (
