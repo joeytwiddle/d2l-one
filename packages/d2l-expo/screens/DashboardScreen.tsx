@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
+import { PaddedBlock } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
 import { useGetAllRescuesQuery, useGetMyRescuesQuery } from '../graphql';
@@ -22,7 +23,9 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text>Welcome {user.name}</Text>
+        <PaddedBlock>
+          <Text>Welcome {user.name}</Text>
+        </PaddedBlock>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.title}>Your upcoming rescues</Text>
         <View style={styles.upcomingRescues}>

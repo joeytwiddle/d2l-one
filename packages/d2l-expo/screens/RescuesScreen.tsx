@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Paragraph } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
-import { CentralizingContainer } from '../components/Layout';
+import { CentralizingContainer, PaddedBlock } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
 import {
@@ -99,7 +99,9 @@ export default function RescuesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+      <PaddedBlock>
+        <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+      </PaddedBlock>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         {/*<Text style={styles.title}>Rescues</Text>*/}
         {/*
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    //padding: 10,
     backgroundColor: '#f2f2f2',
   },
   scrollView: {
@@ -142,6 +144,8 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     alignItems: 'center',
     justifyContent: 'center',
+    // Undoes the margins on the first and last RescueCards
+    marginVertical: -10,
   },
   title: {
     fontSize: 20,
