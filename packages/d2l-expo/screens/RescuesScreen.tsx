@@ -53,13 +53,13 @@ export default function RescuesScreen() {
     },
   });
 
-  const [makingBooking, setMakingBooking] = useState(false);
+  const [rescueBeingBooked, setRescueBeingBooked] = useState('');
   const [toastMessage, setToastMessage] = useState('');
 
   const bookRescue = React.useCallback(
     (rescue: PartialRescue) => {
       console.log('Booking rescue:', rescue);
-      setMakingBooking(true);
+      setRescueBeingBooked(`${rescue.site.fullName} at ${rescue.date}`);
       assignSelfToRescue({
         variables: { rescueId: rescue.id },
         // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
@@ -78,20 +78,25 @@ export default function RescuesScreen() {
           // I don't especially want to refresh this.  But I do want to invalidate it.
           myRescuesQuery.refetch();
           // Without the delay, the buttons appear enabled again, before we see the updated list
-          setTimeout(() => setMakingBooking(false), 1000);
+          setTimeout(() => setRescueBeingBooked(''), 1000);
         })
         .catch(error => {
           handleGlobalError(error);
           setToastMessage(String(error));
-          setMakingBooking(false);
+          setRescueBeingBooked('');
         });
     },
-    [setMakingBooking, setToastMessage, availableRescuesQuery, myRescuesQuery],
+    [setRescueBeingBooked, setToastMessage, availableRescuesQuery, myRescuesQuery],
   );
 
-  if (availableRescuesQuery.loading) {
+  if (availableRescuesQuery.loading || rescueBeingBooked) {
     return (
       <CentralizingContainer>
+        {rescueBeingBooked ? (
+          <PaddedBlock>
+            <Text>Booking {rescueBeingBooked}</Text>
+          </PaddedBlock>
+        ) : null}
         <LoadingSpinner />
       </CentralizingContainer>
     );
@@ -104,7 +109,7 @@ export default function RescuesScreen() {
   const rescuesSorted = availableRescues.slice(0);
   rescuesSorted.sort((ra, rb) => (ra > rb ? +1 : -1));
 
-  const passProps = { toastMessage, availableRescues, makingBooking, bookRescue };
+  const passProps = { toastMessage, availableRescues, makingBooking: !!rescueBeingBooked, bookRescue };
 
   // I put the tab navigator after these hooks, because I didn't want to duplicate the hooks.
   // However that has resulted in performance issues, because we need to pass the props down, so we need inline components.
