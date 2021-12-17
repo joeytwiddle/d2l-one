@@ -11,6 +11,10 @@ export function PaddedBlock(props: any) {
   return <UnstyledView style={styles.paddedBlock} {...props} />;
 }
 
+export function PullRightView(props: any) {
+  return <View style={styles.pullRightView} {...props} />;
+}
+
 const styles = StyleSheet.create({
   centralizingContainer: {
     flex: 1,
@@ -19,5 +23,10 @@ const styles = StyleSheet.create({
   },
   paddedBlock: {
     padding: 10,
+  },
+  pullRightView: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
 });
