@@ -181,7 +181,9 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
                   const rescue = rescuesBySiteThenDate[siteCode][date];
 
                   // TODO: To display rescuer names, we will need to poll the allRescues data
+                  // That will also allow us to show which rescues this user has booked
 
+                  // '—'
                   return (
                     <DataTable.Cell key={key} style={[styles.cell, bgStyle(colIndex, rowIndex)]}>
                       {rescue
@@ -193,7 +195,7 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
                               onPress={() => bookRescue(rescue)}
                             />
                           )
-                        : '—'}
+                        : '✔'}
                     </DataTable.Cell>
                   );
                 })}
