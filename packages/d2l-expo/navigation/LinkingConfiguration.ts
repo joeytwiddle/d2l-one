@@ -20,12 +20,12 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           Dashboard: {
             screens: {
-              DashboardScreen: 'one',
+              DashboardScreen: 'home',
             },
           },
           Rescues: {
             screens: {
-              RescuesScreen: 'two',
+              RescuesScreen: 'booking',
             },
           },
         },
