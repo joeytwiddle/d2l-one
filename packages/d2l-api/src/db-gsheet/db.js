@@ -60,9 +60,13 @@ async function callAPI(obj, methodName, ...args) {
   /** @type {string[][] | false[][]} */
   const data = await new Promise((resolve, reject) => {
     console.log(`${isoDate()} (gsheet) >> Fetching ${obj.constructor.name}.${methodName}(${inspectOneLine(args)})`);
+    const startTime = Date.now();
     obj[methodName](...args)
       .then(result => {
-        console.log(`${isoDate()} (gsheet) << ${inspectOneLine(result.data).length}`);
+        const endTime = Date.now();
+        const secondsTaken = (endTime - startTime) / 1000;
+        const secondsString = secondsTaken.toLocaleString(undefined, { maximumFractionDigits: 1 });
+        console.log(`${isoDate()} (gsheet) << ${inspectOneLine(result.data).length} bytes in ${secondsString} seconds`);
         resolve(result.data.values || result.data.sheets);
       })
       .catch(error => {
