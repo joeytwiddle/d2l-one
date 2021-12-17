@@ -140,40 +140,50 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
 
   const datesToShow = Array.from(allDates.values());
 
-  // TODO: Get vertical scrolling working
-
   return (
     <View style={styles.tableContainer}>
       <PaddedBlock>
         <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
       </PaddedBlock>
-      {/*<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>*/}
-      <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title style={styles.dateCell}>Date</DataTable.Title>
-            {sitesToShow.map(siteCode => (
-              <DataTable.Title key={siteCode} style={styles.cell}>
-                {siteCode}
-              </DataTable.Title>
-            ))}
-          </DataTable.Header>
-          {datesToShow.map(date => (
-            <DataTable.Row key={date}>
-              <DataTable.Cell style={styles.dateCell}>{date}</DataTable.Cell>
-              {sitesToShow.map(siteCode => {
-                const key = `${date}:${siteCode}`;
-                const rescue = rescuesBySiteThenDate[siteCode][date];
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title style={styles.dateCell}>Date</DataTable.Title>
+              {sitesToShow.map(siteCode => (
+                <DataTable.Title key={siteCode} style={styles.cell}>
+                  {siteCode}
+                </DataTable.Title>
+              ))}
+            </DataTable.Header>
+            {datesToShow.map(date => (
+              <DataTable.Row key={date}>
+                <DataTable.Cell style={styles.dateCell}>{date}</DataTable.Cell>
+                {sitesToShow.map(siteCode => {
+                  const key = `${date}:${siteCode}`;
+                  const rescue = rescuesBySiteThenDate[siteCode][date];
 
-                return (
-                  <DataTable.Cell key={key} style={styles.cell}>
-                    {rescue ? rescue.rescuer || '' : '—'}
-                  </DataTable.Cell>
-                );
-              })}
-            </DataTable.Row>
-          ))}
-        </DataTable>
+                  // TODO: To display rescuer names, we will need to poll the allRescues data
+
+                  return (
+                    <DataTable.Cell key={key} style={styles.cell}>
+                      {rescue
+                        ? rescue.rescuer || (
+                            <Button
+                              title="Book"
+                              // This is only half working
+                              disabled={makingBooking}
+                              onPress={() => bookRescue(rescue)}
+                            />
+                          )
+                        : '—'}
+                    </DataTable.Cell>
+                  );
+                })}
+              </DataTable.Row>
+            ))}
+          </DataTable>
+        </ScrollView>
       </ScrollView>
     </View>
   );
@@ -236,6 +246,9 @@ const styles = StyleSheet.create({
   tableContainer: {
     width: '100%',
     height: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollView: {
     width: '100%',
@@ -257,7 +270,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   dateCell: {
-    width: 140,
+    width: 110,
     padding: 6,
   },
   cell: {
