@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
-import { Button, Text, View } from '../components/Themed';
+import { PaddedBlock } from '../components/Layout';
+import { Button, SoftText, Text, View } from '../components/Themed';
 import { apiDomain } from '../config/config';
 import { useGetUserQuery, useLogInMutation } from '../graphql';
 
@@ -40,9 +41,11 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
       <View style={styles.container}>
         <View style={styles.container}>
+          <Text style={styles.title}>Login</Text>
+        </View>
+        <View style={styles.smallContainer}>
           <TextInput
             style={styles.larger}
             placeholder="Name"
@@ -57,6 +60,9 @@ export default function LoginScreen() {
               }
             }}
           />
+          <PaddedBlock>
+            <SoftText>Please use your regular booking name</SoftText>
+          </PaddedBlock>
         </View>
         {/*
         <View style={styles.container}>

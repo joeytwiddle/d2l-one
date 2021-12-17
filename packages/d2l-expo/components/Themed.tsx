@@ -38,6 +38,11 @@ export function Text(props: TextProps) {
   return <DefaultText style={[{ color }, style]} {...otherProps} />;
 }
 
+export function SoftText(props: TextProps) {
+  const { style, ...otherProps } = props;
+  return <Text style={[{ opacity: 0.6 }, style]} {...otherProps} />;
+}
+
 export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
