@@ -148,6 +148,13 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
 
   const datesToShow = Array.from(allDates.values());
 
+  const bgStyle = (colIndex: number, rowIndex: number) => {
+    const shade = ((colIndex + 0) % 2) + ((rowIndex + 0) % 2);
+    const brightness = 255 - shade * 8; // TODO: Should invert for theme
+    const backgroundColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
+    return { backgroundColor };
+  };
+
   return (
     <View style={styles.tableContainer}>
       <PaddedBlock>
@@ -160,23 +167,23 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
           <DataTable>
             <DataTable.Header>
               <DataTable.Title style={styles.dateCell}>Date</DataTable.Title>
-              {sitesToShow.map(siteCode => (
-                <DataTable.Title key={siteCode} style={styles.cell}>
+              {sitesToShow.map((siteCode, colIndex) => (
+                <DataTable.Title key={siteCode} style={[styles.cell, bgStyle(colIndex, 1)]}>
                   {siteCode}
                 </DataTable.Title>
               ))}
             </DataTable.Header>
-            {datesToShow.map(date => (
+            {datesToShow.map((date, rowIndex) => (
               <DataTable.Row key={date}>
-                <DataTable.Cell style={styles.dateCell}>{date}</DataTable.Cell>
-                {sitesToShow.map(siteCode => {
+                <DataTable.Cell style={[styles.dateCell, bgStyle(1, rowIndex)]}>{date}</DataTable.Cell>
+                {sitesToShow.map((siteCode, colIndex) => {
                   const key = `${date}:${siteCode}`;
                   const rescue = rescuesBySiteThenDate[siteCode][date];
 
                   // TODO: To display rescuer names, we will need to poll the allRescues data
 
                   return (
-                    <DataTable.Cell key={key} style={styles.cell}>
+                    <DataTable.Cell key={key} style={[styles.cell, bgStyle(colIndex, rowIndex)]}>
                       {rescue
                         ? rescue.rescuer || (
                             <Button
@@ -283,13 +290,11 @@ const styles = StyleSheet.create({
   dateCell: {
     width: 110,
     padding: 6,
+    //border: '',
   },
   cell: {
     width: 80,
     padding: 6,
-  },
-  rowTitle: {
-    width: 80,
-    padding: 6,
+    //border: '',
   },
 });
