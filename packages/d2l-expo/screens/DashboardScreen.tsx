@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
@@ -20,18 +20,20 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   if (!myRescues) return null;
 
   return (
-    <View style={styles.container}>
-      <Text>Welcome {user.name}</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.title}>Your upcoming rescues</Text>
-      <View style={styles.upcomingRescue}>
-        {myRescues.length === 0 && <Text>No rescues booked</Text>}
-        {myRescues.map(rescue => (
-          <RescueCard key={rescue.id} rescue={rescue} />
-        ))}
+    <ScrollView>
+      <View style={styles.container}>
+        <Text>Welcome {user.name}</Text>
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <Text style={styles.title}>Your upcoming rescues</Text>
+        <View style={styles.upcomingRescues}>
+          {myRescues.length === 0 && <Text>No rescues booked</Text>}
+          {myRescues.map(rescue => (
+            <RescueCard key={rescue.id} rescue={rescue} />
+          ))}
+        </View>
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       </View>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -50,7 +52,11 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
-  upcomingRescue: {
+  upcomingRescues: {
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 10,
   },
 });
