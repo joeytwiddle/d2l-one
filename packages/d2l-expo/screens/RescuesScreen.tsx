@@ -150,8 +150,8 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
       <PaddedBlock>
         <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
       </PaddedBlock>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-        <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
+      <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
           <DataTable>
             <DataTable.Header>
               <DataTable.Title style={styles.dateCell}>Date</DataTable.Title>
@@ -251,9 +251,10 @@ const styles = StyleSheet.create({
   tableContainer: {
     width: '100%',
     height: '100%',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // WARNING: Enabling alignItems will break scrolling of the calendar table on web
+    //flex: 1,
+    //alignItems: 'center',
+    //justifyContent: 'center',
   },
   scrollView: {
     width: '100%',
