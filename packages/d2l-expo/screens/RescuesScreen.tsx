@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
+import { CentralizingContainer } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Text, View } from '../components/Themed';
 import {
@@ -49,6 +51,14 @@ export default function RescuesScreen() {
 
   const [makingBooking, setMakingBooking] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+
+  if (availableRescuesQuery.loading) {
+    return (
+      <CentralizingContainer>
+        <ActivityIndicator />
+      </CentralizingContainer>
+    );
+  }
 
   if (!availableRescues) return null;
 
