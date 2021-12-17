@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
-import { ActivityIndicator, Paragraph } from 'react-native-paper';
 import { PartialRescue } from '../client-types';
 import { CentralizingContainer, PaddedBlock } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
-import { Text, View } from '../components/Themed';
+import { LoadingSpinner, Text, View } from '../components/Themed';
 import {
   GetAvailableRescuesForCurrentUserDocument,
   useAssignSelfToRescueMutation,
@@ -55,7 +54,7 @@ export default function RescuesScreen() {
   if (availableRescuesQuery.loading) {
     return (
       <CentralizingContainer>
-        <ActivityIndicator />
+        <LoadingSpinner />
       </CentralizingContainer>
     );
   }
