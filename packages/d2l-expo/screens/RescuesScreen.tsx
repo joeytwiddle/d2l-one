@@ -126,6 +126,22 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
   //const route = useRoute();
   //if (route.name !== 'Calendar') return null;
 
+  const allDates = new Set<string>();
+  const rescuesBySiteThenDate = {} as Record<string, Record<string, PartialRescue>>;
+  for (const rescue of availableRescues) {
+    const siteId = rescue.site.id;
+    const date = rescue.date;
+    rescuesBySiteThenDate[siteId] = rescuesBySiteThenDate[siteId] || {};
+    rescuesBySiteThenDate[siteId][date] = rescue;
+    allDates.add(date);
+  }
+
+  const sitesToShow = Object.keys(rescuesBySiteThenDate);
+
+  const datesToShow = Array.from(allDates.values());
+
+  // TODO: Get vertical scrolling working
+
   return (
     <View style={styles.tableContainer}>
       <PaddedBlock>
@@ -135,65 +151,28 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
       <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
         <DataTable>
           <DataTable.Header>
-            <DataTable.Title style={styles.cell}>Date</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
-            <DataTable.Title style={styles.cell}>TM</DataTable.Title>
-            <DataTable.Title style={styles.cell}>PS</DataTable.Title>
+            <DataTable.Title style={styles.dateCell}>Date</DataTable.Title>
+            {sitesToShow.map(siteCode => (
+              <DataTable.Title key={siteCode} style={styles.cell}>
+                {siteCode}
+              </DataTable.Title>
+            ))}
           </DataTable.Header>
-          <DataTable.Row>
-            <DataTable.Cell style={styles.cell}>Mon 1 Dec</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell style={styles.cell}>Tue 2 Dec</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell style={styles.cell}>Wed 3 Dec</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Jennifer</DataTable.Cell>
-            <DataTable.Cell style={styles.cell}>Max</DataTable.Cell>
-          </DataTable.Row>
+          {datesToShow.map(date => (
+            <DataTable.Row key={date}>
+              <DataTable.Cell style={styles.dateCell}>{date}</DataTable.Cell>
+              {sitesToShow.map(siteCode => {
+                const key = `${date}:${siteCode}`;
+                const rescue = rescuesBySiteThenDate[siteCode][date];
+
+                return (
+                  <DataTable.Cell key={key} style={styles.cell}>
+                    {rescue ? rescue.rescuer || '' : '—'}
+                  </DataTable.Cell>
+                );
+              })}
+            </DataTable.Row>
+          ))}
         </DataTable>
       </ScrollView>
     </View>
@@ -209,8 +188,8 @@ function RescuesList({ toastMessage, availableRescues: allAvailableRescues, maki
 
   // Also to reduce sliggishness
   // TODO: This can't stay!
-  //const availableRescues = allAvailableRescues.slice(0, 20);
-  const availableRescues = allAvailableRescues;
+  const availableRescues = allAvailableRescues.slice(0, 20);
+  //const availableRescues = allAvailableRescues;
 
   return (
     <View style={styles.container}>
@@ -276,6 +255,10 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  dateCell: {
+    width: 140,
+    padding: 6,
   },
   cell: {
     width: 80,
