@@ -89,7 +89,8 @@ async function callAPI(obj, methodName, ...args) {
 }
 
 const oneMinute = 60 * 1000;
-const standardCacheDuration = 15 * 1000;
+//const standardCacheDuration = 15 * 1000;
+const standardCacheDuration = 3 * 1000;
 
 const getAllSiteDataCached = memoizeFunction(getAllSiteDataUncached, standardCacheDuration);
 const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, standardCacheDuration);
