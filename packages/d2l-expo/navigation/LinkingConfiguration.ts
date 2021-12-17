@@ -28,6 +28,8 @@ const linking: LinkingOptions<RootStackParamList> = {
             path: 'rescues',
             screens: {
               RescuesScreen: 'booking',
+              calendar: 'calendar',
+              favourites: 'favourites',
             },
           },
         },
