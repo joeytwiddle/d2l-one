@@ -56,6 +56,39 @@ export default function RescuesScreen() {
   const [makingBooking, setMakingBooking] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
+  const bookRescue = React.useCallback(
+    (rescue: PartialRescue) => {
+      console.log('Booking rescue:', rescue);
+      setMakingBooking(true);
+      assignSelfToRescue({
+        variables: { rescueId: rescue.id },
+        // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
+        optimisticResponse: {
+          assignSelfToRescue: {
+            __typename: 'Rescue',
+            id: rescue.id,
+          },
+        },
+      })
+        .then(() => {
+          // TODO: Toast the successful booking
+          //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+          setToastMessage(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+          availableRescuesQuery.refetch();
+          // I don't especially want to refresh this.  But I do want to invalidate it.
+          myRescuesQuery.refetch();
+          // Without the delay, the buttons appear enabled again, before we see the updated list
+          setTimeout(() => setMakingBooking(false), 1000);
+        })
+        .catch(error => {
+          handleGlobalError(error);
+          setToastMessage(String(error));
+          setMakingBooking(false);
+        });
+    },
+    [setMakingBooking, setToastMessage, availableRescuesQuery, myRescuesQuery],
+  );
+
   if (availableRescuesQuery.loading) {
     return (
       <CentralizingContainer>
@@ -71,51 +104,27 @@ export default function RescuesScreen() {
   const rescuesSorted = availableRescues.slice(0);
   rescuesSorted.sort((ra, rb) => (ra > rb ? +1 : -1));
 
-  const bookRescue = (rescue: PartialRescue) => {
-    console.log('Booking rescue:', rescue);
-    setMakingBooking(true);
-    assignSelfToRescue({
-      variables: { rescueId: rescue.id },
-      // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
-      optimisticResponse: {
-        assignSelfToRescue: {
-          __typename: 'Rescue',
-          id: rescue.id,
-        },
-      },
-    })
-      .then(() => {
-        // TODO: Toast the successful booking
-        //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
-        setToastMessage(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
-        availableRescuesQuery.refetch();
-        // I don't especially want to refresh this.  But I do want to invalidate it.
-        myRescuesQuery.refetch();
-        // Without the delay, the buttons appear enabled again, before we see the updated list
-        setTimeout(() => setMakingBooking(false), 1000);
-      })
-      .catch(error => {
-        handleGlobalError(error);
-        setToastMessage(String(error));
-        setMakingBooking(false);
-      });
-  };
-
   const passProps = { toastMessage, availableRescues, makingBooking, bookRescue };
 
+  // I put the tab navigator after these hooks, because I didn't want to duplicate the hooks.
+  // However that has resulted in performance issues, because we need to pass the props down, so we need inline components.
+  // I have tried using pure compoenents to help with the performance issues.
+  // TODO: But if they persist, we might want to extract the hooks setup into a function, and then use that inside the tab components.
   return (
     // We disable swiping so that we can scroll the table horizontally
     <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
-      <Tab.Screen name="Calendar" component={() => <RescuesCalendar {...passProps} />} />
-      <Tab.Screen name="Favourites" component={() => <RescuesList {...passProps} />} />
+      <Tab.Screen name="Calendar" component={() => <RescuesCalendarPure {...passProps} />} />
+      <Tab.Screen name="Favourites" component={() => <RescuesListPure {...passProps} />} />
     </Tab.Navigator>
   );
 }
 
+const RescuesCalendarPure = React.memo(RescuesCalendar);
+
 function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
   // Try to reduce sluggishness
-  const route = useRoute();
-  if (route.name !== 'Calendar') return null;
+  //const route = useRoute();
+  //if (route.name !== 'Calendar') return null;
 
   return (
     <View style={styles.tableContainer}>
@@ -191,14 +200,17 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
   );
 }
 
+const RescuesListPure = React.memo(RescuesList);
+
 function RescuesList({ toastMessage, availableRescues: allAvailableRescues, makingBooking, bookRescue }: any) {
   // Try to reduce sluggishness
-  const route = useRoute();
-  if (route.name !== 'Favourites') return null;
+  //const route = useRoute();
+  //if (route.name !== 'Favourites') return null;
 
   // Also to reduce sliggishness
   // TODO: This can't stay!
-  const availableRescues = allAvailableRescues.slice(0, 20);
+  //const availableRescues = allAvailableRescues.slice(0, 20);
+  const availableRescues = allAvailableRescues;
 
   return (
     <View style={styles.container}>
