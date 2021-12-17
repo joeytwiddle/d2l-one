@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useRoute } from '@react-navigation/core';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as React from 'react';
 import { useState } from 'react';
@@ -111,6 +112,10 @@ export default function RescuesScreen() {
 }
 
 function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
+  // Try to reduce sluggishness
+  const route = useRoute();
+  if (route.name !== 'Calendar') return null;
+
   return (
     <View style={styles.container}>
       <PaddedBlock>
@@ -144,6 +149,10 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
 }
 
 function RescuesList({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
+  // Try to reduce sluggishness
+  const route = useRoute();
+  if (route.name !== 'Favourites') return null;
+
   return (
     <View style={styles.container}>
       <PaddedBlock>
