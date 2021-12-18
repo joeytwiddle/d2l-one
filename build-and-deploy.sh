@@ -7,4 +7,4 @@ cd packages/d2l-expo
 yarn build:web
 cd ../..
 
-bash ./deploy-to-production.sh
+DEPLOY_WEB_APP=1 bash ./deploy-to-production.sh

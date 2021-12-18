@@ -64,7 +64,10 @@ echo "### End of unexpected files"
 #sudo_rsync -ainv --delete --exclude='/app' ./packages/d2l-website/ "${SERVER_AUTH}:/usr/share/nginx/html" "$@"
 
 # The web app
-sudo_rsync -ai --delete ./packages/d2l-expo/web-build/ "${SERVER_AUTH}:/usr/share/nginx/html/app" "$@"
+if [ -n "$DEPLOY_WEB_APP" ]
+then
+  sudo_rsync -ai --delete ./packages/d2l-expo/web-build/ "${SERVER_AUTH}:/usr/share/nginx/html/app" "$@"
+fi
 
 # Nginx configuration
 sudo_rsync -ai ./deployment_scripts/etc/nginx/default.d/d2l-api.conf "${SERVER_AUTH}:/etc/nginx/default.d/" "$@"

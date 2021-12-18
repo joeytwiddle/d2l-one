@@ -86,6 +86,18 @@ Note: After a couple of weeks, my token was revoked. I think Google did that auo
 
 ## Deployment
 
+To deploy all the latest code, run:
+
+```bash
+./build-and-deploy.sh
+```
+
+If you have only changed the website or the API server, then you can deploy everything except the web app:
+
+```bash
+./deploy-to-production.sh
+```
+
 ### Secret files
 
 These files are not stored in the repo, but you may need them to run the service in production. I am noting them here, so you won't miss any of them.
