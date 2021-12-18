@@ -1,5 +1,5 @@
 {
-  "name": "d2l-expo",
+  "name": "D2L",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "//": "Tells react where to load the assets from",
