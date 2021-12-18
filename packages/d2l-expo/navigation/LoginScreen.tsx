@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { PaddedBlock } from '../components/Layout';
-import { Button, SoftText, Text, View } from '../components/Themed';
+import { Button, SoftText, Text, View as ThemedView } from '../components/Themed';
 import { apiDomain } from '../config/config';
 import { useGetUserQuery, useLogInMutation } from '../graphql';
 
@@ -40,41 +40,39 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <View style={styles.container}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Login</Text>
-        </View>
-        <View style={styles.smallContainer}>
-          <TextInput
-            style={styles.larger}
-            placeholder="Name"
-            value={username}
-            onChangeText={setUsername}
-            // Hitting the tick icon in the keyboard on mobile
-            onEndEditing={submit}
-            // For web
-            onKeyPress={(e: any) => {
-              if (e.key === 'Enter') {
-                submit();
-              }
-            }}
-          />
-          <PaddedBlock>
-            <SoftText>Please use your regular booking name</SoftText>
-          </PaddedBlock>
-        </View>
-        {/*
+        <Text style={styles.title}>Login</Text>
+      </View>
+      <View style={styles.smallContainer}>
+        <TextInput
+          style={styles.larger}
+          placeholder="Name"
+          value={username}
+          onChangeText={setUsername}
+          // Hitting the tick icon in the keyboard on mobile
+          onEndEditing={submit}
+          // For web
+          onKeyPress={(e: any) => {
+            if (e.key === 'Enter') {
+              submit();
+            }
+          }}
+        />
+        <PaddedBlock>
+          <SoftText>Please use your regular booking name</SoftText>
+        </PaddedBlock>
+      </View>
+      {/*
         <View style={styles.container}>
           <TextInput style={styles.larger} secureTextEntry={true} placeholder="Password" value={password} onChangeText={setPassword} />
         </View>
          */}
-        <View style={styles.container}>
-          <Button title="Log in" onPress={submit} disabled={!username || logInMutation.loading || userQuery.loading} />
-          <Text>{errorMessage}</Text>
-        </View>
+      <View style={styles.container}>
+        <Button title="Log in" onPress={submit} disabled={!username || logInMutation.loading || userQuery.loading} />
+        <Text>{errorMessage}</Text>
       </View>
-    </View>
+    </ThemedView>
   );
 }
 
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   smallContainer: {
-    flex: 0.2,
+    flex: 0.3,
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
