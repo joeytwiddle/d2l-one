@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { PaddedBlock } from '../components/Layout';
 import { Button, SoftText, Text, View as ThemedView } from '../components/Themed';
 import { apiDomain } from '../config/config';
@@ -45,8 +46,15 @@ export default function LoginScreen() {
         <Text style={styles.title}>Login</Text>
       </View>
       <View style={styles.smallContainer}>
+        {/* I switched to a RNP TextInput because the RN TextInput was too wide for narrow displays */}
         <TextInput
-          style={styles.larger}
+          // For RN
+          //style={styles.larger}
+          //
+          // For RNP
+          autoComplete={false}
+          mode="flat"
+          //
           placeholder="Name"
           value={username}
           onChangeText={setUsername}
@@ -89,6 +97,7 @@ const styles = StyleSheet.create({
   },
   larger: {
     minWidth: '60%',
+    maxWidth: '95%',
     fontSize: 24,
     borderColor: '#888888',
     borderWidth: 1,
