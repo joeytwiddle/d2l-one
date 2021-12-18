@@ -222,8 +222,11 @@ function RescuesList({ toastMessage, availableRescues: allAvailableRescues, maki
 
   return (
     <View style={styles.container}>
-      <PaddedBlock>
+      {/*<PaddedBlock>
         <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+      </PaddedBlock>*/}
+      <PaddedBlock>
+        <Text>This page is under construction. It does not show all available rescues.</Text>
       </PaddedBlock>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         {/*<Text style={styles.title}>Rescues</Text>*/}
