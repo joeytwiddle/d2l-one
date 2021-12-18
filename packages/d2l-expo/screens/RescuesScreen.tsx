@@ -166,7 +166,7 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title style={styles.dateCell}>Date</DataTable.Title>
+              <DataTable.Title style={[styles.dateCell, bgStyle(1, 1)]}>Date</DataTable.Title>
               {sitesToShow.map((siteCode, colIndex) => (
                 <DataTable.Title key={siteCode} style={[styles.cell, bgStyle(colIndex, 1)]}>
                   {siteCode}
@@ -290,12 +290,12 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   dateCell: {
-    width: 110,
+    minWidth: 100,
     padding: 6,
     //border: '',
   },
   cell: {
-    width: 80,
+    minWidth: 70,
     padding: 6,
     //border: '',
   },
