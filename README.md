@@ -42,9 +42,11 @@ Run `yarn install` multiple times:
 
 You will need two terminals open
 
-- In `packages/d2l-api` run `yarn watch` (this will auto-restart the API server when you make changes)
+- In `packages/d2l-api` run `yarn watch` (this will auto-restart the API server when you make changes).
 
-- In `packages/d2l-expo` run `yarn web`
+- In `packages/d2l-expo` run `yarn web` for quick web development.
+
+  Or run `yarn start` for web and mobile development. (Then hit `w` for web development, and scan the QR code for mobile development.)
 
 ### Coding
 
@@ -80,7 +82,7 @@ To create `packages/d2l-api/google-api-token.json`:
 
 4. Follow the instructions on the URL, then copy the code it gives you, and paste it to the d2l-api process
 
-Note: After a couple of weeks, my token was revoked. I think Google did that auomatically because our app is still in testing phase. (Source: 3. [here](https://stackoverflow.com/a/67456685))
+Note: After a couple of weeks, my token was revoked. I think Google did that auomatically because our app is still in testing phase. (Source: 3. [here](https://stackoverflow.com/a/67456685)) You may be able to verify this by looking at the [activity page](https://console.cloud.google.com/home/activity) to see if Google automatically deleted the keys.
 
 ## Deployment
 
