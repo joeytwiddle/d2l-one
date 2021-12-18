@@ -9,7 +9,9 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 import Colors from '../constants/Colors';
+import { CombinedDarkTheme, CombinedDefaultTheme } from '../constants/Themes';
 import useColorScheme from '../hooks/useColorScheme';
 import DashboardScreen from '../screens/DashboardScreen';
 import ModalScreen from '../screens/ModalScreen';
@@ -19,10 +21,14 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../typ
 import LinkingConfiguration from './LinkingConfiguration';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+  const theme = colorScheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme;
+
   return (
-    <NavigationContainer linking={LinkingConfiguration} theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
-    </NavigationContainer>
+    <PaperProvider theme={theme}>
+      <NavigationContainer linking={LinkingConfiguration} theme={theme}>
+        <RootNavigator />
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
 
