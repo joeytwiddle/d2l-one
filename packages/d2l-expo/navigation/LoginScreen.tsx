@@ -21,6 +21,7 @@ export default function LoginScreen() {
   //console.log('userQuery:', userQuery);
 
   const submit = () => {
+    if (!username) return;
     // When logIn() completes, logInMutation changes from undefined to { logIn: null }
     // But instead of watching for that, we detect the promise instead.
     logIn({ variables: { username, password } })
@@ -77,7 +78,7 @@ export default function LoginScreen() {
         </View>
          */}
       <View style={styles.container}>
-        <Button title="Log in" onPress={submit} disabled={!username || logInMutation.loading || userQuery.loading} />
+        <Button title="Log in" onPress={submit} disabled={logInMutation.loading || userQuery.loading} />
         <Text>{errorMessage}</Text>
       </View>
     </ThemedView>
