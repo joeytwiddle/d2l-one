@@ -50,7 +50,7 @@ forever stopall || true
 
 NODE_ENV=production forever start --spinSleepTime "10000" -a -l d2l-api.log -o ~/logs/d2l-api.log -e ~/logs/d2l-api.log .
 
-sleep 3
+sleep 5
 tail -n 20 ~/logs/d2l-api.log
 
 !!!
