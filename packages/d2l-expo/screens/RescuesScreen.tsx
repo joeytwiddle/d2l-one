@@ -27,7 +27,7 @@ function callD2LAPI(hook: any, ...args: any[]) {
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function RescuesScreen() {
+function useAvailableRescuesData() {
   //const rescues = useGetAllRescuesQuery().data?.rescues;
   //const rescues = useGetAllRescuesForMonthQuery({ variables: { month: 'JAN 2021' } }).data?.allRescuesForMonth;
   //const rescues = callD2LAPI(useGetAllRescuesForMonthQuery, { variables: { month: 'DEC 2021' } }).data
@@ -97,6 +97,20 @@ export default function RescuesScreen() {
     [availableRescues],
   );
 
+  return {
+    availableRescuesQuery,
+    rescueBeingBooked,
+    toastMessage,
+    availableRescues: rescuesSorted,
+    makingBooking: !!rescueBeingBooked,
+    bookRescue,
+  };
+}
+
+export default function RescuesScreen() {
+  const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking, bookRescue } =
+    useAvailableRescuesData();
+
   if (availableRescuesQuery.loading || rescueBeingBooked) {
     return (
       <CentralizingContainer>
@@ -114,7 +128,7 @@ export default function RescuesScreen() {
 
   // TODO: Split rescues up into days, so we can rescues available day-by-day
 
-  const passProps = { toastMessage, availableRescues: rescuesSorted, makingBooking: !!rescueBeingBooked, bookRescue };
+  const passProps = { toastMessage, availableRescues, makingBooking, bookRescue };
 
   // I put the tab navigator after these hooks, because I didn't want to duplicate the hooks.
   // However that has resulted in performance issues, because we need to pass the props down, so we need inline components.
