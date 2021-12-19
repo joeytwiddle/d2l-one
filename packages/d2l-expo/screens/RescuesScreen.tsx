@@ -180,6 +180,38 @@ function RescuesCalendar() {
   if (!availableRescues) return null;
 
   return (
+    <RescuesCalendarViewPure
+      toastMessage={toastMessage}
+      availableRescues={availableRescues}
+      sitesToShow={sitesToShow}
+      datesToShow={datesToShow}
+      rescuesBySiteThenDate={rescuesBySiteThenDate}
+      makingBooking={makingBooking}
+      bookRescue={bookRescue}
+    />
+  );
+}
+
+const RescuesCalendarViewPure = React.memo(RescuesCalendarView);
+
+function RescuesCalendarView({
+  toastMessage,
+  availableRescues,
+  sitesToShow,
+  datesToShow,
+  rescuesBySiteThenDate,
+  makingBooking,
+  bookRescue,
+}: {
+  toastMessage: string;
+  availableRescues: PartialRescue[];
+  sitesToShow: string[];
+  datesToShow: string[];
+  rescuesBySiteThenDate: Record<string, Record<string, PartialRescue>>;
+  makingBooking: boolean;
+  bookRescue: (rescue: PartialRescue) => void;
+}) {
+  return (
     <View style={styles.tableContainer}>
       <PaddedBlock>
         <FullWidth>
