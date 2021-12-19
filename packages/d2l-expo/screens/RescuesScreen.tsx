@@ -89,6 +89,14 @@ export default function RescuesScreen() {
     [setRescueBeingBooked, setToastMessage, availableRescuesQuery, myRescuesQuery],
   );
 
+  //const rescuesSorted = availableRescues?.slice(0);
+  //rescuesSorted?.sort((ra, rb) => (ra > rb ? +1 : -1));
+  // We can also use memoing on derived variables
+  const rescuesSorted = React.useMemo(
+    () => availableRescues?.slice(0).sort((ra, rb) => (ra > rb ? +1 : -1)),
+    [availableRescues],
+  );
+
   if (availableRescuesQuery.loading || rescueBeingBooked) {
     return (
       <CentralizingContainer>
@@ -106,10 +114,7 @@ export default function RescuesScreen() {
 
   // TODO: Split rescues up into days, so we can rescues available day-by-day
 
-  const rescuesSorted = availableRescues.slice(0);
-  rescuesSorted.sort((ra, rb) => (ra > rb ? +1 : -1));
-
-  const passProps = { toastMessage, availableRescues, makingBooking: !!rescueBeingBooked, bookRescue };
+  const passProps = { toastMessage, availableRescues: rescuesSorted, makingBooking: !!rescueBeingBooked, bookRescue };
 
   // I put the tab navigator after these hooks, because I didn't want to duplicate the hooks.
   // However that has resulted in performance issues, because we need to pass the props down, so we need inline components.
