@@ -89,6 +89,8 @@ function useAvailableRescuesData() {
     [setRescueBeingBooked, setToastMessage, availableRescuesQuery, myRescuesQuery],
   );
 
+  // TODO: Split rescues up into days, so we can rescues available day-by-day
+
   //const rescuesSorted = availableRescues?.slice(0);
   //rescuesSorted?.sort((ra, rb) => (ra > rb ? +1 : -1));
   // We can also use memoing on derived variables
@@ -108,19 +110,6 @@ function useAvailableRescuesData() {
 }
 
 export default function RescuesScreen() {
-  const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking, bookRescue } =
-    useAvailableRescuesData();
-
-  if (availableRescuesQuery.loading || rescueBeingBooked) {
-    return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
-  }
-
-  if (!availableRescues) return null;
-
-  // TODO: Split rescues up into days, so we can rescues available day-by-day
-
-  const passProps = { toastMessage, availableRescues, makingBooking, bookRescue };
-
   // I put the tab navigator after these hooks, because I didn't want to duplicate the hooks.
   // However that has resulted in performance issues, because we need to pass the props down, so we need inline components.
   // I have tried using pure compoenents to help with the performance issues.
@@ -128,8 +117,8 @@ export default function RescuesScreen() {
   return (
     // We disable swiping so that we can scroll the table horizontally
     <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
-      <Tab.Screen name="Calendar" component={() => <RescuesCalendarPure {...passProps} />} />
-      <Tab.Screen name="Favourites" component={() => <RescuesListPure {...passProps} />} />
+      <Tab.Screen name="Calendar" component={() => <RescuesCalendar />} />
+      <Tab.Screen name="Favourites" component={() => <RescuesList />} />
     </Tab.Navigator>
   );
 }
@@ -147,12 +136,17 @@ function RescuesLoadingSpinner({ rescueBeingBooked }: { rescueBeingBooked: strin
   );
 }
 
-const RescuesCalendarPure = React.memo(RescuesCalendar);
-
-function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRescue }: any) {
+function RescuesCalendar() {
   // Try to reduce sluggishness
   //const route = useRoute();
   //if (route.name !== 'Calendar') return null;
+
+  const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking, bookRescue } =
+    useAvailableRescuesData();
+  if (availableRescuesQuery.loading || rescueBeingBooked) {
+    return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
+  }
+  if (!availableRescues) return null;
 
   const allDates = new Set<string>();
   const rescuesBySiteThenDate = {} as Record<string, Record<string, PartialRescue>>;
@@ -231,12 +225,23 @@ function RescuesCalendar({ toastMessage, availableRescues, makingBooking, bookRe
   );
 }
 
-const RescuesListPure = React.memo(RescuesList);
-
-function RescuesList({ toastMessage, availableRescues: allAvailableRescues, makingBooking, bookRescue }: any) {
+function RescuesList() {
   // Try to reduce sluggishness
   //const route = useRoute();
   //if (route.name !== 'Favourites') return null;
+
+  const {
+    availableRescuesQuery,
+    rescueBeingBooked,
+    toastMessage,
+    availableRescues: allAvailableRescues,
+    makingBooking,
+    bookRescue,
+  } = useAvailableRescuesData();
+  if (availableRescuesQuery.loading || rescueBeingBooked) {
+    return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
+  }
+  if (!allAvailableRescues) return null;
 
   // Also to reduce sliggishness
   // TODO: This can't stay!
