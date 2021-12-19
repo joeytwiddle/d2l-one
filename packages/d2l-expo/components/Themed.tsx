@@ -8,6 +8,10 @@ import { ActivityIndicator, Button as DefaultButton, Text as DefaultText, View a
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 
+// Find the theme's color for the colorName you provide
+// But also allows your caller to override the theme's color
+// If caller wants to set their own color, they must provide an option for both light and dark themes
+// See the Button function for an example
 export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: keyof typeof Colors.light & keyof typeof Colors.dark,
@@ -58,7 +62,6 @@ export function Button(props: ButtonProps) {
 }
 
 export function LoadingSpinner() {
-  const theme = useColorScheme();
-
-  return <ActivityIndicator size={70} color={Colors[theme].tint} />;
+  const color = useThemeColor({}, 'tint');
+  return <ActivityIndicator size={70} color={color} />;
 }
