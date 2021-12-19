@@ -112,16 +112,7 @@ export default function RescuesScreen() {
     useAvailableRescuesData();
 
   if (availableRescuesQuery.loading || rescueBeingBooked) {
-    return (
-      <CentralizingContainer>
-        {rescueBeingBooked ? (
-          <PaddedBlock>
-            <Text>Booking {rescueBeingBooked}</Text>
-          </PaddedBlock>
-        ) : null}
-        <LoadingSpinner />
-      </CentralizingContainer>
-    );
+    return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
   }
 
   if (!availableRescues) return null;
@@ -140,6 +131,19 @@ export default function RescuesScreen() {
       <Tab.Screen name="Calendar" component={() => <RescuesCalendarPure {...passProps} />} />
       <Tab.Screen name="Favourites" component={() => <RescuesListPure {...passProps} />} />
     </Tab.Navigator>
+  );
+}
+
+function RescuesLoadingSpinner({ rescueBeingBooked }: { rescueBeingBooked: string }) {
+  return (
+    <CentralizingContainer>
+      {rescueBeingBooked ? (
+        <PaddedBlock>
+          <Text>Booking {rescueBeingBooked}</Text>
+        </PaddedBlock>
+      ) : null}
+      <LoadingSpinner />
+    </CentralizingContainer>
   );
 }
 
