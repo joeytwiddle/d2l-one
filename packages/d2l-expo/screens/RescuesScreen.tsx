@@ -136,6 +136,13 @@ function RescuesLoadingSpinner({ rescueBeingBooked }: { rescueBeingBooked: strin
   );
 }
 
+const bgStyle = (colIndex: number, rowIndex: number) => {
+  const shade = ((colIndex + 0) % 2) + ((rowIndex + 0) % 2);
+  const brightness = 255 - shade * 8; // TODO: Should invert for theme
+  const backgroundColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
+  return { backgroundColor };
+};
+
 function RescuesCalendar() {
   // Try to reduce sluggishness
   //const route = useRoute();
@@ -143,34 +150,34 @@ function RescuesCalendar() {
 
   const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking, bookRescue } =
     useAvailableRescuesData();
+
+  const { allDates, rescuesBySiteThenDate, sitesToShow, datesToShow } = React.useMemo(() => {
+    const allDates = new Set<string>();
+    const rescuesBySiteThenDate = {} as Record<string, Record<string, PartialRescue>>;
+    if (availableRescues) {
+      for (const rescue of availableRescues) {
+        const siteId = rescue.site.id;
+        const date = rescue.date;
+        rescuesBySiteThenDate[siteId] = rescuesBySiteThenDate[siteId] || {};
+        rescuesBySiteThenDate[siteId][date] = rescue;
+        allDates.add(date);
+      }
+    }
+
+    const sitesToShow = Object.keys(rescuesBySiteThenDate);
+
+    // Until we have a fixed order, we shall order alphabetically (otherwise they tend to jump about when we make bookings!)
+    sitesToShow.sort();
+
+    const datesToShow = Array.from(allDates.values());
+
+    return { allDates, rescuesBySiteThenDate, sitesToShow, datesToShow };
+  }, [availableRescues]);
+
   if (availableRescuesQuery.loading || rescueBeingBooked) {
     return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
   }
   if (!availableRescues) return null;
-
-  const allDates = new Set<string>();
-  const rescuesBySiteThenDate = {} as Record<string, Record<string, PartialRescue>>;
-  for (const rescue of availableRescues) {
-    const siteId = rescue.site.id;
-    const date = rescue.date;
-    rescuesBySiteThenDate[siteId] = rescuesBySiteThenDate[siteId] || {};
-    rescuesBySiteThenDate[siteId][date] = rescue;
-    allDates.add(date);
-  }
-
-  const sitesToShow = Object.keys(rescuesBySiteThenDate);
-
-  // Until we have a fixed order, we shall order alphabetically (otherwise they tend to jump about when we make bookings!)
-  sitesToShow.sort();
-
-  const datesToShow = Array.from(allDates.values());
-
-  const bgStyle = (colIndex: number, rowIndex: number) => {
-    const shade = ((colIndex + 0) % 2) + ((rowIndex + 0) % 2);
-    const brightness = 255 - shade * 8; // TODO: Should invert for theme
-    const backgroundColor = `rgb(${brightness}, ${brightness}, ${brightness})`;
-    return { backgroundColor };
-  };
 
   return (
     <View style={styles.tableContainer}>
