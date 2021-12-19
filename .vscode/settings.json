@@ -15,6 +15,10 @@
   // Get TypeScript assistance in JS files
   "js/ts.implicitProjectConfig.checkJs": true,
 
+  // This will scan the entire project for problems (not just open files) https://stackoverflow.com/q/55201424/99777
+  // So it can give you an early warning about errors.  But it is heavy on CPU.
+  //"typescript.tsserver.experimental.enableProjectDiagnostics": true,
+
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true
 
