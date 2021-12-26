@@ -129,6 +129,8 @@ setTimeout(() => {
     //console.log('siteGroups:', siteGroups);
     //const siteData = await db.getAllSiteData();
     //console.log('siteData:', siteData);
+    const siteGroupsForUser = await db.getSiteGroupsForUser('fff');
+    console.log('siteGroupsForUser:', siteGroupsForUser);
   })().catch(console.error);
 }, 1000);
 

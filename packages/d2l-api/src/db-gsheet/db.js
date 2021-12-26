@@ -89,8 +89,8 @@ async function callAPI(obj, methodName, ...args) {
 }
 
 const oneMinute = 60 * 1000;
-//const standardCacheDuration = 15 * 1000;
-const standardCacheDuration = 3 * 1000;
+const standardCacheDuration = 15 * 1000;
+//const standardCacheDuration = 3 * 1000;
 
 const getAllSiteDataCached = memoizeFunction(getAllSiteDataUncached, standardCacheDuration);
 const getGeneralDataCached = memoizeFunction(getGeneralDataUncached, standardCacheDuration);
@@ -508,6 +508,22 @@ async function getMemberGroupsUncached(month, memberGroupsSheet) {
   };
 }
 
+async function getSiteGroupsForUser(userId) {
+  const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
+  const { memberGroups, memberGroupsByUser } = await getMemberGroupsCached();
+
+  const availableSiteGroups = objectFromEntries(
+    Object.entries(siteGroups).filter(([siteGroupName, siteGroupData]) => {
+      const memberGroup = memberGroups[siteGroupData.memberGroup];
+      const isMember = memberGroup && memberGroup.members[userId];
+      return isMember;
+    }),
+  );
+
+  // Since GraphQL can't pass dictionaries, you may need to do Object.values() on this
+  return availableSiteGroups;
+}
+
 async function getAvailableRescuesForUser(userId) {
   const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
   const { memberGroups, memberGroupsByUser } = await getMemberGroupsCached();
@@ -608,6 +624,16 @@ async function assignUserToRescue(month, userId, rescueId) {
   return rescueData.allRescues.find(rescue => rescue.id === rescueId);
 }
 
+/** @type {<X>(arr: [string, X][]) => Record<string, X>} */
+function objectFromEntries(arr) {
+  /** @type Record<string, any> */
+  const obj = {};
+  for (const [key, value] of arr) {
+    obj[key] = value;
+  }
+  return obj;
+}
+
 const db = {
   //getGeneralDataCached,
   getUserByCredentials,
@@ -616,7 +642,8 @@ const db = {
   getAllRescuesForUser,
   getCurrentBookingPhase,
   //getSiteGroups: getSiteGroupsCached,
-  //getSiteMembers: getSiteMembersCached,
+  //getMemberGroups: getMemberGroupsCached,
+  getSiteGroupsForUser,
   getAvailableRescuesForUser,
   assignUserToRescue,
 };
