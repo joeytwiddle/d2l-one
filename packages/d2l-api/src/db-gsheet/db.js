@@ -575,6 +575,14 @@ async function assignUserToRescue(month, userId, rescueId) {
     throw new Error(`Rescue ${rescueId} is already booked by another user!`);
   }
 
+  const rescuesAvailableToUser = await getAvailableRescuesForUser(userId);
+  const rescueInAvailList = rescuesAvailableToUser.find(rescue => rescue.id === rescueId);
+  if (!rescueInAvailList) {
+    throw new Error(
+      `Rescue ${rescueId} is not available to you (perhaps you reached your booking limit for this group?)`,
+    );
+  }
+
   const [siteId, date] = rescueId.split('@');
   console.log('siteId:', siteId);
   console.log('date:', date);
