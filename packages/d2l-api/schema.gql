@@ -19,6 +19,7 @@ type Query {
   rescues: [Rescue!]
   allRescuesForMonth(month: String!): [Rescue!]
   myRescues: [Rescue!]
+  siteGroupsForCurrentUser: [SiteGroup!]
   availableRescuesForCurrentUser: [Rescue!]
   #search(term: String!): [SearchResult!]!
 }
@@ -62,6 +63,13 @@ type Site {
 type BooleanResponse {
   success: Boolean!
   reason: String
+}
+
+type SiteGroup {
+  groupName: String!
+  memberGroup: String!
+  bookLimit: Int!
+  sites: [String!]
 }
 
 query GetUser {
@@ -109,6 +117,15 @@ query GetAllRescues {
       id
       name
     }
+  }
+}
+
+query GetSiteGroupsForCurrentUser {
+  siteGroupsForCurrentUser {
+    groupName
+    memberGroup
+    bookLimit
+    sites
   }
 }
 

@@ -50,6 +50,11 @@ const root = {
     return await db.getAllRescues(args.month);
   },
 
+  async siteGroupsForCurrentUser(args, request) {
+    const userId = request.session.user.id;
+    return Object.values(await db.getSiteGroupsForUser(userId));
+  },
+
   async availableRescuesForCurrentUser(args, request) {
     return await db.getAvailableRescuesForUser(request.session.user.id);
   },
