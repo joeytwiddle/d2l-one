@@ -66,7 +66,10 @@ const logResponse = (req, res, next) => {
 const authenticatedOrLoggingIn = (req, res, next) => {
   const { ip, method, url, path, query, params, body } = req;
   const operationName = body && body.operationName;
-  if (req.session.user || operationName === 'GetUser' || operationName === 'LogIn') {
+  const isLoggedIn = !!req.session.user;
+  const isTryingToLogIn = operationName === 'GetUser' || operationName === 'LogIn';
+  const isUsingGraphiQL = !operationName || operationName === 'IntrospectionQuery';
+  if (isLoggedIn || isTryingToLogIn || isUsingGraphiQL) {
     next();
   } else {
     console.warn(
