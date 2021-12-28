@@ -67,6 +67,8 @@ const authenticatedOrLoggingIn = (req, res, next) => {
   const { ip, method, url, path, query, params, body } = req;
   const operationName = body && body.operationName;
   const isLoggedIn = !!req.session.user;
+  // TODO: This is bad security.  operationName can be anything the client wants to call it!  More important is the contents of the query.
+  // TODO: We had probably better put the checks inside resolvers.js, after the query hass been parsed for us.
   const isTryingToLogIn = operationName === 'GetUser' || operationName === 'LogIn';
   const isUsingGraphiQL = !operationName || operationName === 'IntrospectionQuery';
   if (isLoggedIn || isTryingToLogIn || isUsingGraphiQL) {
