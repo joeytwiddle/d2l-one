@@ -1,11 +1,8 @@
 const db = require('./db-gsheet/db.js');
 
-// To add authorization, e.g. some routes only for ADMINs, consider using an ifAdmin() wrapper
-// Example using authenticated() and validateRole(): https://the-guild.dev/blog/graphql-modules-auth
-
 // The root provides a resolver function for each API endpoint
 const root = {
-  async logIn(args, request) {
+  logIn: ifAny(async (args, request) => {
     //await new Promise(resolve => setTimeout(resolve, 1000));
 
     if (!args.username) {
@@ -24,44 +21,76 @@ const root = {
     request.session.user = user;
 
     return { success: true };
-  },
+  }),
 
-  async me(args, request) {
+  me: ifAny(async (args, request) => {
     //await new Promise(resolve => setTimeout(resolve, 5000));
     console.log('request.session.user:', request.session.user);
     return request.session.user;
-  },
+  }),
 
-  async myRescues(args, request) {
+  myRescues: ifUser(async (args, request) => {
     const userId = request.session.user.id;
     return await db.getAllRescuesForUser(userId);
-  },
+  }),
 
-  async availableRescues(args, request) {
+  availableRescues: ifUser(async (args, request) => {
     const userId = request.session.user.id;
     return await db.getAvailableRescuesForUser(userId);
-  },
+  }),
 
-  async rescues() {
+  rescues: ifUser(async () => {
     return await db.getAllRescues();
-  },
+  }),
 
-  async allRescuesForMonth(args) {
+  allRescuesForMonth: ifUser(async args => {
     return await db.getAllRescues(args.month);
-  },
+  }),
 
-  async siteGroupsForCurrentUser(args, request) {
+  siteGroupsForCurrentUser: ifUser(async (args, request) => {
     const userId = request.session.user.id;
     return Object.values(await db.getSiteGroupsForUser(userId));
-  },
+  }),
 
-  async availableRescuesForCurrentUser(args, request) {
+  availableRescuesForCurrentUser: ifUser(async (args, request) => {
     return await db.getAvailableRescuesForUser(request.session.user.id);
-  },
+  }),
 
-  async assignSelfToRescue(args, request) {
+  assignSelfToRescue: ifUser(async (args, request) => {
     return await db.assignUserToRescue(undefined, request.session.user.id, args.rescueId);
-  },
+  }),
 };
 
 module.exports = root;
+
+// Our authorization approach is loosely based on authenticated() and validateRole() from https://the-guild.dev/blog/graphql-modules-auth
+
+function ifAny(resolver) {
+  return (args, request, context) => {
+    return resolver(args, request, context);
+  };
+}
+
+function ifUser(resolver) {
+  return (args, request, context) => {
+    if (!request.session.user) {
+      throw new Error('Not logged in');
+    }
+
+    return resolver(args, request, context);
+  };
+}
+
+function ifAdmin(resolver) {
+  return (args, request, context) => {
+    if (!request.session.user) {
+      throw new Error('Not logged in');
+    }
+
+    if (request.session.user.role !== 'ADMIN') {
+      throw new Error('Requires admin role');
+    }
+
+    return resolver(args, request, context);
+  };
+}

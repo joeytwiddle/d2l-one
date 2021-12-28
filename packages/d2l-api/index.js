@@ -58,31 +58,6 @@ const logResponse = (req, res, next) => {
   next();
 };
 
-// This middleware only allows operations from authenticated users
-// With the exception of two operations related to login
-//
-// NOTE: For more fine-grained authorization, add wrappers to individual resolvers in resolvers.js
-//
-const authenticatedOrLoggingIn = (req, res, next) => {
-  const { ip, method, url, path, query, params, body } = req;
-  const operationName = body && body.operationName;
-  const isLoggedIn = !!req.session.user;
-  // TODO: This is bad security.  operationName can be anything the client wants to call it!  More important is the contents of the query.
-  // TODO: We had probably better put the checks inside resolvers.js, after the query hass been parsed for us.
-  const isTryingToLogIn = operationName === 'GetUser' || operationName === 'LogIn';
-  const isUsingGraphiQL = !operationName || operationName === 'IntrospectionQuery';
-  if (isLoggedIn || isTryingToLogIn || isUsingGraphiQL) {
-    next();
-  } else {
-    console.warn(
-      `${isoDate()} (express) XX [${ip}] Trying to access unauthorized route: ${path} ${JSON.stringify(req.body)}`,
-    );
-    //next(new Error('Forbidden'));
-    res.status(403);
-    res.end();
-  }
-};
-
 app.use(
   session({
     secret: 'house overleaf feeder listlessness nugget flood',
@@ -102,7 +77,6 @@ app.use(logResponse);
 
 app.use(
   '/graphql',
-  authenticatedOrLoggingIn,
   graphqlHTTP({
     schema: schema,
     rootValue: root,
