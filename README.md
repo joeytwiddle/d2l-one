@@ -80,9 +80,13 @@ To create `packages/d2l-api/google-api-token.json`:
 
 3. On the console, you will be prompted to open a URL
 
-4. Follow the instructions on the URL, then copy the code it gives you, and paste it to the d2l-api process
+4. Follow the instructions on the URL, and log in as `d2l.sg.dev@gmail.com`
 
-Note: After a couple of weeks, my token was revoked. I think Google did that auomatically because our app is still in testing phase. (Source: 3. [here](https://stackoverflow.com/a/67456685)) You may be able to verify this by looking at the [activity page](https://console.cloud.google.com/home/activity) to see if Google automatically deleted the keys.
+5. Then copy the code it gives you, and paste it to the d2l-api process
+
+Note: After a couple of weeks, my token was revoked. The API server logged an `invalid_grant` error. I think Google did that auomatically because our app is still in testing phase. (Source: 3. [here](https://stackoverflow.com/a/67456685)) You may be able to verify this by looking at the [activity page](https://console.cloud.google.com/home/activity) to see if Google automatically deleted the keys.
+
+When `invalid_grant` happens, go to step 1 above to generate a new one.
 
 ## Deployment
 
