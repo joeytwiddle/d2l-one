@@ -35,18 +35,10 @@ It also contains a deployment script, to deploy all three packages to the produc
 
 ### Install npm packages
 
-Install packages in all the folders:
+This should also install for the sub-projects.
 
 ```
 yarn install
-
-cd packages/d2l-api
-yarn install
-cd ../..
-
-cd packages/d2l-expo
-yarn install
-cd ../..
 ```
 
 ### Running

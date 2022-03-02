@@ -8,6 +8,7 @@
     "prettier": "^2.5.0"
   },
   "scripts": {
+    "postinstall": "cd packages/d2l-api && yarn install && cd ../d2l-expo && yarn install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
