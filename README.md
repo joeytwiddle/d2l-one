@@ -16,10 +16,13 @@ It also contains a deployment script, to deploy all three packages to the produc
 
 - Install node v16 (I like to use nvm)
 
+  ```
+  nvm use
+  ```
+
 - Install yarn
 
   ```
-  nvm use
   # Install yarn
   npm install -g yarn
   ```
@@ -32,11 +35,19 @@ It also contains a deployment script, to deploy all three packages to the produc
 
 ### Install npm packages
 
-Run `yarn install` multiple times:
+Install packages in all the folders:
 
-- Once inside the repo's root folder
-- Once inside `packages/d2l-api`
-- Once inside `packages/d2l-expo`
+```
+yarn install
+
+cd packages/d2l-api
+yarn install
+cd ../..
+
+cd packages/d2l-expo
+yarn install
+cd ../..
+```
 
 ### Running
 
