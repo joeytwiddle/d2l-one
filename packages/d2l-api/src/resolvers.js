@@ -66,23 +66,23 @@ module.exports = root;
 // Our authorization approach is loosely based on authenticated() and validateRole() from https://the-guild.dev/blog/graphql-modules-auth
 
 function ifAny(resolver) {
-  return (args, request, context) => {
-    return resolver(args, request, context);
+  return (args, request, context, info) => {
+    return resolver(args, request, context, info);
   };
 }
 
 function ifUser(resolver) {
-  return (args, request, context) => {
+  return (args, request, context, info) => {
     if (!request.session.user) {
       throw new Error('Not logged in');
     }
 
-    return resolver(args, request, context);
+    return resolver(args, request, context, info);
   };
 }
 
 function ifAdmin(resolver) {
-  return (args, request, context) => {
+  return (args, request, context, info) => {
     if (!request.session.user) {
       throw new Error('Not logged in');
     }
@@ -91,6 +91,6 @@ function ifAdmin(resolver) {
       throw new Error('Requires admin role');
     }
 
-    return resolver(args, request, context);
+    return resolver(args, request, context, info);
   };
 }
