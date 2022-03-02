@@ -1,3 +1,4 @@
+# Note: An alternative to graphql-codegen might be to generate GQL from TS, rather than TS from GQL https://typegraphql.com/docs/introduction.html
 overwrite: true
 #schema: 'http://localhost:4000/graphql'
 schema: schema.gql
