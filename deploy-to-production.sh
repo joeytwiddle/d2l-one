@@ -24,6 +24,17 @@ then
 	exit 1
 fi
 
+if [ -z "$DEPLOY_WEB_APP" ]
+then
+  echo
+  echo "NOTE: If you have worked on the front-end, then you need to do a build before deploying."
+  echo
+  echo "Hit CTRL-C and run: ./build-and-deploy.sh"
+  echo
+
+  sleep 4
+fi
+
 if [ -n "$START_FRESH_SSH_AGENT" ]
 then
 	# I now have too many keys in my ssh-agent, which causes login attempts to fail with "Too many authentication failures" after a few keys are attempted
