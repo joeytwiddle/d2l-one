@@ -75,6 +75,15 @@ async function callAPI(obj, methodName, ...args) {
             args,
           )})`,
         );
+        // In the case of an invalid token, Axios produces a huge error with lots of details we don't need.
+        // So if we detect that situation, we will produce a much smaller error, to focus on the developer's needs.
+        if (String(error).match(/(invalid_grant|The request is missing a valid API key)/)) {
+          reject(
+            new Error(
+              'Your Google API token has expired. Please delete google-api-token.json, restart the API server, open the link shown in the console, and finally paste the authorization code into this window.',
+            ),
+          );
+        }
         reject(error);
       });
   });
