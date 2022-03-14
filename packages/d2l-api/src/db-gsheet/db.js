@@ -402,6 +402,7 @@ async function getGeneralDataUncached() {
   return map;
 }
 
+/** @type {() => Promise<string>} */
 async function getCurrentBookingMonth() {
   const generalData = await getGeneralDataCached();
   console.log('generalData:', generalData);
@@ -473,6 +474,12 @@ async function getSiteGroupsUncached(month, siteGroupsSheet) {
   };
 }
 
+/**
+ * @type {(month: string, memberGroupSheet: string) => Promise<{
+ *   memberGroups: Record<string, MemberGroup>;
+ *   memberGroupsByUser: Record<string, string[]>;
+ * }>}
+ */
 async function getMemberGroupsUncached(month, memberGroupsSheet) {
   month = month || (await getCurrentBookingMonth());
   memberGroupsSheet = memberGroupsSheet || (await getCurrentMemberGroupsSheet());
