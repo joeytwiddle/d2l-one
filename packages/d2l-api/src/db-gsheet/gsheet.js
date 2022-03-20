@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
+const { GoogleAuth } = require('google-auth-library');
 
 // This file was adapted from the Google Sheets Quickstart:
 //
@@ -31,7 +32,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
+function authorizeOAuth2(credentials, callback) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
@@ -76,11 +77,46 @@ function getNewToken(oAuth2Client, callback) {
 
 // Our code
 
+function authorizeServiceAccount(credentials, callback) {
+  const { client_email, private_key } = credentials;
+
+  // Helpful:
+  // https://stackoverflow.com/questions/58565907/google-sheets-api-authorization-with-a-service-account
+  // https://stackoverflow.com/questions/38949318/google-sheets-api-returns-the-caller-does-not-have-permission-when-using-serve
+
+  // GoogleAuth and JWT both work
+
+  const authClient = new GoogleAuth({
+    //keyFile: 'service-account-credentials.json',
+    credentials: {
+      client_email,
+      private_key,
+    },
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+
+  /*
+  const authClient = new google.auth.JWT(client_email, null, private_key, [
+    'https://www.googleapis.com/auth/spreadsheets',
+  ]);
+  */
+
+  callback(authClient);
+}
+
 function initAuth(callback) {
+  // Authorize a client with credentials, then call the Google Sheets API.
+
+  /*
   fs.readFile('google-api-credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
-    // Authorize a client with credentials, then call the Google Sheets API.
-    authorize(JSON.parse(content.toString()), callback);
+    authorizeOAuth2(JSON.parse(content.toString()), callback);
+  });
+  */
+
+  fs.readFile('service-account-credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    authorizeServiceAccount(JSON.parse(content.toString()), callback);
   });
 }
 
