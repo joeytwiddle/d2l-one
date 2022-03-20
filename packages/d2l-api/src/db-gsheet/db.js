@@ -75,7 +75,8 @@ async function callAPI(obj, methodName, ...args) {
             args,
           )})`,
         );
-        console.error('error.response.data.error:', deepInspect((error.response.data || {}).error));
+        const errorObject = (error.response.data || {}).error;
+        console.error('error.response.data.error:', deepInspect(errorObject));
         // In the case of an invalid token, Axios produces a huge error with lots of details we don't need.
         // So if we detect that situation, we will produce a much smaller error, to focus on the developer's needs.
         if (String(error).match(/(invalid_grant|The request is missing a valid API key)/)) {
@@ -84,6 +85,10 @@ async function callAPI(obj, methodName, ...args) {
               'Your Google API token has expired. Please delete google-api-token.json, restart the API server, open the link shown in the console, and finally paste the authorization code into this window.',
             ),
           );
+        }
+        // If we reject(error) then it logs a huge response object.  We may be able to focus on something more important.
+        if (errorObject && typeof errorObject.message === 'string') {
+          reject(new Error(errorObject.message));
         }
         reject(error);
       });
