@@ -86,6 +86,13 @@ async function callAPI(obj, methodName, ...args) {
             ),
           );
         }
+        if (String(error).match(/The caller does not have permission/)) {
+          reject(
+            new Error(
+              'The caller does not have permission. Please ensure the spreadsheet has been shared with the client_email in service-provider-credentials.json',
+            ),
+          );
+        }
         // If we reject(error) then it logs a huge response object.  We may be able to focus on something more important.
         if (errorObject && typeof errorObject.message === 'string') {
           reject(new Error(errorObject.message));
