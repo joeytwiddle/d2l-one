@@ -27,7 +27,7 @@ fi
 if [ -z "$DEPLOY_WEB_APP" ]
 then
   echo
-  echo "NOTE: If you have worked on the front-end, then you need to do a build before deploying."
+  echo "NOTE: If you have updated the front-end, then you need to do a build before deploying."
   echo
   echo "Hit CTRL-C and run: ./build-and-deploy.sh"
   echo
