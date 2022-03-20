@@ -2,7 +2,7 @@
 const gsheet = require('./gsheet.js');
 // Docs: https://www.npmjs.com/package/memoizee
 const memoize = require('memoizee');
-const { isoDate, inspectOneLine, shortDateString } = require('../lib/util.js');
+const { isoDate, inspectOneLine, shortDateString, deepInspect } = require('../lib/util.js');
 
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
@@ -75,6 +75,7 @@ async function callAPI(obj, methodName, ...args) {
             args,
           )})`,
         );
+        console.error('error.response.data.error:', deepInspect((error.response.data || {}).error));
         // In the case of an invalid token, Axios produces a huge error with lots of details we don't need.
         // So if we detect that situation, we will produce a much smaller error, to focus on the developer's needs.
         if (String(error).match(/(invalid_grant|The request is missing a valid API key)/)) {
