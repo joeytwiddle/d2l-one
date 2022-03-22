@@ -59,37 +59,19 @@ Open the repo root folder (`code .`), not the individual subfolders, to benefit 
 
 ### Authentication with Google Sheets
 
-You may be able to get these files from an existing developer, but if not, here are instructions to recreate them.
+You should be able to get the file `packages/d2l-api/service-account-credentials.json` from another developer, so you won't need these instructions.
 
-To create `packages/d2l-api/google-api-credentials.json`:
+But anyway, this notes how the credentials were created:
 
 1. You will need to be logged in to Google Cloud Console as`d2l.sg.dev@gmail.com`.
 
-2. Visit the [OAuth conent screen](https://console.cloud.google.com/apis/credentials/consent?project=d2l-one-334008) settings and register yourself as a Test User (if you are not listed there already).
+2. Visit the [Google API Credentials screen](https://console.cloud.google.com/apis/credentials?project=d2l-one-334008) and create a new service account.
 
-3. Visit the [Credentials](https://console.cloud.google.com/apis/credentials?project=d2l-one-334008) page and Create a new credential
+3. Open up the service account, open the Keys tab, and create a new key.
 
-   Type: "OAuth Client ID"
+4. Download the private key file in JSON format.
 
-   Application type: This should be type "Desktop" (even though were are developing an API server)
-
-4. Download the JSON, and save it to the aforementioned filename.
-
-To create `packages/d2l-api/google-api-token.json`:
-
-1. Delete the existing token file
-
-2. Run the d2l-api server (you need terminal access, so don't run it as a daemon through init)
-
-3. On the console, you will be prompted to open a URL
-
-4. Follow the instructions on the URL, and log in as `d2l.sg.dev@gmail.com`
-
-5. Then copy the code it gives you, and paste it to the d2l-api process
-
-Note: After a couple of weeks, my token was revoked. The API server logged an `invalid_grant` error. I think Google did that auomatically because our app is still in testing phase. (Source: 3. [here](https://stackoverflow.com/a/67456685)) You may be able to verify this by looking at the [activity page](https://console.cloud.google.com/home/activity) to see if Google automatically deleted the keys.
-
-When `invalid_grant` happens, go to step 1 above to generate a new one.
+5. Save the file at `packages/d2l-api/service-account-credentials-development.json`
 
 ## Deployment
 
