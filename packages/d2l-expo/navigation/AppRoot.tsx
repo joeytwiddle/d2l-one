@@ -2,13 +2,16 @@ import * as React from 'react';
 import { ColorSchemeName, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { apiUrl } from '../config/config';
-import { useGetUserQuery } from '../graphql';
+import { useGetUserQuery, User } from '../graphql';
 import useUser from '../hooks/useUser';
 import Navigation from './Navigation';
 import WelcomeAndLogin from './WelcomeAndLogin';
 
 export default function AppRoot({ colorScheme }: { colorScheme: ColorSchemeName }) {
-  const user = useUser();
+  // This is the function we usually use to get the user
+  const user = useUser() as User | null;
+
+  // But for the initial startup, it's helpful to know if there was an error
   const userQueryResult = useGetUserQuery();
 
   if (userQueryResult.loading) {

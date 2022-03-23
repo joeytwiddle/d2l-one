@@ -29,7 +29,7 @@ export default function LoginScreen() {
       .catch(handleGlobalError);
   };
 
-  // This temporarily flashes on the screen after a successful login, before the page changes
+  // BUG: This message temporarily flashes on the screen after a successful login, before the page changes (maybe fixed now?)
   const loginProcessFailureMessage =
     logInMutation.data?.logIn.success && !userQuery.loading && userQuery.data && userQuery.data.me == null
       ? `Login succeeded but user not fetched. Possibly a same-domain cookie issue. (Make sure your webpage is on the same domain as the API: ${apiDomain})`
