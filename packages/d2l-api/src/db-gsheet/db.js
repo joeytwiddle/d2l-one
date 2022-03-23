@@ -120,7 +120,12 @@ const getAllUserDataCached = memoizeFunction(getAllUserDataUncached, standardCac
 const getAllRescueDataCached = memoizeFunction(getAllRescueDataUncached, standardCacheDuration);
 const getSiteGroupsCached = memoizeFunction(getSiteGroupsUncached, standardCacheDuration);
 const getMemberGroupsCached = memoizeFunction(getMemberGroupsUncached, standardCacheDuration);
-const getFormattedSpreadsheetCached = memoizeFunction(getFormattedSpreadsheetUncached, 15 * oneMinute);
+const getFormattedSpreadsheetCached = memoizeFunction(getFormattedSpreadsheetUncached, 30 * oneMinute);
+
+// Because the formatting data is so slow to fetch, we will automatically refresh the cache when it expires
+setTimeout(() => {
+  const _ = getFormattedSpreadsheetCached();
+}, 30.2 * oneMinute);
 
 async function getUserByCredentials(username, password) {
   const { allUsers } = await getAllUserDataCached();
