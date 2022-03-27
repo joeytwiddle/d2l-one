@@ -308,15 +308,17 @@ async function getAllRescueDataUncached(month) {
   /** @type {Record<string, Rescue[]>} */
   const rescuesByRescuer = {};
   const mapDateToRow = {};
+
   for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
     const row = sheetData[rowIndex];
-    //console.log('row:', JSON.stringify(row));
-    //const date = new Date(`${row[0]} UTC+08:00`);
-    const date = new Date(`${row[0]}`);
+    const dateStr = String(row[0]);
+    // dateStr appears to us as: "Thu 9 Dec"
+    const looksLikeDate = dateStr.match(/^[A-Z][a-z][a-z] [0-9]+ [A-Z][a-z][a-z]$/);
+    if (!looksLikeDate) continue;
+    const date = getDateFromString(dateStr);
     const isRealDate = date.getTime() >= 0;
-    // Skip the row if it isn't a real day
+    // Skip the row if it didn't parse into a real date
     if (!isRealDate) continue;
-    //console.log('row:', JSON.stringify(row));
 
     const shortDate = shortDateString(date);
     mapDateToRow[shortDate] = rowIndex;
@@ -393,6 +395,19 @@ async function getAllRescueDataUncached(month) {
     mapSiteToColumn,
     mapDateToRow,
   };
+}
+
+function getDateFromString(dateStr) {
+  // Takes a string of the form "Thu 9 Dec"
+  // If we drop this straight into `new Date()` then it will get the wrong year: 2001
+  // So we will first guess the appropriate year (based on today's date), and use that to create the final date object
+  const weAreAtTheEndOfTheYear = new Date().getMonth() + 1 >= 9;
+  const dateWithWrongYear = new Date(`${dateStr} 2000`);
+  const thatDateIsAtTheStartOfTheYear = dateWithWrongYear.getMonth() + 1 <= 4;
+  const thatDateIsProbablyNextYear = weAreAtTheEndOfTheYear && thatDateIsAtTheStartOfTheYear;
+  const thisYear = new Date().getFullYear();
+  const yearProbablyIntended = thatDateIsProbablyNextYear ? thisYear + 1 : thisYear;
+  return new Date(`${dateStr} ${yearProbablyIntended}`);
 }
 
 async function getAllRescues(month) {
