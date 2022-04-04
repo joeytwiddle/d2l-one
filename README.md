@@ -97,9 +97,7 @@ If you need some of these files, contact one of the existing admins.
 
 - `/deployment.cfg` - Some environment variables for the `deploy-to-production.sh` script
 
-- `/packages/d2l-api/google-api-credentials.json` - General OAuth account for the app
-
-- `/packages/d2l-api/google-api-token.json` - Token offering access to a specific Google Drive
+- `/packages/d2l-api/service-account-credentials.json` - General OAuth account for the app
 
 - `d2l.sg.secrets.txt` - Contains account details for the Google account, domain registrar account, CloudFlare account, etc.
 
