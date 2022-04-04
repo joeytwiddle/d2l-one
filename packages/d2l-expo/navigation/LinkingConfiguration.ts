@@ -16,6 +16,7 @@ const linking: LinkingOptions<RootStackParamList> = {
         // Makes the entire app appear in a subfolder
         // This should match where you want the app to appear on the website
         // https://reactnavigation.org/docs/5.x/configuring-links/#matching-exact-paths
+        // So this causes our app to appear at /app and everything else will come below that
         path: 'app',
         screens: {
           Dashboard: {
