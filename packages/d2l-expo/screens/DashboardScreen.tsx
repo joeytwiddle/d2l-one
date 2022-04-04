@@ -26,8 +26,8 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
           <Text>Welcome {user.name}</Text>
         </PaddedBlock>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text style={styles.title}>Your upcoming rescues</Text>
         <View style={styles.upcomingRescues}>
+          <Text style={styles.title}>Your upcoming rescues</Text>
           {!myRescues && <LoadingSpinner />}
           {myRescues && myRescues.length === 0 && <Text>No rescues booked</Text>}
           {myRescues && myRescues.map(rescue => <RescueCard key={rescue.id} rescue={rescue} />)}
@@ -59,5 +59,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
+    backgroundColor: '#f2f2f2',
   },
 });
