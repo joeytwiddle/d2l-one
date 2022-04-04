@@ -59,6 +59,10 @@ const root = {
   assignSelfToRescue: ifUser(async (args, request) => {
     return await db.assignUserToRescue(undefined, request.session.user.id, args.rescueId);
   }),
+
+  unassignSelfFromRescue: ifUser(async (args, request) => {
+    return await db.unassignUserFromRescue(undefined, request.session.user.id, args.rescueId);
+  }),
 };
 
 module.exports = root;

@@ -665,12 +665,55 @@ async function assignUserToRescue(month, userId, rescueId) {
   });
 
   // @ts-ignore We could fix this
+  await getAllRescueDataCached.clear();
+  // TODO: Any more to clear?  Make a convenience function.
+
+  const newRescueData = await getAllRescueDataCached();
+  const rescueNow = rescueData.allRescues.find(rescue => rescue.id === rescueId);
+  console.log('rescueNow:', rescueNow);
+  return rescueNow;
+}
+
+async function unassignUserFromRescue(month, userId, rescueId) {
+  month = month || (await getCurrentBookingMonth());
+
+  const rescueData = await getAllRescueDataUncached(month);
+
+  const existingRescue = rescueData.allRescues.find(rescue => rescue.id === rescueId);
+  if (!existingRescue) {
+    throw new Error(`That rescue does not exist for month '${month}'`);
+  }
+  if (!existingRescue.rescuer) {
+    throw new Error(`Rescue ${rescueId} is not booked!`);
+  }
+  if (existingRescue.rescuer && existingRescue.rescuer.id !== userId) {
+    throw new Error(`Rescue ${rescueId} is already booked by another user!`);
+  }
+
+  const [siteId, date] = rescueId.split('@');
+  console.log('siteId:', siteId);
+  console.log('date:', date);
+  const rowIndex = rescueData.mapDateToRow[date];
+  const colIndex = rescueData.mapSiteToColumn[siteId];
+  // TODO: Sanity check
+  console.log('rowIndex:', rowIndex);
+  console.log('colIndex:', colIndex);
+
+  const response = await callAPI(gsheet.values(), 'update', {
+    spreadsheetId,
+    range: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+    valueInputOption: 'RAW',
+    resource: { values: [['']] },
+  });
+
+  // @ts-ignore We could fix this
   getAllRescueDataCached.clear();
   // TODO: Any more to clear?  Make a convenience function.
 
-  const newRescueData = getAllRescueDataCached();
-  console.log('newRescueData:', newRescueData);
-  return rescueData.allRescues.find(rescue => rescue.id === rescueId);
+  const newRescueData = await getAllRescueDataCached();
+  const rescueNow = rescueData.allRescues.find(rescue => rescue.id === rescueId);
+  console.log('rescueNow:', rescueNow);
+  return rescueNow;
 }
 
 /** @type {<X>(arr: [string, X][]) => Record<string, X>} */
@@ -695,6 +738,7 @@ const db = {
   getSiteGroupsForUser,
   getAvailableRescuesForUser,
   assignUserToRescue,
+  unassignUserFromRescue,
 };
 
 module.exports = db;

@@ -27,6 +27,7 @@ type Query {
 type Mutation {
   logIn(username: String!, password: String!): BooleanResponse!
   assignSelfToRescue(rescueId: RescueID!): Rescue!
+  unassignSelfFromRescue(rescueId: RescueID!): Rescue!
 }
 
 enum Role {
@@ -149,6 +150,15 @@ mutation LogIn($username: String!, $password: String!) {
 
 mutation AssignSelfToRescue($rescueId: RescueID!) {
   assignSelfToRescue(rescueId: $rescueId) {
+    id
+    rescuer {
+      id
+    }
+  }
+}
+
+mutation UnassignSelfFromRescue($rescueId: RescueID!) {
+  unassignSelfFromRescue(rescueId: $rescueId) {
     id
     rescuer {
       id
