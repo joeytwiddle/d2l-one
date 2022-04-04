@@ -118,7 +118,7 @@ export default function RescuesScreen() {
     // We disable swiping so that we can scroll the table horizontally
     <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
       <Tab.Screen name="Calendar" component={() => <RescuesCalendar />} />
-      <Tab.Screen name="Favourites" component={() => <RescuesList />} />
+      <Tab.Screen name="Favourites" component={() => <FavouriteRescues />} />
     </Tab.Navigator>
   );
 }
@@ -264,7 +264,7 @@ function RescuesCalendarView({
   );
 }
 
-function RescuesList() {
+function FavouriteRescues() {
   // Try to reduce sluggishness
   //const route = useRoute();
   //if (route.name !== 'Favourites') return null;
