@@ -630,6 +630,8 @@ async function getAvailableRescuesForUser(userId) {
 async function assignUserToRescue(month, userId, rescueId) {
   month = month || (await getCurrentBookingMonth());
 
+  // TODO: Queue this processing, to avoid double-bookings
+
   const rescueData = await getAllRescueDataUncached(month);
 
   const existingRescue = rescueData.allRescues.find(rescue => rescue.id === rescueId);
