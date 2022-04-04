@@ -6,12 +6,13 @@ import { PartialRescue } from '../client-types';
 export default function RescueCard({
   rescue,
   additional: Additional,
+  ...rest
 }: {
   rescue: PartialRescue;
   additional?: React.ComponentType<any>;
 }) {
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} {...rest}>
       <Title>
         {rescue.site.fullName} at {rescue.date}
       </Title>
