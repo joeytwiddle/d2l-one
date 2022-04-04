@@ -150,5 +150,8 @@ mutation LogIn($username: String!, $password: String!) {
 mutation AssignSelfToRescue($rescueId: RescueID!) {
   assignSelfToRescue(rescueId: $rescueId) {
     id
+    rescuer {
+      id
+    }
   }
 }
