@@ -14,8 +14,8 @@ schema {
 
 type Query {
   me: User
-  user(id: UserID!): User
-  allUsers: [User!]
+  #user(id: UserID!): User
+  #allUsers: [User!]
   rescues: [Rescue!]
   allRescuesForMonth(month: String!): [Rescue!]
   myRescues: [Rescue!]
