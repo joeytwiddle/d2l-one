@@ -1,5 +1,6 @@
 const tintColorLight = 'hsl(117, 44%, 45%)';
 const tintColorDark = 'hsl(117, 44%, 50%)';
+const tintColorFaint = 'hsl(117, 44%, 60%)';
 
 export default {
   light: {
@@ -10,6 +11,7 @@ export default {
     tabIconSelected: tintColorLight,
     primary: tintColorLight,
     accent: tintColorLight,
+    secondary: tintColorFaint,
   },
   dark: {
     text: '#fff',
@@ -19,5 +21,6 @@ export default {
     tabIconSelected: tintColorDark,
     primary: tintColorDark,
     accent: tintColorDark,
+    secondary: '#222',
   },
 };

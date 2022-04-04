@@ -61,6 +61,13 @@ export function Button(props: ButtonProps) {
   return <DefaultButton color={color} {...otherProps} />;
 }
 
+export function SecondaryButton(props: ButtonProps) {
+  const { ...otherProps } = props;
+  const secondaryColor = useThemeColor({}, 'secondary');
+
+  return <DefaultButton color={secondaryColor} {...otherProps} />;
+}
+
 export function LoadingSpinner() {
   const color = useThemeColor({}, 'tint');
   return <ActivityIndicator size={70} color={color} />;
