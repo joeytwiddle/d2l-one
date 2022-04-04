@@ -29,8 +29,23 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
         <View style={styles.upcomingRescues}>
           <Text style={styles.title}>Your upcoming rescues</Text>
           {!myRescues && <LoadingSpinner />}
-          {myRescues && myRescues.length === 0 && <Text>No rescues booked</Text>}
-          {myRescues && myRescues.map(rescue => <RescueCard key={rescue.id} rescue={rescue} />)}
+          {myRescues && myRescues.length === 0 && (
+            <PaddedBlock>
+              <Text>No rescues booked</Text>
+            </PaddedBlock>
+          )}
+          {myRescues &&
+            myRescues.map(rescue => (
+              <RescueCard
+                key={rescue.id}
+                rescue={rescue}
+                onPress={() =>
+                  navigation.navigate('BookedRescueScreen', {
+                    rescueId: rescue.id,
+                  })
+                }
+              />
+            ))}
         </View>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       </View>

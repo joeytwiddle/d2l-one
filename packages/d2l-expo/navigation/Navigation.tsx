@@ -13,6 +13,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import Colors from '../constants/Colors';
 import { CombinedDarkTheme, CombinedDefaultTheme } from '../constants/Themes';
 import useColorScheme from '../hooks/useColorScheme';
+import BookedRescueScreen from '../screens/BookedRescueScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -45,6 +46,9 @@ function RootNavigator() {
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
+      </Stack.Group>
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen name="BookedRescueScreen" component={BookedRescueScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );
