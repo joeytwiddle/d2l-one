@@ -10,6 +10,8 @@ generates:
   src/graphql-types.d.ts:
     plugins:
       - 'typescript'
+    config:
+      skipTypename: true
   # For the front-end / clients
   ../d2l-expo/graphql.tsx:
     plugins:
