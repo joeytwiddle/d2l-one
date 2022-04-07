@@ -47,6 +47,10 @@ const root = {
     return await db.getAllRescues(args.month);
   }),
 
+  allSites: ifUser(async args => {
+    return Object.values(await db.getAllSiteData());
+  }),
+
   siteGroupsForCurrentUser: ifUser(async (args, request) => {
     const userId = request.session.user.id;
     return Object.values(await db.getSiteGroupsForUser(userId));

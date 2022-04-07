@@ -3,6 +3,8 @@ scalar RescueID
 scalar SiteID
 # A string of the form YYYYMMDD, e.g. "20211231"
 scalar DateDayString
+# A string of the form "19:00" or "ANY"
+scalar CollectionTime
 
 # Fixes an issue with allRescuesForMonth()
 scalar String
@@ -16,11 +18,12 @@ type Query {
   me: User
   #user(id: UserID!): User
   #allUsers: [User!]
-  rescues: [Rescue!]
-  allRescuesForMonth(month: String!): [Rescue!]
+  rescues: [RescueLite!]
+  allRescuesForMonth(month: String!): [RescueLite!]
+  allSites: [Site!]
   myRescues: [Rescue!]
   siteGroupsForCurrentUser: [SiteGroup!]
-  availableRescuesForCurrentUser: [Rescue!]
+  availableRescuesForCurrentUser: [RescueLite!]
   #search(term: String!): [SearchResult!]!
 }
 
@@ -44,16 +47,34 @@ type User {
   role: Role!
 }
 
+# This is a User object with limited data which can be safely shown to other users
+type UserPublic {
+  id: UserID!
+  name: String!
+}
+
 type Rescue {
   id: RescueID!
   date: DateDayString!
   site: Site!
-  rescuer: User
+  rescuer: UserPublic
+}
+
+# This is a Rescue object but there is no expandable site
+# The site must instead be looked up from allSites using the siteId
+type RescueLite {
+  id: RescueID!
+  date: DateDayString!
+  siteId: SiteID!
+  rescuer: UserPublic
 }
 
 type Site {
   id: SiteID!
   fullName: String!
+  collectionTime: CollectionTime!
+  callRequired: Boolean
+  expectedCollectibles: String
   geoLocation: String!
   directions: String
   siteAmbaddasadors: String
@@ -87,6 +108,10 @@ query GetMyRescues {
     site {
       id
       fullName
+      collectionTime
+      geoLocation
+      directions
+      rules
     }
   }
 }
@@ -95,10 +120,7 @@ query GetAllRescuesForMonth($month: String!) {
   allRescuesForMonth(month: $month) {
     id
     date
-    site {
-      id
-      fullName
-    }
+    siteId
     rescuer {
       id
       name
@@ -110,14 +132,26 @@ query GetAllRescues {
   rescues {
     id
     date
-    site {
-      id
-      fullName
-    }
+    siteId
     rescuer {
       id
       name
     }
+  }
+}
+
+query GetAllSites {
+  allSites {
+    id
+    fullName
+    collectionTime
+    callRequired
+    expectedCollectibles
+    geoLocation
+    directions
+    siteAmbaddasadors
+    siteContacts
+    rules
   }
 }
 
@@ -134,10 +168,7 @@ query GetAvailableRescuesForCurrentUser {
   availableRescuesForCurrentUser {
     id
     date
-    site {
-      id
-      fullName
-    }
+    siteId
   }
 }
 

@@ -6,20 +6,9 @@ const { isoDate, inspectOneLine, shortDateString, deepInspect } = require('../li
 
 const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
 
-/**
-@typedef {{
-  id: string;
-  date: string;
-  rescuer: RescueUser;
-  site: RescueSite;
-}} Rescue
-
-@typedef {{
-  id: string;
-  name: string;
-}} RescueUser
-*/
-
+/** @typedef { import("../graphql-types").Rescue } Rescue */
+/** @typedef { import("../graphql-types").UserPublic } UserPublic */
+/** @typedef { import("../graphql-types").RescueLite } RescueLite */
 /** @typedef { import("../graphql-types").Site } RescueSite */
 
 /**
@@ -214,6 +203,9 @@ async function getAllSiteDataUncached() {
     }
     // Sanitisation
     site.fullName = site.fullName || site.id;
+    // @ts-ignore
+    site.callRequired = site.callRequired === 'TRUE';
+    //
     siteData[site.id] = site;
   }
 
@@ -302,11 +294,11 @@ async function getAllRescueDataUncached(month) {
   //console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
   //console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
 
-  /** @type {Rescue[]} */
+  /** @type {RescueLite[]} */
   const allRescues = [];
-  /** @type {Record<string, Rescue[]>} */
+  /** @type {Record<string, RescueLite[]>} */
   const rescuesByDate = {};
-  /** @type {Record<string, Rescue[]>} */
+  /** @type {Record<string, RescueLite[]>} */
   const rescuesByRescuer = {};
   const mapDateToRow = {};
 
@@ -353,7 +345,8 @@ async function getAllRescueDataUncached(month) {
 
         const rescuerId = cellData;
         const rescuerName = rescuerId;
-        /** @type {RescueUser} */
+        /** @type {UserPublic} */
+        // If needed, we should look up public fields from allRescuers table
         const rescuer = rescuerName
           ? {
               id: rescuerId,
@@ -365,17 +358,19 @@ async function getAllRescueDataUncached(month) {
           //console.warn(`No site found with id: ${siteId}`);
         }
         /** @type {RescueSite} */
+        /*
         const site = sitesById[siteId] || {
           id: siteId,
           fullName: siteId,
           geoLocation: 'unknown',
         };
+        */
 
-        /** @type {Rescue} */
+        /** @type {RescueLite} */
         const rescue = {
           id: rescueId,
           date: shortDate,
-          site: site,
+          siteId,
           rescuer: rescuer || null,
         };
         allRescues.push(rescue);
@@ -418,7 +413,28 @@ async function getAllRescues(month) {
 
 async function getAllRescuesForUser(userId) {
   const allRescueData = await getAllRescueDataCached();
-  return allRescueData.rescuesByRescuer[userId] || [];
+  const rescuesLite = allRescueData.rescuesByRescuer[userId] || [];
+  // Convert from RescueLite to Rescue, by converting siteId -> site
+  const allSites = await getAllSiteDataCached();
+  const fullRescues = rescuesLite.map(rescueLite => {
+    const { siteId } = rescueLite;
+    const rescueFull = {
+      //__typename: 'Rescue',
+      ...rescueLite,
+      site: allSites[siteId] || {
+        id: siteId,
+        fullName: `SITE_${siteId}_IS_MISSING_FROM_SITE_DATA`,
+        collectionTime: 'UNKNOWN',
+        expectedCollectibles: 'UNKNOWN',
+        geoLocation: 'UNKNOWN',
+        directions: 'UNKNOWN',
+        rules: 'UNKNOWN',
+      },
+    };
+    delete rescueFull.siteId;
+    return rescueFull;
+  });
+  return fullRescues;
 }
 
 async function getGeneralDataUncached() {
@@ -603,10 +619,8 @@ async function getAvailableRescuesForUser(userId) {
   // 3. If > 0, or unrestriced, then return that as an available rescue
 
   const rescuesAvailableToUser = allUnbookedRescues.filter(rescue => {
-    const siteCode = rescue.site.id;
-
     // Is this user even a member of that site?
-    const siteGroup = siteGroupForSite[siteCode];
+    const siteGroup = siteGroupForSite[rescue.siteId];
     if (!siteGroup) {
       // UNRESTRICTED site
       return true;
@@ -736,6 +750,7 @@ const db = {
   getAllRescues,
   getAllRescuesForUser,
   getCurrentBookingPhase,
+  getAllSiteData: getAllSiteDataCached,
   //getSiteGroups: getSiteGroupsCached,
   //getMemberGroups: getMemberGroupsCached,
   getSiteGroupsForUser,

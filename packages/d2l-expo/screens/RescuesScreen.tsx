@@ -10,6 +10,7 @@ import RescueCard from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, View } from '../components/Themed';
 import {
   GetAvailableRescuesForCurrentUserDocument,
+  RescueLite,
   useAssignSelfToRescueMutation,
   useGetAvailableRescuesForCurrentUserQuery,
   useGetMyRescuesQuery,
@@ -43,7 +44,7 @@ function useAvailableRescuesData() {
       // NOTE that this need optimisticResponse in the query, otherwise it won't update the UI until the mutation responds, which may be too slow.
       const rescueId = data.data?.assignSelfToRescue.id;
       const existingRescues = cache.readQuery({ query: GetAvailableRescuesForCurrentUserDocument }) as {
-        availableRescuesForCurrentUser: PartialRescue[];
+        availableRescuesForCurrentUser: RescueLite[];
       };
       const availableRescuesUpdated = existingRescues!.availableRescuesForCurrentUser.filter(r => r.id !== rescueId);
       cache.writeQuery({
@@ -57,9 +58,9 @@ function useAvailableRescuesData() {
   const [toastMessage, setToastMessage] = useState('');
 
   const bookRescue = React.useCallback(
-    (rescue: PartialRescue) => {
+    (rescue: RescueLite) => {
       console.log('Booking rescue:', rescue);
-      setRescueBeingBooked(`${rescue.site.fullName} at ${rescue.date}`);
+      setRescueBeingBooked(`${rescue.siteId} at ${rescue.date}`);
       assignSelfToRescue({
         variables: { rescueId: rescue.id },
         // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
@@ -153,10 +154,10 @@ function RescuesCalendar() {
 
   const { allDates, rescuesBySiteThenDate, sitesToShow, datesToShow } = React.useMemo(() => {
     const allDates = new Set<string>();
-    const rescuesBySiteThenDate = {} as Record<string, Record<string, PartialRescue>>;
+    const rescuesBySiteThenDate = {} as Record<string, Record<string, RescueLite>>;
     if (availableRescues) {
       for (const rescue of availableRescues) {
-        const siteId = rescue.site.id;
+        const { siteId } = rescue;
         const date = rescue.date;
         rescuesBySiteThenDate[siteId] = rescuesBySiteThenDate[siteId] || {};
         rescuesBySiteThenDate[siteId][date] = rescue;
@@ -204,12 +205,12 @@ function RescuesCalendarView({
   bookRescue,
 }: {
   toastMessage: string;
-  availableRescues: PartialRescue[];
+  availableRescues: RescueLite[];
   sitesToShow: string[];
   datesToShow: string[];
-  rescuesBySiteThenDate: Record<string, Record<string, PartialRescue>>;
+  rescuesBySiteThenDate: Record<string, Record<string, RescueLite>>;
   makingBooking: boolean;
-  bookRescue: (rescue: PartialRescue) => void;
+  bookRescue: (rescue: RescueLite) => void;
 }) {
   return (
     <View style={styles.tableContainer}>
@@ -302,7 +303,7 @@ function FavouriteRescues() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       */}
 
-        {availableRescues.map((rescue: PartialRescue) => (
+        {availableRescues.map((rescue: RescueLite) => (
           <RescueCard
             key={rescue.id}
             rescue={rescue}
