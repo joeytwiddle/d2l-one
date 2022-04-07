@@ -7,7 +7,33 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import AppRoot from './navigation/AppRoot';
 
+// Add console logging for Apollo requests and responses
+// From: https://stackoverflow.com/questions/54273194/log-apollo-server-graphql-query-and-variables-per-request
+// See also: https://github.com/apollographql/apollo-client/issues/4017
+async function loggingFetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
+  const body = JSON.parse(String(init?.body) ?? '{}');
+
+  const response = await fetch(input, init);
+
+  return {
+    ...response,
+
+    async text() {
+      const start = Date.now();
+      const result = await response.text();
+      const resultObj = JSON.parse(result);
+      if (resultObj.errors) {
+        console.error(`[apollo] %s -> %o`, body.operationName, resultObj.errors);
+      } else {
+        console.log(`[apollo] %s -> %o`, body.operationName, Object.values(resultObj.data)[0]);
+      }
+      return result;
+    },
+  };
+}
+
 const link = createHttpLink({
+  fetch: loggingFetch,
   uri: apiUrl,
   credentials: 'include',
 });
