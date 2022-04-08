@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { PaddedBlock } from '../components/Layout';
+import Logo from '../components/Logo';
 import { Button, SoftText, Text, View as ThemedView } from '../components/Themed';
 import { apiDomain } from '../config/config';
 import { useGetUserQuery, useLogInMutation } from '../graphql';
@@ -44,6 +45,9 @@ export default function LoginScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.container}>
+        <Logo />
+      </View>
+      <View style={styles.smallContainer}>
         <Text style={styles.title}>Login</Text>
       </View>
       <View style={styles.smallContainer}>

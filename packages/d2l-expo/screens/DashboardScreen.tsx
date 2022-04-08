@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { PaddedBlock } from '../components/Layout';
+import Logo from '../components/Logo';
 import RescueCard from '../components/RescueCard';
 import { LoadingSpinner, Text, View } from '../components/Themed';
 import { useGetAllRescuesQuery, useGetMyRescuesQuery } from '../graphql';
@@ -22,6 +23,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   return (
     <ScrollView>
       <View style={styles.container}>
+        <Logo />
         <PaddedBlock>
           <Text>Welcome {user.name}</Text>
         </PaddedBlock>
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 20,
     backgroundColor: '#f2f2f2',
   },
 });
