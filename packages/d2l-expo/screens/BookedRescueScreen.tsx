@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CentralizingContainer, PaddedBlock } from '../components/Layout';
 
 import { LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';
@@ -80,7 +81,7 @@ export default function BookedRescueScreen({ navigation, route }: any) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <PaddedBlock>
         <Text style={styles.title}>Rescue</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -102,7 +103,7 @@ export default function BookedRescueScreen({ navigation, route }: any) {
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-    </View>
+    </SafeAreaView>
   );
 }
 

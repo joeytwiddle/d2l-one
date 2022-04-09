@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../constants/Colors';
 import { CombinedDarkTheme, CombinedDefaultTheme } from '../constants/Themes';
 import useColorScheme from '../hooks/useColorScheme';
@@ -42,13 +43,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
+      {/* Note: If a page is using headerShown: false, then it must use SafeAreaView to avoid overlapping the statusbar */}
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="BookedRescueScreen" component={BookedRescueScreen} />
+        <Stack.Screen name="BookedRescueScreen" component={BookedRescueScreen} options={{ headerShown: false }} />
       </Stack.Group>
     </Stack.Navigator>
   );

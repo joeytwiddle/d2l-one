@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { PartialRescue } from '../client-types';
 import { CentralizingContainer, FullWidth, PaddedBlock, PullRightView } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
@@ -116,11 +117,13 @@ export default function RescuesScreen() {
   // I have tried using pure compoenents to help with the performance issues.
   // TODO: But if they persist, we might want to extract the hooks setup into a function, and then use that inside the tab components.
   return (
-    // We disable swiping so that we can scroll the table horizontally
-    <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
-      <Tab.Screen name="Calendar" component={() => <RescuesCalendar />} />
-      <Tab.Screen name="Favourites" component={() => <FavouriteRescues />} />
-    </Tab.Navigator>
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* We disable swiping so that we can scroll the table horizontally */}
+      <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
+        <Tab.Screen name="Calendar" component={() => <RescuesCalendar />} />
+        <Tab.Screen name="Favourites" component={() => <FavouriteRescues />} />
+      </Tab.Navigator>
+    </SafeAreaView>
   );
 }
 

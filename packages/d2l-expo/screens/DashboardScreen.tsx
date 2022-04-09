@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { PaddedBlock } from '../components/Layout';
 import Logo from '../components/Logo';
@@ -21,37 +22,39 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   if (!user) return null;
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Logo />
-        <PaddedBlock>
-          <Text>Welcome {user.name}</Text>
-        </PaddedBlock>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <View style={styles.upcomingRescues}>
-          <Text style={styles.title}>Your upcoming rescues</Text>
-          {!myRescues && <LoadingSpinner />}
-          {myRescues && myRescues.length === 0 && (
-            <PaddedBlock>
-              <Text>No rescues booked</Text>
-            </PaddedBlock>
-          )}
-          {myRescues &&
-            myRescues.map(rescue => (
-              <RescueCard
-                key={rescue.id}
-                rescue={rescue}
-                onPress={() =>
-                  navigation.navigate('BookedRescueScreen', {
-                    rescueId: rescue.id,
-                  })
-                }
-              />
-            ))}
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles.container}>
+          <Logo />
+          <PaddedBlock>
+            <Text>Welcome {user.name}</Text>
+          </PaddedBlock>
+          <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+          <View style={styles.upcomingRescues}>
+            <Text style={styles.title}>Your upcoming rescues</Text>
+            {!myRescues && <LoadingSpinner />}
+            {myRescues && myRescues.length === 0 && (
+              <PaddedBlock>
+                <Text>No rescues booked</Text>
+              </PaddedBlock>
+            )}
+            {myRescues &&
+              myRescues.map(rescue => (
+                <RescueCard
+                  key={rescue.id}
+                  rescue={rescue}
+                  onPress={() =>
+                    navigation.navigate('BookedRescueScreen', {
+                      rescueId: rescue.id,
+                    })
+                  }
+                />
+              ))}
+          </View>
+          <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         </View>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
