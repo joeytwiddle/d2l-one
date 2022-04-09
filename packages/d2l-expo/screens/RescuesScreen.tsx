@@ -9,6 +9,7 @@ import { PartialRescue } from '../client-types';
 import { CentralizingContainer, FullWidth, PaddedBlock, PullRightView } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, View } from '../components/Themed';
+import { getSite } from '../data/site-data';
 import {
   GetAvailableRescuesForCurrentUserDocument,
   RescueLite,
@@ -16,6 +17,7 @@ import {
   useGetAvailableRescuesForCurrentUserQuery,
   useGetMyRescuesQuery,
 } from '../graphql';
+import useUser from '../hooks/useUser';
 import { handleGlobalError } from '../navigation/LoginScreen';
 
 function callD2LAPI(hook: any, ...args: any[]) {
@@ -38,6 +40,7 @@ function useAvailableRescuesData() {
   const availableRescuesQuery = useGetAvailableRescuesForCurrentUserQuery();
   const availableRescues = availableRescuesQuery.data?.availableRescuesForCurrentUser;
   const myRescuesQuery = useGetMyRescuesQuery();
+  const user = useUser();
 
   const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation({
     update(cache, data) {
@@ -60,8 +63,9 @@ function useAvailableRescuesData() {
 
   const bookRescue = React.useCallback(
     (rescue: RescueLite) => {
+      const site = getSite(rescue.siteId);
       console.log('Booking rescue:', rescue);
-      setRescueBeingBooked(`${rescue.siteId} at ${rescue.date}`);
+      setRescueBeingBooked(`${site.fullName} at ${rescue.date}`);
       assignSelfToRescue({
         variables: { rescueId: rescue.id },
         // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
@@ -69,13 +73,16 @@ function useAvailableRescuesData() {
           assignSelfToRescue: {
             __typename: 'Rescue',
             id: rescue.id,
+            rescuer: {
+              id: user.id,
+            },
           },
         },
       })
         .then(() => {
           // TODO: Toast the successful booking
           //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
-          setToastMessage(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+          setToastMessage(`You have booked ${site.fullName} at ${rescue.date}`);
           availableRescuesQuery.refetch();
           // I don't especially want to refresh this.  But I do want to invalidate it.
           myRescuesQuery.refetch();
