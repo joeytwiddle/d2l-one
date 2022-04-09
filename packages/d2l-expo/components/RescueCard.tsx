@@ -1,32 +1,10 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Title } from 'react-native-paper';
+import { getSite } from '../data/site-data';
 import { Rescue, RescueLite, Site } from '../graphql';
 import { useGetAllSitesQuery } from '../graphql';
 import { LoadingSpinner, Text, View } from './Themed';
-
-export function getSite(siteId: string) {
-  const allSites = useGetAllSitesQuery().data?.allSites;
-  if (!allSites) return null;
-
-  // TODO: Inefficient.  We really shoudl cache this, either in Apollo's cache, or independently.
-  const sitesById = {} as Record<string, Site>;
-  for (const site of allSites) {
-    sitesById[site.id] = site;
-  }
-
-  const site = sitesById[siteId];
-  if (!site) {
-    return {
-      id: siteId,
-      //fullName: `SITE_${siteId}_IS_MISSING_FROM_SITE_DATA`,
-      fullName: siteId,
-      collectionTime: 'UNKNOWN',
-      geoLocation: 'UNKNOWN',
-    } as Site;
-  }
-  return site;
-}
 
 export default function RescueCard({
   rescue,
