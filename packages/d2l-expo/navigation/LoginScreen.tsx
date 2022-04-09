@@ -59,6 +59,7 @@ export default function LoginScreen() {
           // For RNP
           autoComplete={false}
           mode="flat"
+          style={styles.wider}
           //
           placeholder="Name"
           value={username}
@@ -109,6 +110,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingVertical: 5,
     paddingHorizontal: 15,
+  },
+  wider: {
+    minWidth: '60%',
+    maxWidth: '95%',
+    fontSize: 20,
   },
   title: {
     fontSize: 20,
