@@ -120,8 +120,8 @@ export default function RescuesScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       {/* We disable swiping so that we can scroll the table horizontally */}
       <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
-        <Tab.Screen name="Calendar" component={() => <RescuesCalendar />} />
-        <Tab.Screen name="Favourites" component={() => <FavouriteRescues />} />
+        <Tab.Screen name="Calendar" component={RescuesCalendar} />
+        <Tab.Screen name="Favourites" component={FavouriteRescues} />
       </Tab.Navigator>
     </SafeAreaView>
   );
