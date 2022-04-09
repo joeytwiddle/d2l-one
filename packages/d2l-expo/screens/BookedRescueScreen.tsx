@@ -5,7 +5,7 @@ import { Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CentralizingContainer, PaddedBlock } from '../components/Layout';
 
-import { LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';
+import { Button, LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';
 import {
   Rescue,
   useGetAvailableRescuesForCurrentUserQuery,
@@ -88,13 +88,28 @@ export default function BookedRescueScreen({ navigation, route }: any) {
       </PaddedBlock>
 
       <View style={styles.container}>
-        <Text>{rescue.date}</Text>
-        <Text>{rescue.site.fullName}</Text>
-        <Text>{rescue.site.collectionTime}</Text>
-        <Text>{rescue.site.directions}</Text>
-        <Text>{rescue.site.rules}</Text>
+        <PaddedBlock>
+          <Text>{rescue.date}</Text>
+        </PaddedBlock>
+        <PaddedBlock>
+          <Text>{rescue.site.fullName}</Text>
+        </PaddedBlock>
+        <PaddedBlock>
+          <Text>{rescue.site.collectionTime}</Text>
+        </PaddedBlock>
+        <PaddedBlock>
+          <Text>{rescue.site.directions}</Text>
+        </PaddedBlock>
+        <PaddedBlock>
+          <Text>{rescue.site.rules}</Text>
+        </PaddedBlock>
       </View>
 
+      <View>
+        <PaddedBlock>
+          <Button title="Upload Photo" onPress={() => {}} />
+        </PaddedBlock>
+      </View>
       <View>
         <PaddedBlock>
           <SecondaryButton title="Cancel Booking" onPress={() => cancelBooking(rescue)} />
