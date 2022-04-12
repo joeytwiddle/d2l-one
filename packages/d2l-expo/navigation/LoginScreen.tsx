@@ -52,27 +52,29 @@ export default function LoginScreen() {
       </View>
       <View style={styles.smallContainer}>
         {/* I switched to a RNP TextInput because the RN TextInput was too wide for narrow displays */}
-        <TextInput
-          // For RN
-          //style={styles.larger}
-          //
-          // For RNP
-          autoComplete={false}
-          mode="flat"
-          style={styles.wider}
-          //
-          placeholder="Name"
-          value={username}
-          onChangeText={setUsername}
-          // Hitting the tick icon in the keyboard on mobile
-          onEndEditing={submit}
-          // For web
-          onKeyPress={(e: any) => {
-            if (e.key === 'Enter') {
-              submit();
-            }
-          }}
-        />
+        <PaddedBlock>
+          <TextInput
+            // For RN
+            //style={styles.larger}
+            //
+            // For RNP
+            autoComplete={false}
+            mode="flat"
+            style={styles.wider}
+            //
+            placeholder="Name"
+            value={username}
+            onChangeText={setUsername}
+            // Hitting the tick icon in the keyboard on mobile
+            onEndEditing={submit}
+            // For web
+            onKeyPress={(e: any) => {
+              if (e.key === 'Enter') {
+                submit();
+              }
+            }}
+          />
+        </PaddedBlock>
         <PaddedBlock>
           <SoftText>Please use your regular booking name</SoftText>
         </PaddedBlock>
