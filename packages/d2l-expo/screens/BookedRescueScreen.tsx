@@ -32,7 +32,7 @@ export default function BookedRescueScreen({ navigation, route }: any) {
   const [unassignSelfFromRescue, unassignSelfFromRescueMutation] = useUnassignSelfFromRescueMutation({
     /*
     update(cache, data) {
-      // Adapeted from: https://hasura.io/learn/graphql/typescript-react-apollo/optimistic-update-mutations/3.1-mutation-update-cache/
+      // Adapted from: https://hasura.io/learn/graphql/typescript-react-apollo/optimistic-update-mutations/3.1-mutation-update-cache/
       // NOTE that this need optimisticResponse in the query, otherwise it won't update the UI until the mutation responds, which may be too slow.
       const rescueId = data.data?.assignSelfToRescue.id;
       const existingRescues = cache.readQuery({ query: GetAvailableRescuesForCurrentUserDocument }) as {
@@ -41,6 +41,7 @@ export default function BookedRescueScreen({ navigation, route }: any) {
       const availableRescuesUpdated = existingRescues!.availableRescuesForCurrentUser.filter(r => r.id !== rescueId);
       cache.writeQuery({
         query: GetAvailableRescuesForCurrentUserDocument,
+        variables: { rescueId: rescueId },
         data: { availableRescuesForCurrentUser: availableRescuesUpdated },
       });
     },
