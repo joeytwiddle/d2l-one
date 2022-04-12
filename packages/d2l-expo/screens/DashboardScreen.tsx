@@ -22,8 +22,8 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
   if (!user) return null;
 
   return (
-    <SafeAreaView>
-      <ScrollView>
+    <ScrollView>
+      <SafeAreaView>
         <View style={styles.container}>
           <Logo />
           <PaddedBlock>
@@ -53,8 +53,8 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
           </View>
           <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
