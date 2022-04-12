@@ -65,7 +65,7 @@ function useAvailableRescuesData() {
     (rescue: RescueLite) => {
       const site = getSite(rescue.siteId);
       console.log('Booking rescue:', rescue);
-      setRescueBeingBooked(`${site.fullName} at ${rescue.date}`);
+      setRescueBeingBooked(`${site.fullName} at ${niceDate(rescue.date)}`);
       assignSelfToRescue({
         variables: { rescueId: rescue.id },
         // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
@@ -82,7 +82,7 @@ function useAvailableRescuesData() {
         .then(() => {
           // TODO: Toast the successful booking
           //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
-          setToastMessage(`You have booked ${site.fullName} at ${rescue.date}`);
+          setToastMessage(`You have booked ${site.fullName} at ${niceDate(rescue.date)}`);
           availableRescuesQuery.refetch();
           // I don't especially want to refresh this.  But I do want to invalidate it.
           myRescuesQuery.refetch();
@@ -242,7 +242,7 @@ function RescuesCalendarView({
             </DataTable.Header>
             {datesToShow.map((date, rowIndex) => (
               <DataTable.Row key={date}>
-                <DataTable.Cell style={[styles.dateCell, bgStyle(1, rowIndex)]}>{date}</DataTable.Cell>
+                <DataTable.Cell style={[styles.dateCell, bgStyle(1, rowIndex)]}>{niceDate(date)}</DataTable.Cell>
                 {sitesToShow.map((siteCode, colIndex) => {
                   const key = `${date}:${siteCode}`;
                   const rescue = rescuesBySiteThenDate[siteCode][date];
@@ -381,3 +381,12 @@ const styles = StyleSheet.create({
     //border: '',
   },
 });
+
+export function niceDate(dateStr: string) {
+  const date = new Date(dateStr);
+  const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
+  const shortMonthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
+    date.getMonth()
+  ];
+  return `${dayOfWeek}, ${date.getDate()} ${shortMonthName}`;
+}

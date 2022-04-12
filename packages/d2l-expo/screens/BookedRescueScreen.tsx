@@ -13,6 +13,7 @@ import {
   useUnassignSelfFromRescueMutation,
 } from '../graphql';
 import { handleGlobalError } from '../navigation/LoginScreen';
+import { niceDate } from './RescuesScreen';
 
 //export default function BookedRescueScreen({ navigation, route: { rescueId } }: BookedRescueScreenProps) {
 export default function BookedRescueScreen({ navigation, route }: any) {
@@ -89,7 +90,7 @@ export default function BookedRescueScreen({ navigation, route }: any) {
 
       <View style={styles.container}>
         <PaddedBlock>
-          <Text>{rescue.date}</Text>
+          <Text>{niceDate(rescue.date)}</Text>
         </PaddedBlock>
         <PaddedBlock>
           <Text>{rescue.site.fullName}</Text>

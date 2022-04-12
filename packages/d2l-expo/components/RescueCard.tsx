@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Title } from 'react-native-paper';
 import { getSite } from '../data/site-data';
 import { Rescue, RescueLite, Site } from '../graphql';
-import { useGetAllSitesQuery } from '../graphql';
+import { niceDate } from '../screens/RescuesScreen';
 import { LoadingSpinner, Text, View } from './Themed';
 
 export default function RescueCard({
@@ -30,7 +30,7 @@ export default function RescueCard({
         {site && (
           <>
             <Title>
-              {site.fullName} at {rescue.date}
+              {site.fullName} on {niceDate(rescue.date)}
             </Title>
             <Text>{site.collectionTime}</Text>
             {Additional && (
