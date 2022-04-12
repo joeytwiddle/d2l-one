@@ -83,10 +83,12 @@ export default function BookedRescueScreen({ navigation, route }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/*
       <PaddedBlock>
         <Text style={styles.title}>Rescue</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       </PaddedBlock>
+      */}
 
       <View style={styles.container}>
         <PaddedBlock>

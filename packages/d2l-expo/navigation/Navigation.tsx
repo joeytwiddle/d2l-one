@@ -50,7 +50,11 @@ function RootNavigator() {
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="BookedRescueScreen" component={BookedRescueScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="BookedRescueScreen"
+          component={BookedRescueScreen}
+          options={{ headerShown: true, headerTitle: 'Rescue' }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );
