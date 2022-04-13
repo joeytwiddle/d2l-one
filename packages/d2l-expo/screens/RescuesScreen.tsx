@@ -389,5 +389,5 @@ export function niceDate(dateStr: string) {
   const shortMonthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
     date.getMonth()
   ];
-  return `${dayOfWeek}, ${date.getDate()} ${shortMonthName}`;
+  return `${dayOfWeek}, ${shortMonthName} ${date.getDate()}`;
 }
