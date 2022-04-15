@@ -44,26 +44,6 @@ function useAvailableRescuesData() {
   const myRescuesQuery = useGetMyRescuesQuery();
   const user = useUser();
 
-  const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation({
-    update(cache, data) {
-      // Adapted from: https://hasura.io/learn/graphql/typescript-react-apollo/optimistic-update-mutations/3.1-mutation-update-cache/
-      // NOTE that this need optimisticResponse in the query, otherwise it won't update the UI until the mutation responds, which may be too slow.
-      const rescueId = data.data?.assignSelfToRescue.id;
-      const existingRescues = cache.readQuery({ query: GetAvailableRescuesForCurrentUserDocument }) as {
-        availableRescuesForCurrentUser: RescueLite[];
-      };
-      const availableRescuesUpdated = existingRescues!.availableRescuesForCurrentUser.filter(r => r.id !== rescueId);
-      cache.writeQuery({
-        query: GetAvailableRescuesForCurrentUserDocument,
-        variables: { rescueId: rescueId },
-        data: { availableRescuesForCurrentUser: availableRescuesUpdated },
-      });
-    },
-  });
-
-  const [rescueBeingBooked, setRescueBeingBooked] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
-
   // TODO: Split rescues up into days, so we can rescues available day-by-day
 
   //const rescuesSorted = availableRescues?.slice(0);
@@ -76,10 +56,7 @@ function useAvailableRescuesData() {
 
   return {
     availableRescuesQuery,
-    rescueBeingBooked,
-    toastMessage,
     availableRescues: rescuesSorted,
-    makingBooking: !!rescueBeingBooked,
   };
 }
 
@@ -99,14 +76,9 @@ export default function RescuesScreen() {
   );
 }
 
-function RescuesLoadingSpinner({ rescueBeingBooked }: { rescueBeingBooked: string }) {
+function RescuesLoadingSpinner() {
   return (
     <CentralizingContainer>
-      {rescueBeingBooked ? (
-        <PaddedBlock>
-          <Text>Booking {rescueBeingBooked}</Text>
-        </PaddedBlock>
-      ) : null}
       <LoadingSpinner />
     </CentralizingContainer>
   );
@@ -124,8 +96,7 @@ function RescuesCalendar() {
   //const route = useRoute();
   //if (route.name !== 'Calendar') return null;
 
-  const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking } =
-    useAvailableRescuesData();
+  const { availableRescuesQuery, availableRescues } = useAvailableRescuesData();
 
   const { allDates, rescuesBySiteThenDate, sitesToShow, datesToShow } = React.useMemo(() => {
     const allDates = new Set<string>();
@@ -150,19 +121,17 @@ function RescuesCalendar() {
     return { allDates, rescuesBySiteThenDate, sitesToShow, datesToShow };
   }, [availableRescues]);
 
-  if (availableRescuesQuery.loading || rescueBeingBooked) {
-    return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
+  if (availableRescuesQuery.loading) {
+    return <RescuesLoadingSpinner />;
   }
   if (!availableRescues) return null;
 
   return (
     <RescuesCalendarViewPure
-      toastMessage={toastMessage}
       availableRescues={availableRescues}
       sitesToShow={sitesToShow}
       datesToShow={datesToShow}
       rescuesBySiteThenDate={rescuesBySiteThenDate}
-      makingBooking={makingBooking}
     />
   );
 }
@@ -170,19 +139,15 @@ function RescuesCalendar() {
 const RescuesCalendarViewPure = React.memo(RescuesCalendarView);
 
 function RescuesCalendarView({
-  toastMessage,
   availableRescues,
   sitesToShow,
   datesToShow,
   rescuesBySiteThenDate,
-  makingBooking,
 }: {
-  toastMessage: string;
   availableRescues: RescueLite[];
   sitesToShow: string[];
   datesToShow: string[];
   rescuesBySiteThenDate: Record<string, Record<string, RescueLite>>;
-  makingBooking: boolean;
 }) {
   const navigation = useNavigation();
 
@@ -190,7 +155,7 @@ function RescuesCalendarView({
     <View style={styles.tableContainer}>
       <PaddedBlock>
         <FullWidth>
-          <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+          <Text>{availableRescues.length} rescues available</Text>
         </FullWidth>
       </PaddedBlock>
       <ScrollView horizontal /* style={{ overflow: 'scroll' }} */>
@@ -221,8 +186,6 @@ function RescuesCalendarView({
                         ? rescue.rescuer || (
                             <Button
                               title="View"
-                              // This is only half working
-                              disabled={makingBooking}
                               onPress={() => {
                                 navigation.navigate('BookableRescueScreen', {
                                   rescueId: rescue.id,
@@ -259,15 +222,9 @@ function FavouriteRescues() {
   //const route = useRoute();
   //if (route.name !== 'Favourites') return null;
 
-  const {
-    availableRescuesQuery,
-    rescueBeingBooked,
-    toastMessage,
-    availableRescues: allAvailableRescues,
-    makingBooking,
-  } = useAvailableRescuesData();
-  if (availableRescuesQuery.loading || rescueBeingBooked) {
-    return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
+  const { availableRescuesQuery, availableRescues: allAvailableRescues } = useAvailableRescuesData();
+  if (availableRescuesQuery.loading) {
+    return <RescuesLoadingSpinner />;
   }
   if (!allAvailableRescues) return null;
 
@@ -281,18 +238,12 @@ function FavouriteRescues() {
   return (
     <View style={styles.container}>
       {/*<PaddedBlock>
-        <Text>{toastMessage || `${availableRescues.length} rescues available`}</Text>
+        <Text>{availableRescues.length} rescues available</Text>
       </PaddedBlock>*/}
       <PaddedBlock>
         <Text>This page is under construction. It does not show all available rescues.</Text>
       </PaddedBlock>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-        {/*<Text style={styles.title}>Rescues</Text>*/}
-        {/*
-      <Text style={styles.title}>Rescues</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      */}
-
         {availableRescues.map((rescue: RescueLite) => (
           <RescueCard
             key={rescue.id}
@@ -301,8 +252,6 @@ function FavouriteRescues() {
               <PullRightView>
                 <Button
                   title="View"
-                  // This is only half working
-                  disabled={makingBooking}
                   onPress={() => {
                     navigation.navigate('BookableRescueScreen', {
                       rescueId: rescue.id,
