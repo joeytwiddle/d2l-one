@@ -81,7 +81,7 @@ then
 fi
 
 # Nginx configuration
-sudo_rsync -ai ./deployment_scripts/etc/nginx/default.d/d2l-api.conf "${SERVER_AUTH}:/etc/nginx/default.d/" "$@"
+sudo_rsync -ai ./deployment_scripts/etc/nginx/default.d/* "${SERVER_AUTH}:/etc/nginx/default.d/" "$@"
 
 # The API server
 sudo_rsync -ai --delete --exclude=node_modules --exclude=sessions --no-owner --no-group ./packages/d2l-api/ "${SERVER_AUTH}:/home/${NODE_USER}/d2l-api" "$@"
