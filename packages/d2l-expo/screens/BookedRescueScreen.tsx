@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CentralizingContainer, PaddedBlock } from '../components/Layout';
+import { CentralizingContainer, PaddedBlock, PullRightView } from '../components/Layout';
 
 import { Button, LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';
 import {
@@ -106,6 +106,11 @@ export default function BookedRescueScreen({ navigation, route }: any) {
         <PaddedBlock>
           <Text>{rescue.site.rules}</Text>
         </PaddedBlock>
+        <PullRightView>
+          <PaddedBlock>
+            <SecondaryButton title="Cancel Booking" onPress={() => cancelBooking(rescue)} />
+          </PaddedBlock>
+        </PullRightView>
       </View>
 
       {/*
@@ -115,11 +120,6 @@ export default function BookedRescueScreen({ navigation, route }: any) {
         </PaddedBlock>
       </View>
       */}
-      <View>
-        <PaddedBlock>
-          <SecondaryButton title="Cancel Booking" onPress={() => cancelBooking(rescue)} />
-        </PaddedBlock>
-      </View>
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
@@ -130,6 +130,7 @@ export default function BookedRescueScreen({ navigation, route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     fontSize: 16,
