@@ -1,11 +1,12 @@
-import { useRoute } from '@react-navigation/core';
+//import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PartialRescue } from '../client-types';
 import { CentralizingContainer, FullWidth, PaddedBlock, PullRightView } from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, View } from '../components/Themed';
@@ -19,6 +20,7 @@ import {
 } from '../graphql';
 import useUser from '../hooks/useUser';
 import { handleGlobalError } from '../navigation/LoginScreen';
+import { RootStackParamList } from '../types';
 
 function callD2LAPI(hook: any, ...args: any[]) {
   const result = hook(...args);
@@ -96,7 +98,7 @@ function useAvailableRescuesData() {
           setRescueBeingBooked('');
         });
     },
-    [setRescueBeingBooked, setToastMessage, availableRescuesQuery, myRescuesQuery],
+    [setRescueBeingBooked, assignSelfToRescue, setToastMessage, availableRescuesQuery, myRescuesQuery],
   );
 
   // TODO: Split rescues up into days, so we can rescues available day-by-day
@@ -276,7 +278,18 @@ function RescuesCalendarView({
   );
 }
 
+// This worked
+//type FavouriteRescuesTabNavigationProp = NativeStackNavigationProp<RootStackParamList, 'FavouriteRescuesTab'>;
+// But I think this is more correct
+//type FavouriteRescuesTabNavigationProp = MaterialTopTabNavigationProp<RootStackParamList, 'FavouriteRescuesTab'>;
+
+//function FavouriteRescues({ navigation }: { navigation: FavouriteRescuesTabNavigationProp }) {
+//function FavouriteRescues() {
+//  const navigation = useNavigation<FavouriteRescuesTabNavigationProp>();
+
 function FavouriteRescues() {
+  const navigation = useNavigation();
+
   // Try to reduce sluggishness
   //const route = useRoute();
   //if (route.name !== 'Favourites') return null;
@@ -323,10 +336,17 @@ function FavouriteRescues() {
             additional={() => (
               <PullRightView>
                 <Button
-                  title="Book"
+                  title="View"
                   // This is only half working
                   disabled={makingBooking}
-                  onPress={() => bookRescue(rescue)}
+                  onPress={
+                    //() => bookRescue(rescue)
+                    () => {
+                      navigation.navigate('BookableRescueScreen', {
+                        rescueId: rescue.id,
+                      });
+                    }
+                  }
                 />
               </PullRightView>
             )}

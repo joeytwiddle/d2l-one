@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../constants/Colors';
 import { CombinedDarkTheme, CombinedDefaultTheme } from '../constants/Themes';
 import useColorScheme from '../hooks/useColorScheme';
+import BookableRescueScreen from '../screens/BookableRescueScreen';
 import BookedRescueScreen from '../screens/BookedRescueScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import ModalScreen from '../screens/ModalScreen';
@@ -50,6 +51,11 @@ function RootNavigator() {
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen
+          name="BookableRescueScreen"
+          component={BookableRescueScreen}
+          options={{ headerShown: true, headerTitle: 'Rescue' }}
+        />
         <Stack.Screen
           name="BookedRescueScreen"
           component={BookedRescueScreen}

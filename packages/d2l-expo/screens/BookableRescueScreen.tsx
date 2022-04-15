@@ -8,42 +8,49 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CentralizingContainer, PaddedBlock, PullRightView } from '../components/Layout';
 
 import { Button, LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';
+import { getSite } from '../data/site-data';
 import {
-  Rescue,
+  RescueLite,
+  useAssignSelfToRescueMutation,
   useGetAvailableRescuesForCurrentUserQuery,
   useGetMyRescuesQuery,
-  useUnassignSelfFromRescueMutation,
 } from '../graphql';
+import useUser from '../hooks/useUser';
 import { handleGlobalError } from '../navigation/LoginScreen';
-import { BookedRescueScreenProps, RootStackParamList } from '../types';
+import { BookableRescueScreenProps, RootStackParamList } from '../types';
 import { niceDate } from './RescuesScreen';
 
-type BookedRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookedRescueScreen'>;
+type BookableRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookableRescueScreen'>;
 
-//export default function BookedRescueScreen({ navigation, route: { rescueId } }: BookedRescueScreenProps) {
-export default function BookedRescueScreen({ route }: any) {
-  const navigation = useNavigation<BookedRescueScreenNavigationProp>();
+export default function BookableRescueScreen({ route }: any) {
+  const navigation = useNavigation<BookableRescueScreenNavigationProp>();
 
   const { rescueId } = route.params;
 
-  const myRescues = useGetMyRescuesQuery().data?.myRescues;
+  const user = useUser();
+
+  //const myRescues = useGetMyRescuesQuery().data?.myRescues;
 
   // For clearing the cache
   const availableRescuesQuery = useGetAvailableRescuesForCurrentUserQuery();
   const myRescuesQuery = useGetMyRescuesQuery();
 
-  const rescue = myRescues && (myRescues.find((rescue: any) => rescue.id === rescueId) as Rescue);
+  const availableRescues = availableRescuesQuery.data?.availableRescuesForCurrentUser;
 
-  const [isUnbooking, setIsUnbooking] = useState(false);
+  const rescue = availableRescues
+    ? (availableRescues.find((rescue: any) => rescue.id === rescueId) as RescueLite)
+    : undefined;
 
-  const [unassignSelfFromRescue, unassignSelfFromRescueMutation] = useUnassignSelfFromRescueMutation({
+  const [isBooking, setIsBooking] = useState(false);
+
+  const [assignSelfToRescue, assignSelfToRescueMutation] = useAssignSelfToRescueMutation({
     /*
     update(cache, data) {
       // Adapted from: https://hasura.io/learn/graphql/typescript-react-apollo/optimistic-update-mutations/3.1-mutation-update-cache/
       // NOTE that this need optimisticResponse in the query, otherwise it won't update the UI until the mutation responds, which may be too slow.
       const rescueId = data.data?.assignSelfToRescue.id;
       const existingRescues = cache.readQuery({ query: GetAvailableRescuesForCurrentUserDocument }) as {
-        availableRescuesForCurrentUser: PartialRescue[];
+        availableRescuesForCurrentUser: RescueLite[];
       };
       const availableRescuesUpdated = existingRescues!.availableRescuesForCurrentUser.filter(r => r.id !== rescueId);
       cache.writeQuery({
@@ -55,39 +62,51 @@ export default function BookedRescueScreen({ route }: any) {
     */
   });
 
-  const cancelBooking = React.useCallback(
-    (rescue: Rescue) => {
-      console.log('Unbooking rescue:', rescue);
-      setIsUnbooking(true);
-      unassignSelfFromRescue({
-        variables: { rescueId: rescue.id },
-      })
-        .then(() => {
-          setIsUnbooking(false);
-          // TODO: Global Toast
-          //setToastMessage(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+  const bookRescue = React.useCallback(() => {
+    if (!rescue) {
+      throw new Error('No rescue to book');
+    }
+    const site = getSite(rescue.siteId);
+    console.log('Booking rescue:', rescue);
+    setIsBooking(true);
+    assignSelfToRescue({
+      variables: { rescueId: rescue.id },
+      // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
+      optimisticResponse: {
+        assignSelfToRescue: {
+          __typename: 'Rescue',
+          id: rescue.id,
+          rescuer: {
+            id: user.id,
+          },
+        },
+      },
+    })
+      .then(() => {
+        // TODO: Toast the successful booking
+        //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
+        availableRescuesQuery.refetch();
+        myRescuesQuery.refetch();
+        setTimeout(() => {
+          setIsBooking(false);
           navigation.goBack();
-          availableRescuesQuery.refetch();
-          myRescuesQuery.refetch();
-          // Without the delay, the buttons appear enabled again, before we see the updated list
-          //setTimeout(() => setRescueBeingBooked(''), 1000);
-        })
-        .catch(error => {
-          handleGlobalError(error);
-          //setToastMessage(String(error));
-          setIsUnbooking(false);
-        });
-    },
-    [unassignSelfFromRescue],
-  );
+        }, 2000);
+      })
+      .catch(error => {
+        setIsBooking(false);
+        handleGlobalError(error);
+      });
+  }, [setIsBooking, assignSelfToRescue, availableRescuesQuery, myRescuesQuery]);
 
-  if (!myRescues || !rescue || isUnbooking) {
+  if (!availableRescues || !rescue || isBooking) {
     return (
       <CentralizingContainer>
         <LoadingSpinner />
       </CentralizingContainer>
     );
   }
+
+  const site = getSite(rescue.siteId);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,24 +119,19 @@ export default function BookedRescueScreen({ route }: any) {
 
       <View style={styles.container}>
         <PaddedBlock>
-          <Text style={styles.siteName}>{rescue.site.fullName}</Text>
+          <Text style={styles.siteName}>{site.fullName}</Text>
         </PaddedBlock>
         <PaddedBlock>
           <Text>
-            {niceDate(rescue.date)}, {rescue.site.collectionTime}
+            {niceDate(rescue.date)}, {site.collectionTime}
           </Text>
         </PaddedBlock>
         <PaddedBlock>
-          <Text>{rescue.site.directions}</Text>
+          <Text>{site.directions}</Text>
         </PaddedBlock>
         <PaddedBlock>
-          <Text>{rescue.site.rules}</Text>
+          <Text>{site.rules}</Text>
         </PaddedBlock>
-        <PullRightView>
-          <PaddedBlock>
-            <SecondaryButton title="Cancel Booking" onPress={() => cancelBooking(rescue)} />
-          </PaddedBlock>
-        </PullRightView>
       </View>
 
       {/*
@@ -127,6 +141,12 @@ export default function BookedRescueScreen({ route }: any) {
         </PaddedBlock>
       </View>
       */}
+
+      <PullRightView>
+        <PaddedBlock>
+          <Button title="Book" onPress={bookRescue} />
+        </PaddedBlock>
+      </PullRightView>
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />

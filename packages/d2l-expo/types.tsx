@@ -15,9 +15,15 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
+  FavouriteRescuesTab: undefined;
+  BookableRescueScreen: BookableRescueParamList;
   BookedRescueScreen: BookedRescueParamList;
   Modal: undefined;
   NotFound: undefined;
+};
+
+export type BookableRescueParamList = {
+  rescueId: string;
 };
 
 export type BookedRescueParamList = {
@@ -41,3 +47,5 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
 
 // Not working?
 export type BookedRescueScreenProps = NativeStackScreenProps<RootStackParamList, 'BookedRescueScreen'>;
+
+export type BookableRescueScreenProps = NativeStackScreenProps<RootStackParamList, 'BookableRescueScreen'>;
