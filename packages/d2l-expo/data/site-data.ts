@@ -4,7 +4,8 @@ let sitesById = null as Record<string, Site> | null;
 
 // Although we invoke this as a React use hook, it's actually just used to load the data on startup, after which we cache it globally, and can grab it directly from getSite()
 export function useSiteData() {
-  const allSites = useGetAllSitesQuery().data?.allSites;
+  const allSitesQuery = useGetAllSitesQuery();
+  const allSites = allSitesQuery.data?.allSites;
 
   if (sitesById == null && allSites) {
     sitesById = {};
@@ -14,6 +15,7 @@ export function useSiteData() {
   }
 
   //return sitesById;
+  return allSitesQuery;
 }
 
 export function getSite(siteId: string) {

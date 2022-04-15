@@ -44,6 +44,10 @@ function AppRootLoggedIn({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const allSiteData = useSiteData();
   console.log('[AppRoot] allSiteData:', allSiteData);
 
+  if (allSiteData.loading) {
+    return null;
+  }
+
   return <Navigation colorScheme={colorScheme} />;
 }
 
