@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     //padding: 10,
-    backgroundColor: '#f2f2f2',
+    //backgroundColor: '#f2f2f2',
   },
   tableContainer: {
     width: '100%',

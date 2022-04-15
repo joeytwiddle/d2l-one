@@ -29,7 +29,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
           <PaddedBlock>
             <Text>Welcome {user.name}</Text>
           </PaddedBlock>
-          <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+          {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
           <View style={styles.upcomingRescues}>
             <Text style={styles.title}>Your upcoming rescues</Text>
             {!myRescues && <LoadingSpinner />}
@@ -51,7 +51,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
                 />
               ))}
           </View>
-          <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+          {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
         </View>
       </SafeAreaView>
     </ScrollView>
@@ -79,6 +79,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
-    backgroundColor: '#f2f2f2',
+    //backgroundColor: '#f2f2f2',
   },
 });

@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     maxWidth: 600,
   },
   card: {
+    backgroundColor: '#e8e8e8',
     padding: 10,
   },
 });
