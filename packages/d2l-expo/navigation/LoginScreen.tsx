@@ -45,7 +45,7 @@ export default function LoginScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.container}>
-        <Logo />
+        <Logo size="large" />
       </View>
       <View style={styles.smallContainer}>
         <Text style={styles.title}>Login</Text>
