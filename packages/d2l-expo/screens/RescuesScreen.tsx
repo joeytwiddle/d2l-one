@@ -64,43 +64,6 @@ function useAvailableRescuesData() {
   const [rescueBeingBooked, setRescueBeingBooked] = useState('');
   const [toastMessage, setToastMessage] = useState('');
 
-  const bookRescue = React.useCallback(
-    (rescue: RescueLite) => {
-      const site = getSite(rescue.siteId);
-      console.log('Booking rescue:', rescue);
-      setRescueBeingBooked(`${site.fullName} at ${niceDate(rescue.date)}`);
-      assignSelfToRescue({
-        variables: { rescueId: rescue.id },
-        // Adapted from: https://www.apollographql.com/docs/react/performance/optimistic-ui/
-        optimisticResponse: {
-          assignSelfToRescue: {
-            __typename: 'Rescue',
-            id: rescue.id,
-            rescuer: {
-              id: user.id,
-            },
-          },
-        },
-      })
-        .then(() => {
-          // TODO: Toast the successful booking
-          //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
-          setToastMessage(`You have booked ${site.fullName} at ${niceDate(rescue.date)}`);
-          availableRescuesQuery.refetch();
-          // I don't especially want to refresh this.  But I do want to invalidate it.
-          myRescuesQuery.refetch();
-          // Without the delay, the buttons appear enabled again, before we see the updated list
-          setTimeout(() => setRescueBeingBooked(''), 1000);
-        })
-        .catch(error => {
-          handleGlobalError(error);
-          setToastMessage(String(error));
-          setRescueBeingBooked('');
-        });
-    },
-    [setRescueBeingBooked, assignSelfToRescue, setToastMessage, availableRescuesQuery, myRescuesQuery],
-  );
-
   // TODO: Split rescues up into days, so we can rescues available day-by-day
 
   //const rescuesSorted = availableRescues?.slice(0);
@@ -117,7 +80,6 @@ function useAvailableRescuesData() {
     toastMessage,
     availableRescues: rescuesSorted,
     makingBooking: !!rescueBeingBooked,
-    bookRescue,
   };
 }
 
@@ -162,7 +124,7 @@ function RescuesCalendar() {
   //const route = useRoute();
   //if (route.name !== 'Calendar') return null;
 
-  const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking, bookRescue } =
+  const { availableRescuesQuery, rescueBeingBooked, toastMessage, availableRescues, makingBooking } =
     useAvailableRescuesData();
 
   const { allDates, rescuesBySiteThenDate, sitesToShow, datesToShow } = React.useMemo(() => {
@@ -201,7 +163,6 @@ function RescuesCalendar() {
       datesToShow={datesToShow}
       rescuesBySiteThenDate={rescuesBySiteThenDate}
       makingBooking={makingBooking}
-      bookRescue={bookRescue}
     />
   );
 }
@@ -215,7 +176,6 @@ function RescuesCalendarView({
   datesToShow,
   rescuesBySiteThenDate,
   makingBooking,
-  bookRescue,
 }: {
   toastMessage: string;
   availableRescues: RescueLite[];
@@ -223,7 +183,6 @@ function RescuesCalendarView({
   datesToShow: string[];
   rescuesBySiteThenDate: Record<string, Record<string, RescueLite>>;
   makingBooking: boolean;
-  bookRescue: (rescue: RescueLite) => void;
 }) {
   const navigation = useNavigation();
 
@@ -264,14 +223,11 @@ function RescuesCalendarView({
                               title="View"
                               // This is only half working
                               disabled={makingBooking}
-                              onPress={
-                                //() => bookRescue(rescue)
-                                () => {
-                                  navigation.navigate('BookableRescueScreen', {
-                                    rescueId: rescue.id,
-                                  });
-                                }
-                              }
+                              onPress={() => {
+                                navigation.navigate('BookableRescueScreen', {
+                                  rescueId: rescue.id,
+                                });
+                              }}
                             />
                           )
                         : '✔'}
@@ -309,7 +265,6 @@ function FavouriteRescues() {
     toastMessage,
     availableRescues: allAvailableRescues,
     makingBooking,
-    bookRescue,
   } = useAvailableRescuesData();
   if (availableRescuesQuery.loading || rescueBeingBooked) {
     return <RescuesLoadingSpinner rescueBeingBooked={rescueBeingBooked} />;
@@ -348,14 +303,11 @@ function FavouriteRescues() {
                   title="View"
                   // This is only half working
                   disabled={makingBooking}
-                  onPress={
-                    //() => bookRescue(rescue)
-                    () => {
-                      navigation.navigate('BookableRescueScreen', {
-                        rescueId: rescue.id,
-                      });
-                    }
-                  }
+                  onPress={() => {
+                    navigation.navigate('BookableRescueScreen', {
+                      rescueId: rescue.id,
+                    });
+                  }}
                 />
               </PullRightView>
             )}
