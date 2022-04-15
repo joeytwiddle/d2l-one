@@ -225,6 +225,8 @@ function RescuesCalendarView({
   makingBooking: boolean;
   bookRescue: (rescue: RescueLite) => void;
 }) {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.tableContainer}>
       <PaddedBlock>
@@ -259,10 +261,17 @@ function RescuesCalendarView({
                       {rescue
                         ? rescue.rescuer || (
                             <Button
-                              title="Book"
+                              title="View"
                               // This is only half working
                               disabled={makingBooking}
-                              onPress={() => bookRescue(rescue)}
+                              onPress={
+                                //() => bookRescue(rescue)
+                                () => {
+                                  navigation.navigate('BookableRescueScreen', {
+                                    rescueId: rescue.id,
+                                  });
+                                }
+                              }
                             />
                           )
                         : '✔'}
