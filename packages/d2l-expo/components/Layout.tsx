@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-import { View } from '../components/Themed';
 import { View as UnstyledView } from 'react-native';
 
 export function CentralizingContainer(props: any) {
-  return <View style={styles.centralizingContainer} {...props} />;
+  return <UnstyledView style={styles.centralizingContainer} {...props} />;
 }
 
 export function PaddedBlock(props: any) {
@@ -12,11 +11,11 @@ export function PaddedBlock(props: any) {
 }
 
 export function FullWidth(props: any) {
-  return <View style={styles.fullWidth} {...props} />;
+  return <UnstyledView style={styles.fullWidth} {...props} />;
 }
 
 export function PullRightView(props: any) {
-  return <View style={styles.pullRightView} {...props} />;
+  return <UnstyledView style={styles.pullRightView} {...props} />;
 }
 
 const styles = StyleSheet.create({
