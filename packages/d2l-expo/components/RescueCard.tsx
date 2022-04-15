@@ -29,10 +29,10 @@ export default function RescueCard({
         {!site && <LoadingSpinner />}
         {site && (
           <>
-            <Title>
-              {site.fullName} on {niceDate(rescue.date)}
-            </Title>
-            <Text>{site.collectionTime}</Text>
+            <Title style={styles.title}>{site.fullName}</Title>
+            <Text>
+              {niceDate(rescue.date)}, {site.collectionTime}
+            </Text>
             {Additional && (
               <Card.Actions>
                 <Additional />
@@ -55,5 +55,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#e8e8e8',
     padding: 10,
+  },
+  title: {
+    fontWeight: 'bold',
   },
 });
