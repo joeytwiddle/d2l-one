@@ -4,7 +4,14 @@
  */
 
 import * as React from 'react';
-import { ActivityIndicator, Button as DefaultButton, Text as DefaultText, View as DefaultView } from 'react-native';
+import {
+  ActivityIndicator,
+  Button as DefaultButton,
+  StyleSheet,
+  Text as DefaultText,
+  TouchableOpacity,
+  View as DefaultView,
+} from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 
@@ -62,13 +69,28 @@ export function Button(props: ButtonProps) {
 }
 
 export function SecondaryButton(props: ButtonProps) {
-  const { ...otherProps } = props;
-  const secondaryColor = useThemeColor({}, 'secondary');
+  const { title, ...otherProps } = props;
+  //const secondaryColor = useThemeColor({}, 'secondary');
 
-  return <DefaultButton color={secondaryColor} {...otherProps} />;
+  // We cannot control the text color of React Native buttons
+  // So if we want a light button with dark text, we would need to create our own, using TouchableOpacity
+  // But anyway, for now, our secondary buttons will just look like text links
+
+  return (
+    <TouchableOpacity {...otherProps}>
+      <Text style={styles.link}>{title}</Text>
+    </TouchableOpacity>
+  );
 }
 
 export function LoadingSpinner() {
   const color = useThemeColor({}, 'tint');
   return <ActivityIndicator size={70} color={color} />;
 }
+
+const styles = StyleSheet.create({
+  link: {
+    color: '#55f',
+    textDecorationLine: 'underline',
+  },
+});
