@@ -1,6 +1,25 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { View as UnstyledView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+// The common wrapper for most screens
+// This will limit the width on wide displays, so the content will appear in the center of the screen, rather than stretched left to right in a way that looks silly
+export function PageContainer(props: any) {
+  return (
+    /*
+    // This mostly worked, but it left-aligned the text "This page is under construction" somehow outside the 1000 centralised block
+    <SafeAreaView style={styles.pageContainer} {...props} />
+    */
+    <SafeAreaView style={styles.pageContainerOuter}>
+      <UnstyledView style={styles.pageContainerInner} {...props} />
+    </SafeAreaView>
+  );
+}
+
+export function FullWidthPageContainer(props: any) {
+  return <SafeAreaView style={styles.fullWidthPageContainer} {...props} />;
+}
 
 export function CentralizingContainer(props: any) {
   return <UnstyledView style={styles.centralizingContainer} {...props} />;
@@ -19,6 +38,33 @@ export function PullRightView(props: any) {
 }
 
 const styles = StyleSheet.create({
+  /*
+  pageContainer: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 1000,
+    alignSelf: 'center',
+    //alignContent: 'center',
+    //justifyContent: 'center',
+  },
+  */
+  pageContainerOuter: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pageContainerInner: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 1000,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fullWidthPageContainer: {
+    flex: 1,
+    width: '100%',
+  },
   centralizingContainer: {
     flex: 1,
     alignItems: 'center',
