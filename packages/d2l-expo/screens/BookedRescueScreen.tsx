@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CentralizingContainer, PaddedBlock, PullRightView } from '../components/Layout';
+import { CentralizingContainer, PaddedBlock, PageContainer, PullRightView } from '../components/Layout';
 
 import { Button, LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';
 import {
@@ -90,7 +90,7 @@ export default function BookedRescueScreen({ route }: any) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PageContainer>
       {/*
       <PaddedBlock>
         <Text style={styles.title}>Rescue</Text>
@@ -130,7 +130,7 @@ export default function BookedRescueScreen({ route }: any) {
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-    </SafeAreaView>
+    </PageContainer>
   );
 }
 

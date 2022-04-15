@@ -7,7 +7,14 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CentralizingContainer, FullWidth, PaddedBlock, PullRightView } from '../components/Layout';
+import {
+  CentralizingContainer,
+  FullWidth,
+  FullWidthPageContainer,
+  PaddedBlock,
+  PageContainer,
+  PullRightView,
+} from '../components/Layout';
 import RescueCard from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, View } from '../components/Themed';
 import { getSite } from '../data/site-data';
@@ -152,7 +159,7 @@ function RescuesCalendarView({
   const navigation = useNavigation();
 
   return (
-    <View style={styles.tableContainer}>
+    <FullWidthPageContainer>
       <PaddedBlock>
         <FullWidth>
           <Text>{availableRescues.length} rescues available</Text>
@@ -202,7 +209,7 @@ function RescuesCalendarView({
           </DataTable>
         </ScrollView>
       </ScrollView>
-    </View>
+    </FullWidthPageContainer>
   );
 }
 
@@ -236,7 +243,7 @@ function FavouriteRescues() {
   //const availableRescues = allAvailableRescues;
 
   return (
-    <View style={styles.container}>
+    <PageContainer>
       {/*<PaddedBlock>
         <Text>{availableRescues.length} rescues available</Text>
       </PaddedBlock>*/}
@@ -264,7 +271,7 @@ function FavouriteRescues() {
         ))}
         {/* <EditScreenInfo path="/screens/RescuesScreen.tsx" /> */}
       </ScrollView>
-    </View>
+    </PageContainer>
   );
 }
 

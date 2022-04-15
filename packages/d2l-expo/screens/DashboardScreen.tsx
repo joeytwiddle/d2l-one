@@ -21,6 +21,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
 
   if (!user) return null;
 
+  // TODO: Introducing PageContainer does not work well here: It makes the cards shrink width to the minimum they can.
   return (
     <ScrollView>
       <SafeAreaView>
