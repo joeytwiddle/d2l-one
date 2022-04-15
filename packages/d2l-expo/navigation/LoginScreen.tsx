@@ -54,10 +54,10 @@ export default function LoginScreen() {
         {/* I switched to a RNP TextInput because the RN TextInput was too wide for narrow displays */}
         <PaddedBlock>
           <TextInput
-            // For RN
+            // For React Native TextInput
             //style={styles.larger}
             //
-            // For RNP
+            // For React Native Paper TextInput
             autoComplete={false}
             mode="flat"
             style={styles.wider}
@@ -105,7 +105,9 @@ const styles = StyleSheet.create({
   },
   larger: {
     minWidth: '60%',
-    maxWidth: '95%',
+    //maxWidth: '95%',
+    // Can we use this?
+    maxWidth: '100%',
     fontSize: 24,
     borderColor: '#888888',
     borderWidth: 1,
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
   },
   wider: {
     minWidth: '60%',
-    maxWidth: '95%',
+    maxWidth: '100%',
     fontSize: 20,
   },
   title: {
