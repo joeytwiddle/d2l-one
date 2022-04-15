@@ -294,6 +294,8 @@ function FavouriteRescues() {
   }
   if (!allAvailableRescues) return null;
 
+  allAvailableRescues.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? +1 : a.siteId < b.siteId ? -1 : +1));
+
   // Also to reduce sliggishness
   // TODO: This can't stay!
   const availableRescues = allAvailableRescues.slice(0, 20);
