@@ -93,13 +93,12 @@ export default function BookedRescueScreen({ navigation, route }: any) {
 
       <View style={styles.container}>
         <PaddedBlock>
-          <Text>{niceDate(rescue.date)}</Text>
+          <Text style={styles.siteName}>{rescue.site.fullName}</Text>
         </PaddedBlock>
         <PaddedBlock>
-          <Text>{rescue.site.fullName}</Text>
-        </PaddedBlock>
-        <PaddedBlock>
-          <Text>{rescue.site.collectionTime}</Text>
+          <Text>
+            {niceDate(rescue.date)}, {rescue.site.collectionTime}
+          </Text>
         </PaddedBlock>
         <PaddedBlock>
           <Text>{rescue.site.directions}</Text>
@@ -109,11 +108,13 @@ export default function BookedRescueScreen({ navigation, route }: any) {
         </PaddedBlock>
       </View>
 
+      {/*
       <View>
         <PaddedBlock>
           <Button title="Upload Photo" onPress={() => {}} />
         </PaddedBlock>
       </View>
+      */}
       <View>
         <PaddedBlock>
           <SecondaryButton title="Cancel Booking" onPress={() => cancelBooking(rescue)} />
@@ -129,10 +130,15 @@ export default function BookedRescueScreen({ navigation, route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    fontSize: 16,
   },
   title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  siteName: {
     fontSize: 20,
     fontWeight: 'bold',
   },
