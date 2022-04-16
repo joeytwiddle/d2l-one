@@ -51,6 +51,7 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
         </PaddedBlock>
         {availableRescues && availableRescues.length > 0 ? (
           <PaddedBlock>
+            <Text>{availableRescues.length} rescues available</Text>
             <Button
               title="Start Booking"
               onPress={() => {
