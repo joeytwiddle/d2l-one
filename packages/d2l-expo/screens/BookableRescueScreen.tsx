@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CentralizingContainer, PaddedBlock, PageContainer, PullRightView } from '../components/Layout';
 
 import { Button, LoadingSpinner, SecondaryButton, Text, View } from '../components/Themed';

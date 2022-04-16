@@ -43,10 +43,6 @@ export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dash
 
   return (
     <View style={styles.container}>
-      {/*
-        SafeAreaView doesn't need to wrap the entire content, only the header.  If there is no header, it can just be used for padding
-        https://stackoverflow.com/a/59185120/99777
-      */}
       <SafeAreaView></SafeAreaView>
       <Logo />
       <PaddedBlock>
