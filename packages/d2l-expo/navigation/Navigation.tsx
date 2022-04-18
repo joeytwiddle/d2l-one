@@ -70,10 +70,13 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
+//const BottomTab = createBottomTabNavigator<RootTabParamList>();
+const BottomTab = createNativeStackNavigator<RootTabParamList>();
 
-function BottomTabNavigator() {
+function BottomTabNavigator(props: any) {
   const colorScheme = useColorScheme();
+
+  //const showTabBar = false;
 
   return (
     <BottomTab.Navigator
@@ -83,13 +86,17 @@ function BottomTabNavigator() {
         // This is achieved through the NavigationContainer's theme
         //tabBarActiveTintColor: Colors[colorScheme].tint,
       }}
+      // This hides the tab bar (which is not ideal, because on iOS, we will need some way to get back to the dashboard)
+      //tabBar={showTabBar ? undefined : () => null}
+      // We could make `headerShown: true` but that doesn't help because Rescues is parallel to Dashboard.  We want it to be a child below it (or above it on the stack).
     >
       <BottomTab.Screen
         name="Dashboard"
         component={DashboardScreen}
         options={({ navigation }: RootTabScreenProps<'Dashboard'>) => ({
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerShown: false,
+          //tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
@@ -107,7 +114,8 @@ function BottomTabNavigator() {
         component={RescuesScreen}
         options={{
           title: 'Rescues',
-          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
+          headerShown: true,
+          //tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
     </BottomTab.Navigator>
