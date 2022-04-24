@@ -596,20 +596,11 @@ async function getAvailableRescuesForUser(userId) {
   //const siteGroup = siteGroups.siteGroupsForSite.siteGroupForSite['foo'];
   //const sg = siteGroupForSite.fluff.foo.siteGroupForSite['foo'];
 
-  const rescuesForUser = await getAllRescuesForUser(userId);
-
-  const rescuesBySiteGroup = {};
-  for (const rescue of rescuesForUser) {
-    const siteId = rescue.site.id;
-    const siteGroup = siteGroupForSite[siteId];
-    const siteGroupName = (siteGroup && siteGroup.groupName) || 'UNRESTRICTED';
-    rescuesBySiteGroup[siteGroupName] = rescuesBySiteGroup[siteGroupName] || [];
-    rescuesBySiteGroup[siteGroupName].push(rescue);
-  }
+  const usersRescuesBySiteGroup = await getUsersRescuesBySiteGroup(userId, siteGroupForSite);
 
   // Gather all available rescues, and categorise them by siteGroup
   const allRescues = await getAllRescues();
-  const allUnbookedRescues = allRescues.filter(rescue => !rescue.rescuer);
+  const allUnbookedRescues = allRescues.filter(isUnbooked);
 
   // For each unbooked rescue, get its siteGroup
   // 1. Check if the user is allowed to book that site
@@ -631,13 +622,34 @@ async function getAvailableRescuesForUser(userId) {
       return false;
     }
 
-    const usersExistingBookingsForThisGroup = rescuesBySiteGroup[siteGroup.groupName];
-    const countExisting = usersExistingBookingsForThisGroup ? usersExistingBookingsForThisGroup.length : 0;
+    const countExisting = countExistingBookings(usersRescuesBySiteGroup, siteGroup);
     const remaining = siteGroup.bookLimit - countExisting;
     return remaining > 0;
   });
 
   return rescuesAvailableToUser;
+}
+
+/** @type {(userId: string, siteGroupForSite: Record<string, SiteGroup>) => Promise<Record<string, Rescue[]>>} */
+async function getUsersRescuesBySiteGroup(userId, siteGroupForSite) {
+  const rescuesForUser = await getAllRescuesForUser(userId);
+
+  /** @type {Record<string, Rescue[]>} */
+  const usersRescuesBySiteGroup = {};
+  for (const rescue of rescuesForUser) {
+    const siteId = rescue.site.id;
+    const siteGroup = siteGroupForSite[siteId];
+    const siteGroupName = (siteGroup && siteGroup.groupName) || 'UNRESTRICTED';
+    usersRescuesBySiteGroup[siteGroupName] = usersRescuesBySiteGroup[siteGroupName] || [];
+    usersRescuesBySiteGroup[siteGroupName].push(rescue);
+  }
+  return usersRescuesBySiteGroup;
+}
+
+function countExistingBookings(usersRescuesBySiteGroup, siteGroup) {
+  const usersExistingBookingsForThisGroup = usersRescuesBySiteGroup[siteGroup.groupName];
+  const countExisting = usersExistingBookingsForThisGroup ? usersExistingBookingsForThisGroup.length : 0;
+  return countExisting;
 }
 
 async function assignUserToRescue(month, userId, rescueId) {
@@ -729,6 +741,11 @@ async function unassignUserFromRescue(month, userId, rescueId) {
   const rescueNow = rescueData.allRescues.find(rescue => rescue.id === rescueId);
   console.log('rescueNow:', rescueNow);
   return rescueNow;
+}
+
+/** @type {(rescue: RescueLite) => boolean} */
+function isUnbooked(rescue) {
+  return !rescue.rescuer;
 }
 
 /** @type {<X>(arr: [string, X][]) => Record<string, X>} */
