@@ -30,7 +30,7 @@ export default function RescueCard({
           <>
             <Title style={styles.title}>{site.fullName}</Title>
             <Text>
-              {niceDate(rescue.date)}, {site.collectionTime}
+              {niceDate(rescue.date)}, {niceTime(site.collectionTime)}
             </Text>
             {Additional && (
               <Card.Actions>
@@ -67,4 +67,25 @@ export function niceDate(dateStr: string) {
     date.getMonth()
   ];
   return `${dayOfWeek}, ${shortMonthName} ${date.getDate()}`;
+}
+
+export function niceTime(timeStr: string) {
+  if (timeStr === 'ANY') {
+    return 'any time';
+  }
+  if (timeStr.match(/^[0-9][0-9]*:[0-9][0-9]$/)) {
+    const [hourStr, minStr] = timeStr.split(':');
+    const [hour, min] = [hourStr, minStr].map(str => Number(str));
+    if (hour < 12) {
+      return `${hour}:${minStr} am`;
+    } else if (hour === 12) {
+      return `${hour}:${minStr} pm`;
+    } else if (hour > 12) {
+      return `${hour - 12}:${minStr} pm`;
+    }
+    return 'IMPOSSIBLE';
+  }
+  // This might be a range, such as '16:00 to 16:45'
+  // In this case, we will simply return the string we were given
+  return `${timeStr}`;
 }

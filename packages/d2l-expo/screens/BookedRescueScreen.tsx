@@ -16,7 +16,7 @@ import {
 } from '../graphql';
 import { handleGlobalError } from '../navigation/LoginScreen';
 import { BookedRescueScreenProps, RootStackParamList } from '../types';
-import { niceDate } from '../components/RescueCard';
+import { niceDate, niceTime } from '../components/RescueCard';
 
 type BookedRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookedRescueScreen'>;
 
@@ -104,7 +104,7 @@ export default function BookedRescueScreen({ route }: any) {
         </PaddedBlock>
         <PaddedBlock>
           <Text>
-            {niceDate(rescue.date)}, {rescue.site.collectionTime}
+            {niceDate(rescue.date)}, {niceTime(rescue.site.collectionTime)}
           </Text>
         </PaddedBlock>
         <PaddedBlock>

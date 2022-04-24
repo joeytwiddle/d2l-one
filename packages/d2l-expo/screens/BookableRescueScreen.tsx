@@ -17,7 +17,7 @@ import {
 import useUser from '../hooks/useUser';
 import { handleGlobalError } from '../navigation/LoginScreen';
 import { BookableRescueScreenProps, RootStackParamList } from '../types';
-import { niceDate } from '../components/RescueCard';
+import { niceDate, niceTime } from '../components/RescueCard';
 
 type BookableRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookableRescueScreen'>;
 
@@ -122,7 +122,7 @@ export default function BookableRescueScreen({ route }: any) {
         </PaddedBlock>
         <PaddedBlock>
           <Text>
-            {niceDate(rescue.date)}, {site.collectionTime}
+            {niceDate(rescue.date)}, {niceTime(site.collectionTime)}
           </Text>
         </PaddedBlock>
         <PaddedBlock>
