@@ -1,6 +1,5 @@
 //import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
-import type { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
@@ -20,16 +19,12 @@ import RescueCard, { niceDate } from '../components/RescueCard';
 import { Button, LoadingSpinner, Text, useThemeColor, View } from '../components/Themed';
 import { getSite, useSiteDataCached } from '../data/site-data';
 import {
-  GetAvailableRescuesForCurrentUserDocument,
   RescueLite,
-  useAssignSelfToRescueMutation,
   useGetAvailableRescuesForCurrentUserQuery,
   useGetBookingLimitsForCurrentUserQuery,
   useGetMyRescuesQuery,
 } from '../graphql';
 import useUser from '../hooks/useUser';
-import { handleGlobalError } from '../navigation/LoginScreen';
-import { RootStackParamList } from '../types';
 
 function callD2LAPI(hook: any, ...args: any[]) {
   const result = hook(...args);
