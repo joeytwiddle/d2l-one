@@ -28,11 +28,12 @@ const linking: LinkingOptions<RootStackParamList> = {
           Rescues: {
             path: 'rescues',
             screens: {
+              /*
               RescuesScreen: 'booking',
-              Calendar: {
-                path: 'calendar',
+              BookingLimits: {
+                path: 'limits',
                 screens: {
-                  Calendar: 'Calendar',
+                  BookingLimits: 'BookingLimits',
                 },
               },
               Favourites: {
@@ -41,6 +42,18 @@ const linking: LinkingOptions<RootStackParamList> = {
                   Favourites: 'Favourites',
                 },
               },
+              Calendar: {
+                path: 'calendar',
+                screens: {
+                  Calendar: 'Calendar',
+                },
+              },
+              */
+              // Left-hand-side matches the <Tabs.Screen> 'name' property
+              // Right-hand-side is the path
+              'Booking Limits': 'limits',
+              Favourites: 'favourites',
+              Calendar: 'calendar',
             },
           },
         },
