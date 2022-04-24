@@ -288,20 +288,13 @@ function RescuesList() {
 
   return (
     <PageContainer>
-      <View style={{ padding: 10, width: '100%' }}>
+      <View style={styles.pickerContainer}>
         {/*<Text>{selectedArea} of [{allAreas.join(', ')}]</Text>*/}
         <Picker
           prompt="Select area"
           selectedValue={selectedArea}
           onValueChange={(itemValue, itemIndex) => setSelectedArea(itemValue)}
-          style={{
-            width: '100%',
-            borderWidth: 1,
-            borderColor: '#bbbbbb',
-            backgroundColor: useThemeColor({}, 'background'),
-            fontSize: 18,
-            padding: 5,
-          }}
+          style={styles.picker}
         >
           <Picker.Item label="All Areas" value="_ALL_" />
           {allAreas.map(area => (
@@ -374,6 +367,19 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  pickerContainer: {
+    padding: 10,
+    width: '100%',
+    maxWidth: 600,
+  },
+  picker: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#bbbbbb',
+    backgroundColor: useThemeColor({}, 'background'),
+    fontSize: 18,
+    padding: 5,
   },
   dateCell: {
     minWidth: 100,
