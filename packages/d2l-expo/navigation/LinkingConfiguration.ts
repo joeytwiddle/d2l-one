@@ -52,7 +52,7 @@ const linking: LinkingOptions<RootStackParamList> = {
               // Left-hand-side matches the <Tabs.Screen> 'name' property
               // Right-hand-side is the path
               'Booking Limits': 'limits',
-              Favourites: 'favourites',
+              List: 'list',
               Calendar: 'calendar',
             },
           },

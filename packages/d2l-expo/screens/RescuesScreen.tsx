@@ -81,7 +81,7 @@ export default function RescuesScreen() {
       {/* We disable swiping so that we can scroll the table horizontally */}
       <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
         <Tab.Screen name="Booking Limits" component={BookingLimits} />
-        <Tab.Screen name="Favourites" component={FavouriteRescues} />
+        <Tab.Screen name="List" component={RescuesList} />
         <Tab.Screen name="Calendar" component={RescuesCalendar} />
       </Tab.Navigator>
     </SafeAreaView>
@@ -263,7 +263,7 @@ function RescuesCalendarView({
 //function FavouriteRescues() {
 //  const navigation = useNavigation<FavouriteRescuesTabNavigationProp>();
 
-function FavouriteRescues() {
+function RescuesList() {
   const navigation = useNavigation();
 
   const { allAreas } = useSiteDataCached();
