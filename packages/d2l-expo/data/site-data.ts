@@ -26,6 +26,7 @@ export function getSite(siteId: string) {
       //fullName: `SITE_${siteId}_IS_MISSING_FROM_SITE_DATA`,
       fullName: siteId,
       collectionTime: 'UNKNOWN',
+      area: 'UNKNOWN',
       geoLocation: 'UNKNOWN',
     } as Site;
   }

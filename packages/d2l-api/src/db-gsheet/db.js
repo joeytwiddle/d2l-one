@@ -426,6 +426,7 @@ async function getAllRescuesForUser(userId) {
         fullName: `SITE_${siteId}_IS_MISSING_FROM_SITE_DATA`,
         collectionTime: 'UNKNOWN',
         expectedCollectibles: 'UNKNOWN',
+        area: 'UNKNOWN',
         geoLocation: 'UNKNOWN',
         directions: 'UNKNOWN',
         rules: 'UNKNOWN',

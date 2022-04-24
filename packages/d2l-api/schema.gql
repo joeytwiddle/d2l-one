@@ -76,6 +76,7 @@ type Site {
   collectionTime: CollectionTime!
   callRequired: Boolean
   expectedCollectibles: String
+  area: String!
   geoLocation: String!
   directions: String
   siteAmbaddasadors: String
@@ -117,6 +118,7 @@ query GetMyRescues {
       id
       fullName
       collectionTime
+      area
       geoLocation
       directions
       rules
@@ -155,6 +157,7 @@ query GetAllSites {
     collectionTime
     callRequired
     expectedCollectibles
+    area
     geoLocation
     directions
     siteAmbaddasadors
