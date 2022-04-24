@@ -88,8 +88,37 @@ export default function RescuesScreen() {
 function BookingLimits() {
   const bookingLimitsQuery = useGetBookingLimitsForCurrentUserQuery();
   const bookingLimits = bookingLimitsQuery.data?.bookingLimitsForCurrentUser;
+  //return <Text>{JSON.stringify(bookingLimits)}</Text>;
 
-  return <Text>{JSON.stringify(bookingLimits)}</Text>;
+  if (!bookingLimits) return <LoadingSpinner />;
+
+  return (
+    <FullWidthPageContainer>
+      <ScrollView>
+        <PaddedBlock>
+          {/* This used to centralise vertically, until I put it inside <FullWidthPageContainer> */}
+          {/* Giving FullWidthPageContainer "height: 100%" did not help. */}
+          {/* It doesn't really matter.  This doesn't need to centralise vertically. */}
+          <CentralizingContainer>
+            {bookingLimits.map(({ siteGroupName, limit, remaining, sites }) => (
+              <PaddedBlock key={siteGroupName}>
+                <Text>You may book {remaining} more rescues from the following sites:</Text>
+                {sites.map(siteId => (
+                  <Text key={siteId}> - {getSite(siteId).fullName}</Text>
+                ))}
+                <Text>
+                  ({limit - remaining} already booked, maximum {limit})
+                </Text>
+              </PaddedBlock>
+            ))}
+            <PaddedBlock>
+              <Text>There are other sites with unrestricted booking.</Text>
+            </PaddedBlock>
+          </CentralizingContainer>
+        </PaddedBlock>
+      </ScrollView>
+    </FullWidthPageContainer>
+  );
 }
 
 function RescuesLoadingSpinner() {
