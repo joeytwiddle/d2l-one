@@ -56,6 +56,10 @@ const root = {
     return Object.values(await db.getSiteGroupsForUser(userId));
   }),
 
+  bookingLimitsForCurrentUser: ifUser(async (args, request) => {
+    return await db.getBookingLimitsForUser(request.session.user.id);
+  }),
+
   availableRescuesForCurrentUser: ifUser(async (args, request) => {
     return await db.getAvailableRescuesForUser(request.session.user.id);
   }),

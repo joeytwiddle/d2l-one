@@ -23,6 +23,7 @@ type Query {
   allSites: [Site!]
   myRescues: [Rescue!]
   siteGroupsForCurrentUser: [SiteGroup!]
+  bookingLimitsForCurrentUser: [SiteGroupLimit!]
   availableRescuesForCurrentUser: [RescueLite!]
   #search(term: String!): [SearchResult!]!
 }
@@ -94,6 +95,13 @@ type SiteGroup {
   sites: [String!]
 }
 
+type SiteGroupLimit {
+  siteGroupName: String!
+  sites: [String!]!
+  limit: Int!
+  remaining: Int!
+}
+
 query GetUser {
   me {
     id
@@ -161,6 +169,15 @@ query GetSiteGroupsForCurrentUser {
     memberGroup
     bookLimit
     sites
+  }
+}
+
+query GetBookingLimitsForCurrentUser {
+  bookingLimitsForCurrentUser {
+    siteGroupName
+    sites
+    limit
+    remaining
   }
 }
 
