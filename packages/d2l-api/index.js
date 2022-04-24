@@ -110,6 +110,8 @@ setTimeout(() => {
     //console.log('siteData:', siteData);
     const siteGroupsForUser = await db.getSiteGroupsForUser('fff');
     console.log('siteGroupsForUser:', siteGroupsForUser);
+    const bookingLimits = await db.getBookingLimitsForUser('fff');
+    console.log('bookingLimits:', bookingLimits);
   })().catch(console.error);
 }, 1000);
 

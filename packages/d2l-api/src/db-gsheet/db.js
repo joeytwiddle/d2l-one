@@ -588,6 +588,30 @@ async function getSiteGroupsForUser(userId) {
   return availableSiteGroups;
 }
 
+async function getBookingLimitsForUser(userId) {
+  const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
+  const { memberGroups, memberGroupsByUser } = await getMemberGroupsCached();
+
+  const usersRescuesBySiteGroup = await getUsersRescuesBySiteGroup(userId, siteGroupForSite);
+
+  const allRescues = await getAllRescues();
+  const allUnbookedRescues = allRescues.filter(isUnbooked);
+
+  const limitsBySiteGroup = Object.values(siteGroups).map(siteGroup => {
+    const memberGroup = memberGroups[siteGroup.memberGroup];
+    const isMember = memberGroup && memberGroup.members[userId];
+    const remaining = isMember ? siteGroup.bookLimit - countExistingBookings(usersRescuesBySiteGroup, siteGroup) : 0;
+    return {
+      siteGroupName: siteGroup.groupName,
+      sites: siteGroup.sites,
+      limit: siteGroup.bookLimit,
+      remaining: remaining,
+    };
+  });
+
+  return limitsBySiteGroup;
+}
+
 async function getAvailableRescuesForUser(userId) {
   const { siteGroups, siteGroupForSite } = await getSiteGroupsCached();
   const { memberGroups, memberGroupsByUser } = await getMemberGroupsCached();
@@ -769,6 +793,7 @@ const db = {
   //getSiteGroups: getSiteGroupsCached,
   //getMemberGroups: getMemberGroupsCached,
   getSiteGroupsForUser,
+  getBookingLimitsForUser,
   getAvailableRescuesForUser,
   assignUserToRescue,
   unassignUserFromRescue,
