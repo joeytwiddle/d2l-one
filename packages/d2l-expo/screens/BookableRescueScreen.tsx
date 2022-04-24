@@ -17,7 +17,7 @@ import {
 import useUser from '../hooks/useUser';
 import { handleGlobalError } from '../navigation/LoginScreen';
 import { BookableRescueScreenProps, RootStackParamList } from '../types';
-import { niceDate } from './RescuesScreen';
+import { niceDate } from '../components/RescueCard';
 
 type BookableRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookableRescueScreen'>;
 

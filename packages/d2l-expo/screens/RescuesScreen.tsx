@@ -359,12 +359,3 @@ const styles = StyleSheet.create({
     //border: '',
   },
 });
-
-export function niceDate(dateStr: string) {
-  const date = new Date(dateStr);
-  const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
-  const shortMonthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
-    date.getMonth()
-  ];
-  return `${dayOfWeek}, ${shortMonthName} ${date.getDate()}`;
-}

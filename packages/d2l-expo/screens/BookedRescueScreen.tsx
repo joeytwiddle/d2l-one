@@ -16,7 +16,7 @@ import {
 } from '../graphql';
 import { handleGlobalError } from '../navigation/LoginScreen';
 import { BookedRescueScreenProps, RootStackParamList } from '../types';
-import { niceDate } from './RescuesScreen';
+import { niceDate } from '../components/RescueCard';
 
 type BookedRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookedRescueScreen'>;
 

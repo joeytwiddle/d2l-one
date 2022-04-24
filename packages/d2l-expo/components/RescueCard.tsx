@@ -3,7 +3,6 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Title } from 'react-native-paper';
 import { getSite } from '../data/site-data';
 import { Rescue, RescueLite, Site } from '../graphql';
-import { niceDate } from '../screens/RescuesScreen';
 import { LoadingSpinner, Text, View } from './Themed';
 
 export default function RescueCard({
@@ -60,3 +59,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export function niceDate(dateStr: string) {
+  const date = new Date(dateStr);
+  const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
+  const shortMonthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
+    date.getMonth()
+  ];
+  return `${dayOfWeek}, ${shortMonthName} ${date.getDate()}`;
+}
