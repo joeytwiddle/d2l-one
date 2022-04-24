@@ -475,9 +475,8 @@ async function getCurrentMemberGroupsSheet() {
   return generalData['Current Member Groups Sheet'];
 }
 
-async function getSiteGroupsUncached(month, siteGroupsSheet) {
-  month = month || (await getCurrentBookingMonth());
-  siteGroupsSheet = siteGroupsSheet || (await getCurrentSiteGroupsSheet());
+async function getSiteGroupsUncached() {
+  const siteGroupsSheet = await getCurrentSiteGroupsSheet();
 
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: siteGroupsSheet });
   //console.log('sheetData:', sheetData);
@@ -530,9 +529,8 @@ async function getSiteGroupsUncached(month, siteGroupsSheet) {
  *   memberGroupsByUser: Record<string, string[]>;
  * }>}
  */
-async function getMemberGroupsUncached(month, memberGroupsSheet) {
-  month = month || (await getCurrentBookingMonth());
-  memberGroupsSheet = memberGroupsSheet || (await getCurrentMemberGroupsSheet());
+async function getMemberGroupsUncached() {
+  const memberGroupsSheet = await getCurrentMemberGroupsSheet();
 
   const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: memberGroupsSheet });
   //console.log('sheetData:', sheetData);
