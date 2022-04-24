@@ -1,4 +1,5 @@
 //import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Picker } from '@react-native-picker/picker';
 import type { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
@@ -15,9 +16,9 @@ import {
   PageContainer,
   PullRightView,
 } from '../components/Layout';
-import RescueCard from '../components/RescueCard';
-import { Button, LoadingSpinner, Text, View } from '../components/Themed';
-import { getSite } from '../data/site-data';
+import RescueCard, { niceDate } from '../components/RescueCard';
+import { Button, LoadingSpinner, Text, useThemeColor, View } from '../components/Themed';
+import { getSite, useSiteDataCached } from '../data/site-data';
 import {
   GetAvailableRescuesForCurrentUserDocument,
   RescueLite,
@@ -41,6 +42,8 @@ function callD2LAPI(hook: any, ...args: any[]) {
 
 const Tab = createMaterialTopTabNavigator();
 
+// We have different booking screens, but they use the same data, queries and mutations.
+// So to avoid repetition, we gather that data in one place.
 function useAvailableRescuesData() {
   //const rescues = useGetAllRescuesQuery().data?.rescues;
   //const rescues = useGetAllRescuesForMonthQuery({ variables: { month: 'JAN 2021' } }).data?.allRescuesForMonth;
@@ -263,30 +266,59 @@ function RescuesCalendarView({
 function FavouriteRescues() {
   const navigation = useNavigation();
 
-  // Try to reduce sluggishness
-  //const route = useRoute();
-  //if (route.name !== 'Favourites') return null;
+  const { allAreas } = useSiteDataCached();
 
-  const { availableRescuesQuery, availableRescues: allAvailableRescues } = useAvailableRescuesData();
+  const [selectedArea, setSelectedArea] = useState('_ALL_');
+
+  let { availableRescuesQuery, availableRescues: allAvailableRescues } = useAvailableRescuesData();
   if (availableRescuesQuery.loading) {
     return <RescuesLoadingSpinner />;
   }
   if (!allAvailableRescues) return null;
 
+  if (selectedArea && selectedArea !== '_ALL_') {
+    allAvailableRescues = allAvailableRescues.filter(rescue => {
+      const site = getSite(rescue.siteId);
+      return site.area === selectedArea;
+    });
+  }
+
   allAvailableRescues.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? +1 : a.siteId < b.siteId ? -1 : +1));
 
-  // Also to reduce sliggishness
-  // TODO: This can't stay!
-  const availableRescues = allAvailableRescues.slice(0, 20);
+  // TODO: We are currently limiting the number of rescues displayed, because with 100 or more, it gets pretty sluggish.
+  // TODO: We may need to use a smart list, that only renders the visible cards.
+  // TODO: We could trim by date.  (E.g. only next 2 weeks, or next 4 weeks.)
+  const availableRescues = allAvailableRescues.slice(0, 50);
   //const availableRescues = allAvailableRescues;
 
   return (
     <PageContainer>
+      <View style={{ padding: 10, width: '100%' }}>
+        {/*<Text>{selectedArea} of [{allAreas.join(', ')}]</Text>*/}
+        <Picker
+          prompt="Select area"
+          selectedValue={selectedArea}
+          onValueChange={(itemValue, itemIndex) => setSelectedArea(itemValue)}
+          style={{
+            width: '100%',
+            borderWidth: 1,
+            borderColor: '#bbbbbb',
+            backgroundColor: useThemeColor({}, 'background'),
+            fontSize: 18,
+            padding: 5,
+          }}
+        >
+          <Picker.Item label="All Areas" value="_ALL_" />
+          {allAreas.map(area => (
+            <Picker.Item key={area} label={area} value={area} />
+          ))}
+        </Picker>
+      </View>
       {/*<PaddedBlock>
         <Text>{availableRescues.length} rescues available</Text>
       </PaddedBlock>*/}
       <PaddedBlock>
-        <Text>This page is under construction. It does not show all available rescues.</Text>
+        <Text style={{ color: '#888f' }}>This page is under construction. It does not show all available rescues.</Text>
       </PaddedBlock>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         {availableRescues.map((rescue: RescueLite) => (

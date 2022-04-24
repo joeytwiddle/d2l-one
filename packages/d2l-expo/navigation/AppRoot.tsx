@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ColorSchemeName, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { apiUrl } from '../config/config';
-import { useSiteData } from '../data/site-data';
+import { useSiteDataQuery } from '../data/site-data';
 import { useGetUserQuery, User } from '../graphql';
 import useUser from '../hooks/useUser';
 import Navigation from './Navigation';
@@ -41,7 +41,7 @@ export default function AppRoot({ colorScheme }: { colorScheme: ColorSchemeName 
 function AppRootLoggedIn({ colorScheme }: { colorScheme: ColorSchemeName }) {
   // Load all the site data on startup
   // NOTE: This will show an error if it is called before the user has logged in
-  const allSiteData = useSiteData();
+  const allSiteData = useSiteDataQuery();
   console.log('[AppRoot] allSiteData:', allSiteData);
 
   if (allSiteData.loading) {

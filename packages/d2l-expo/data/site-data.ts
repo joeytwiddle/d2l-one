@@ -1,9 +1,10 @@
 import { Site, useGetAllSitesQuery } from '../graphql';
 
 let sitesById = null as Record<string, Site> | null;
+let allAreas = null as string[] | null;
 
 // Although we invoke this as a React use hook, it's actually just used to load the data on startup, after which we cache it globally, and can grab it directly from getSite()
-export function useSiteData() {
+export function useSiteDataQuery() {
   const allSitesQuery = useGetAllSitesQuery();
   const allSites = allSitesQuery.data?.allSites;
 
@@ -12,10 +13,26 @@ export function useSiteData() {
     for (const site of allSites) {
       sitesById[site.id] = site;
     }
+
+    allAreas = uniqueArray(
+      Object.values(sitesById)
+        .map(site => site.area)
+        .filter(area => area !== '')
+        .sort(),
+    );
   }
 
   //return sitesById;
   return allSitesQuery;
+}
+
+export function useSiteDataCached() {
+  const cached = sitesById && allAreas;
+  return {
+    loading: !cached,
+    sitesById: sitesById || {},
+    allAreas: allAreas || [],
+  };
 }
 
 export function getSite(siteId: string) {
@@ -31,4 +48,8 @@ export function getSite(siteId: string) {
     } as Site;
   }
   return site;
+}
+
+export function uniqueArray<T>(array: T[]) {
+  return [...new Set(array)];
 }
