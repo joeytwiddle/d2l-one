@@ -203,6 +203,7 @@ async function getAllSiteDataUncached() {
     }
     // Sanitisation
     site.fullName = site.fullName || site.id;
+    site.collectionTime = site.collectionTime || 'ANY';
     // @ts-ignore
     site.callRequired = site.callRequired === 'TRUE';
     //
