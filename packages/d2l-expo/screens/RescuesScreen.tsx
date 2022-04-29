@@ -98,17 +98,23 @@ function BookingLimitsScreen() {
           {/* Giving FullWidthPageContainer "height: 100%" did not help. */}
           {/* It doesn't really matter.  This doesn't need to centralise vertically. */}
           <CentralizingContainer>
-            {bookingLimits.map(({ siteGroupName, limit, remaining, sites }) => (
-              <PaddedBlock key={siteGroupName}>
-                <Text>You may book {remaining} more rescues from the following sites:</Text>
-                {sites.map(siteId => (
-                  <Text key={siteId}> - {getSite(siteId).fullName}</Text>
-                ))}
-                <Text>
-                  ({limit - remaining} already booked, maximum {limit})
-                </Text>
-              </PaddedBlock>
-            ))}
+            {bookingLimits.map(({ siteGroupName, limit, remaining, sites }) => {
+              const textStyle = remaining > 0 ? undefined : { color: '#999' };
+              return (
+                <PaddedBlock key={siteGroupName}>
+                  <Text style={textStyle}>You may book {remaining} more rescues from the following sites:</Text>
+                  {sites.map(siteId => (
+                    <Text key={siteId} style={textStyle}>
+                      {' '}
+                      - {getSite(siteId).fullName}
+                    </Text>
+                  ))}
+                  <Text style={textStyle}>
+                    ({limit - remaining} already booked, maximum {limit})
+                  </Text>
+                </PaddedBlock>
+              );
+            })}
             <PaddedBlock>
               <Text>There are other sites with unrestricted booking.</Text>
             </PaddedBlock>
