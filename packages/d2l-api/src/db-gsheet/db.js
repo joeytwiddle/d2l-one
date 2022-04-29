@@ -269,31 +269,8 @@ async function getFormattedSpreadsheetUncached(sheetName) {
   return targetSheet;
 }
 
-async function getAllRescueDataUncached(month) {
-  month = month || (await getCurrentBookingMonth());
-
-  const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
-
-  const formatData = await getFormattedSpreadsheetCached(month);
-
-  const sitesById = await getAllSiteDataCached();
-
-  const siteRow = sheetData[0];
-  //console.log('siteRow:', JSON.stringify(siteRow));
-  const mapColumnToSite = {};
-  const mapSiteToColumn = {};
-  for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
-    /** @type {string} */
-    const cellData = siteRow[colIndex] || '';
-    const siteName = (cellData.match(siteCodeRegexp) || [])[0];
-    //console.log('siteName:', siteName);
-    if (siteName) {
-      mapColumnToSite[colIndex] = siteName;
-      mapSiteToColumn[siteName] = colIndex;
-    }
-  }
-  //console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
-  //console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
+async function getAllRescueDataUncached(months) {
+  months = months || (await getCurrentBookingMonths());
 
   /** @type {RescueLite[]} */
   const allRescues = [];
@@ -301,65 +278,89 @@ async function getAllRescueDataUncached(month) {
   const rescuesByDate = {};
   /** @type {Record<string, RescueLite[]>} */
   const rescuesByRescuer = {};
-  const mapDateToRow = {};
+  //const mapDateToRow = {};
 
-  for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
-    const row = sheetData[rowIndex];
-    const dateStr = String(row[0]);
-    // dateStr appears to us as: "Thu 9 Dec"
-    const looksLikeDate = dateStr.match(/^[A-Z][a-z][a-z] [0-9]+ [A-Z][a-z][a-z]$/);
-    if (!looksLikeDate) continue;
-    const date = getDateFromString(dateStr);
-    const isRealDate = date.getTime() >= 0;
-    // Skip the row if it didn't parse into a real date
-    if (!isRealDate) continue;
+  for (const month of months.split(/,[ ]*/)) {
+    const sheetData = await callAPI(gsheet.values(), 'get', { spreadsheetId, range: month });
 
-    const shortDate = shortDateString(date);
-    mapDateToRow[shortDate] = rowIndex;
+    const formatData = await getFormattedSpreadsheetCached(month);
 
+    const sitesById = await getAllSiteDataCached();
+
+    const siteRow = sheetData[0];
+    //console.log('siteRow:', JSON.stringify(siteRow));
+    const mapColumnToSite = {};
+    //const mapSiteToColumn = {};
     for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
-      const siteId = mapColumnToSite[colIndex];
-      if (siteId) {
-        const rescueId = `${siteId}@${shortDate}`;
-        const cellData = row[colIndex];
+      /** @type {string} */
+      const cellData = siteRow[colIndex] || '';
+      const siteName = (cellData.match(siteCodeRegexp) || [])[0];
+      //console.log('siteName:', siteName);
+      if (siteName) {
+        mapColumnToSite[colIndex] = siteName;
+        //mapSiteToColumn[siteName] = colIndex;
+      }
+    }
+    //console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
+    //console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
 
-        // Skip cells which have been marked as unavailable, or greyed out
-        if (cellData === 'XXX') {
-          continue;
-        }
-        const cellBackgroundColor =
-          formatData.data[0].rowData[rowIndex]?.values[colIndex]?.userEnteredFormat?.backgroundColor;
-        if (cellBackgroundColor) {
-          const { red, green, blue } = cellBackgroundColor;
-          //if (siteId === 'KA' || siteId === 'PL') {
-          //  console.log('cellBackgroundColor:', cellBackgroundColor);
-          //}
-          // Cells with a black background have no data: cellBackgroundColor = {}
-          const cellIsGreyOrBlack =
-            (green === red && blue === red && red < 1) ||
-            (red === undefined && blue === undefined && green === undefined);
-          if (cellIsGreyOrBlack) {
-            //console.log(`Skipping ${rescueId} ${colIndex} x ${rowIndex}`);
+    for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
+      const row = sheetData[rowIndex];
+      const dateStr = String(row[0]);
+      // dateStr appears to us as: "Thu 9 Dec"
+      const looksLikeDate = dateStr.match(/^[A-Z][a-z][a-z] [0-9]+ [A-Z][a-z][a-z]$/);
+      if (!looksLikeDate) continue;
+      const date = getDateFromString(dateStr);
+      const isRealDate = date.getTime() >= 0;
+      // Skip the row if it didn't parse into a real date
+      if (!isRealDate) continue;
+
+      const shortDate = shortDateString(date);
+      //mapDateToRow[shortDate] = rowIndex;
+
+      for (let colIndex = 2; colIndex < siteRow.length; colIndex++) {
+        const siteId = mapColumnToSite[colIndex];
+        if (siteId) {
+          const rescueId = `${siteId}@${shortDate}`;
+          const cellData = row[colIndex];
+
+          // Skip cells which have been marked as unavailable, or greyed out
+          if (cellData === 'XXX') {
             continue;
           }
-        }
-
-        const rescuerId = cellData;
-        const rescuerName = rescuerId;
-        /** @type {UserPublic} */
-        // If needed, we should look up public fields from allRescuers table
-        const rescuer = rescuerName
-          ? {
-              id: rescuerId,
-              name: rescuerName,
+          const cellBackgroundColor =
+            formatData.data[0].rowData[rowIndex]?.values[colIndex]?.userEnteredFormat?.backgroundColor;
+          if (cellBackgroundColor) {
+            const { red, green, blue } = cellBackgroundColor;
+            //if (siteId === 'KA' || siteId === 'PL') {
+            //  console.log('cellBackgroundColor:', cellBackgroundColor);
+            //}
+            // Cells with a black background have no data: cellBackgroundColor = {}
+            const cellIsGreyOrBlack =
+              (green === red && blue === red && red < 1) ||
+              (red === undefined && blue === undefined && green === undefined);
+            if (cellIsGreyOrBlack) {
+              //console.log(`Skipping ${rescueId} ${colIndex} x ${rowIndex}`);
+              continue;
             }
-          : null;
+          }
 
-        if (!sitesById[siteId]) {
-          //console.warn(`No site found with id: ${siteId}`);
-        }
-        /** @type {RescueSite} */
-        /*
+          const rescuerId = cellData;
+          const rescuerName = rescuerId;
+          /** @type {UserPublic} */
+          // If needed, we should look up public fields from allRescuers table
+          const rescuer = rescuerName
+            ? {
+                id: rescuerId,
+                name: rescuerName,
+              }
+            : null;
+
+          if (!sitesById[siteId]) {
+            //console.warn(`No site found with id: ${siteId}`);
+          }
+          /** @type {RescueSite} */
+          /*
         const site = sitesById[siteId] || {
           id: siteId,
           fullName: siteId,
@@ -367,19 +368,21 @@ async function getAllRescueDataUncached(month) {
         };
         */
 
-        /** @type {RescueLite} */
-        const rescue = {
-          id: rescueId,
-          date: shortDate,
-          siteId,
-          rescuer: rescuer || null,
-        };
-        allRescues.push(rescue);
-        rescuesByDate[shortDate] = rescuesByDate[shortDate] || [];
-        rescuesByDate[shortDate].push(rescue);
-        if (rescuerId) {
-          rescuesByRescuer[rescuerId] = rescuesByRescuer[rescuerId] || [];
-          rescuesByRescuer[rescuerId].push(rescue);
+          /** @type {RescueLite} */
+          const rescue = {
+            id: rescueId,
+            date: shortDate,
+            sheetCell: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+            siteId,
+            rescuer: rescuer || null,
+          };
+          allRescues.push(rescue);
+          rescuesByDate[shortDate] = rescuesByDate[shortDate] || [];
+          rescuesByDate[shortDate].push(rescue);
+          if (rescuerId) {
+            rescuesByRescuer[rescuerId] = rescuesByRescuer[rescuerId] || [];
+            rescuesByRescuer[rescuerId].push(rescue);
+          }
         }
       }
     }
@@ -389,8 +392,6 @@ async function getAllRescueDataUncached(month) {
     allRescues,
     rescuesByDate,
     rescuesByRescuer,
-    mapSiteToColumn,
-    mapDateToRow,
   };
 }
 
@@ -455,10 +456,10 @@ async function getGeneralDataUncached() {
 }
 
 /** @type {() => Promise<string>} */
-async function getCurrentBookingMonth() {
+async function getCurrentBookingMonths() {
   const generalData = await getGeneralDataCached();
   console.log('generalData:', generalData);
-  return generalData['Current Booking Month'];
+  return generalData['Current Booking Months'];
 }
 
 /* This is what we show to users */
@@ -678,16 +679,16 @@ function countExistingBookings(usersRescuesBySiteGroup, siteGroup) {
   return countExisting;
 }
 
-async function assignUserToRescue(month, userId, rescueId) {
-  month = month || (await getCurrentBookingMonth());
-
+async function assignUserToRescue(userId, rescueId) {
   // TODO: Queue this processing, to avoid double-bookings
 
-  const rescueData = await getAllRescueDataUncached(month);
+  //const rescueData = await getAllRescueDataUncached();
+  // TODO: Unsafe
+  const rescueData = await getAllRescueDataCached();
 
   const existingRescue = rescueData.allRescues.find(rescue => rescue.id === rescueId);
   if (!existingRescue) {
-    throw new Error(`That rescue does not exist for month '${month}'`);
+    throw new Error(`That rescue does not exist!`);
   }
   if (existingRescue.rescuer && existingRescue.rescuer.id !== userId) {
     throw new Error(`Rescue ${rescueId} is already booked by another user!`);
@@ -704,15 +705,11 @@ async function assignUserToRescue(month, userId, rescueId) {
   const [siteId, date] = rescueId.split('@');
   console.log('siteId:', siteId);
   console.log('date:', date);
-  const rowIndex = rescueData.mapDateToRow[date];
-  const colIndex = rescueData.mapSiteToColumn[siteId];
-  // TODO: Sanity check
-  console.log('rowIndex:', rowIndex);
-  console.log('colIndex:', colIndex);
 
   const response = await callAPI(gsheet.values(), 'update', {
     spreadsheetId,
-    range: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+    //range: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+    range: existingRescue.sheetCell,
     valueInputOption: 'RAW', // 'USER_ENTERED',
     resource: { values: [[userId]] },
   });
@@ -727,14 +724,14 @@ async function assignUserToRescue(month, userId, rescueId) {
   return rescueNow;
 }
 
-async function unassignUserFromRescue(month, userId, rescueId) {
-  month = month || (await getCurrentBookingMonth());
-
-  const rescueData = await getAllRescueDataUncached(month);
+async function unassignUserFromRescue(userId, rescueId) {
+  //const rescueData = await getAllRescueDataUncached();
+  // TODO: Unsafe
+  const rescueData = await getAllRescueDataCached();
 
   const existingRescue = rescueData.allRescues.find(rescue => rescue.id === rescueId);
   if (!existingRescue) {
-    throw new Error(`That rescue does not exist for month '${month}'`);
+    throw new Error(`That rescue does not exist!`);
   }
   if (!existingRescue.rescuer) {
     throw new Error(`Rescue ${rescueId} is not booked!`);
@@ -746,15 +743,11 @@ async function unassignUserFromRescue(month, userId, rescueId) {
   const [siteId, date] = rescueId.split('@');
   console.log('siteId:', siteId);
   console.log('date:', date);
-  const rowIndex = rescueData.mapDateToRow[date];
-  const colIndex = rescueData.mapSiteToColumn[siteId];
-  // TODO: Sanity check
-  console.log('rowIndex:', rowIndex);
-  console.log('colIndex:', colIndex);
 
   const response = await callAPI(gsheet.values(), 'update', {
     spreadsheetId,
-    range: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+    //range: `${month}!R${rowIndex + 1}C${colIndex + 1}`,
+    range: existingRescue.sheetCell,
     valueInputOption: 'RAW',
     resource: { values: [['']] },
   });

@@ -1,5 +1,7 @@
 scalar UserID
 scalar RescueID
+# A string of the form "Sheet Name!R12C34"
+scalar SheetCell
 scalar SiteID
 # A string of the form YYYYMMDD, e.g. "20211231"
 scalar DateDayString
@@ -57,6 +59,7 @@ type UserPublic {
 type Rescue {
   id: RescueID!
   date: DateDayString!
+  sheetCell: SheetCell!
   site: Site!
   rescuer: UserPublic
 }
@@ -66,6 +69,7 @@ type Rescue {
 type RescueLite {
   id: RescueID!
   date: DateDayString!
+  sheetCell: SheetCell!
   siteId: SiteID!
   rescuer: UserPublic
 }

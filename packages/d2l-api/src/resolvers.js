@@ -65,11 +65,11 @@ const root = {
   }),
 
   assignSelfToRescue: ifUser(async (args, request) => {
-    return await db.assignUserToRescue(undefined, request.session.user.id, args.rescueId);
+    return await db.assignUserToRescue(request.session.user.id, args.rescueId);
   }),
 
   unassignSelfFromRescue: ifUser(async (args, request) => {
-    return await db.unassignUserFromRescue(undefined, request.session.user.id, args.rescueId);
+    return await db.unassignUserFromRescue(request.session.user.id, args.rescueId);
   }),
 };
 
