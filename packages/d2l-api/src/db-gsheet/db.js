@@ -527,7 +527,7 @@ async function getSiteGroupsUncached() {
 }
 
 /**
- * @type {(month: string, memberGroupSheet: string) => Promise<{
+ * @type {() => Promise<{
  *   memberGroups: Record<string, MemberGroup>;
  *   memberGroupsByUser: Record<string, string[]>;
  * }>}
