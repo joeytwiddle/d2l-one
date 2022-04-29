@@ -99,10 +99,11 @@ function BookingLimitsScreen() {
           {/* It doesn't really matter.  This doesn't need to centralise vertically. */}
           <CentralizingContainer>
             {bookingLimits.map(({ siteGroupName, limit, remaining, sites }) => {
+              const numBooked = limit - remaining;
               const textStyle = remaining > 0 ? undefined : { color: '#999' };
               return (
                 <PaddedBlock key={siteGroupName}>
-                  <Text style={textStyle}>You may book {remaining} more rescues from the following sites:</Text>
+                  <Text style={textStyle}>You may book {limit} rescue(s) from the following sites:</Text>
                   {sites.map(siteId => (
                     <Text key={siteId} style={textStyle}>
                       {' '}
@@ -110,7 +111,7 @@ function BookingLimitsScreen() {
                     </Text>
                   ))}
                   <Text style={textStyle}>
-                    ({limit - remaining} already booked, maximum {limit})
+                    ({numBooked} already booked, {remaining} remaining)
                   </Text>
                 </PaddedBlock>
               );
