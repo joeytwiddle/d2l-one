@@ -314,6 +314,10 @@ async function getAllRescueDataUncached(months) {
       const isRealDate = date.getTime() >= 0;
       // Skip the row if it didn't parse into a real date
       if (!isRealDate) continue;
+      const midnightThisMorning = getMidnightThisMorning();
+      if (date.getTime() < midnightThisMorning.getTime()) continue;
+      const endDate = new Date(midnightThisMorning.getTime() + 28 * 24 * 60 * 60 * 1000);
+      if (date.getTime() > endDate.getTime()) continue;
 
       const shortDate = shortDateString(date);
       //mapDateToRow[shortDate] = rowIndex;
@@ -775,6 +779,12 @@ function objectFromEntries(arr) {
     obj[key] = value;
   }
   return obj;
+}
+
+function getMidnightThisMorning() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 const db = {
