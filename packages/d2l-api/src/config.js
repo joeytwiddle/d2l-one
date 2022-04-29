@@ -10,7 +10,7 @@ const configsByEnv = {
   production: {
     listenPort: 2020,
 
-    cookieMaxAge: 365 * 24 * 60 * 60 * 1000,
+    cookieMaxAge: 100 * 365 * 24 * 60 * 60 * 1000,
   },
 };
 
