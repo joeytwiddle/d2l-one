@@ -75,15 +75,15 @@ export default function RescuesScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       {/* We disable swiping so that we can scroll the table horizontally */}
       <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
-        <Tab.Screen name="Booking Limits" component={BookingLimits} />
-        <Tab.Screen name="List" component={RescuesList} />
-        <Tab.Screen name="Calendar" component={RescuesCalendar} />
+        <Tab.Screen name="Booking Limits" component={BookingLimitsScreen} />
+        <Tab.Screen name="List" component={RescuesListScreen} />
+        <Tab.Screen name="Calendar" component={RescuesCalendarScreen} />
       </Tab.Navigator>
     </SafeAreaView>
   );
 }
 
-function BookingLimits() {
+function BookingLimitsScreen() {
   const bookingLimitsQuery = useGetBookingLimitsForCurrentUserQuery();
   const bookingLimits = bookingLimitsQuery.data?.bookingLimitsForCurrentUser;
   //return <Text>{JSON.stringify(bookingLimits)}</Text>;
@@ -134,7 +134,7 @@ const bgStyle = (colIndex: number, rowIndex: number) => {
   return { backgroundColor };
 };
 
-function RescuesCalendar() {
+function RescuesCalendarScreen() {
   // Try to reduce sluggishness
   //const route = useRoute();
   //if (route.name !== 'Calendar') return null;
@@ -258,7 +258,7 @@ function RescuesCalendarView({
 //function FavouriteRescues() {
 //  const navigation = useNavigation<FavouriteRescuesTabNavigationProp>();
 
-function RescuesList() {
+function RescuesListScreen() {
   const navigation = useNavigation();
 
   const { allAreas } = useSiteDataCached();
