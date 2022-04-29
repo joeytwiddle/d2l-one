@@ -306,7 +306,12 @@ function RescuesListScreen() {
         <Text>{availableRescues.length} rescues available</Text>
       </PaddedBlock>*/}
       <PaddedBlock>
-        <Text style={{ color: '#888f' }}>This page is under construction. It does not show all available rescues.</Text>
+        <Text style={{ color: '#888f' }}>
+          {/*This page is under construction. It does not show all available rescues.*/}
+          {availableRescues.length < allAvailableRescues.length
+            ? `Showing first ${availableRescues.length} of ${allAvailableRescues.length} matching rescues`
+            : `${availableRescues.length} matching rescues`}
+        </Text>
       </PaddedBlock>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         {availableRescues.map((rescue: RescueLite) => (
