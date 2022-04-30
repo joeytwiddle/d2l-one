@@ -1,3 +1,7 @@
+# Introducing various scalars here was not a good idea, because we can no longer identify them with a primitive (string, int, ...)
+# The generated TypeScript just say 'any' for all these types
+# https://stackoverflow.com/questions/59038921/how-to-alias-a-type-e-g-string-int
+# TODO: Therefore we should remove these, and just use primitive types throughout the schema
 scalar UserID
 scalar RescueID
 # A string of the form "Sheet Name!R12C34"
