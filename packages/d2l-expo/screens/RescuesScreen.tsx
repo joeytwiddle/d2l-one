@@ -75,7 +75,7 @@ export default function RescuesScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       {/* We disable swiping so that we can scroll the table horizontally */}
       <Tab.Navigator screenOptions={{ swipeEnabled: false }}>
-        <Tab.Screen name="Booking Limits" component={BookingLimitsScreen} />
+        <Tab.Screen name="BookingLimits" options={{ title: 'Booking Limits' }} component={BookingLimitsScreen} />
         <Tab.Screen name="List" component={RescuesListScreen} />
         <Tab.Screen name="Calendar" component={RescuesCalendarScreen} />
       </Tab.Navigator>
