@@ -59,7 +59,7 @@ type UserPublic {
 type Rescue {
   id: RescueID!
   date: DateDayString!
-  sheetCell: SheetCell!
+  sheetCell: SheetCell
   site: Site!
   rescuer: UserPublic
 }
@@ -69,7 +69,7 @@ type Rescue {
 type RescueLite {
   id: RescueID!
   date: DateDayString!
-  sheetCell: SheetCell!
+  sheetCell: SheetCell
   siteId: SiteID!
   rescuer: UserPublic
 }
