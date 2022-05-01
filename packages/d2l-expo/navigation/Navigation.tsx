@@ -45,7 +45,8 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       {/* Note: If a page is using headerShown: false, then it must use SafeAreaView to avoid overlapping the statusbar */}
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      {/* We could bring the main stack in here.  But we use /root so that we can put everything below /app  */}
+      <Stack.Screen name="Root" component={MainStackNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -71,15 +72,15 @@ function RootNavigator() {
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 //const BottomTab = createBottomTabNavigator<RootTabParamList>();
-const BottomTab = createNativeStackNavigator<RootTabParamList>();
+const MainStack = createNativeStackNavigator<RootTabParamList>();
 
-function BottomTabNavigator(props: any) {
+function MainStackNavigator(props: any) {
   const colorScheme = useColorScheme();
 
   //const showTabBar = false;
 
   return (
-    <BottomTab.Navigator
+    <MainStack.Navigator
       initialRouteName="Dashboard"
       screenOptions={{
         headerShown: false,
@@ -90,7 +91,7 @@ function BottomTabNavigator(props: any) {
       //tabBar={showTabBar ? undefined : () => null}
       // We could make `headerShown: true` but that doesn't help because Rescues is parallel to Dashboard.  We want it to be a child below it (or above it on the stack).
     >
-      <BottomTab.Screen
+      <MainStack.Screen
         name="Dashboard"
         component={DashboardScreen}
         options={({ navigation }: RootTabScreenProps<'Dashboard'>) => ({
@@ -109,7 +110,7 @@ function BottomTabNavigator(props: any) {
           ),
         })}
       />
-      <BottomTab.Screen
+      <MainStack.Screen
         name="Rescues"
         component={RescuesScreen}
         options={{
@@ -118,7 +119,7 @@ function BottomTabNavigator(props: any) {
           //tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
-    </BottomTab.Navigator>
+    </MainStack.Navigator>
   );
 }
 
