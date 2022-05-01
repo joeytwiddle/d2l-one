@@ -18,6 +18,8 @@ const linking: LinkingOptions<RootStackParamList> = {
         // https://reactnavigation.org/docs/5.x/configuring-links/#matching-exact-paths
         // So this causes our app to appear at /app and everything else will come below that
         path: 'app',
+        // This option means, if the user reloads the page on /app/rescues, they will see a back button leading to the Dashboard
+        initialRouteName: 'Dashboard',
         screens: {
           Dashboard: {
             path: 'dashboard',
