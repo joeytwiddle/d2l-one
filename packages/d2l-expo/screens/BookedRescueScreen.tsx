@@ -15,10 +15,10 @@ import {
   useUnassignSelfFromRescueMutation,
 } from '../graphql';
 import { handleGlobalError } from '../navigation/LoginScreen';
-import { BookedRescueScreenProps, RootStackParamList } from '../types';
+import { BookedRescueScreenProps, MainStackParamList, RootStackParamList } from '../types';
 import { niceDate, niceTime } from '../components/RescueCard';
 
-type BookedRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookedRescueScreen'>;
+type BookedRescueScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'BookedRescueScreen'>;
 
 //export default function BookedRescueScreen({ navigation, route: { rescueId } }: BookedRescueScreenProps) {
 export default function BookedRescueScreen({ route }: any) {

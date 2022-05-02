@@ -16,10 +16,10 @@ import {
 } from '../graphql';
 import useUser from '../hooks/useUser';
 import { handleGlobalError } from '../navigation/LoginScreen';
-import { BookableRescueScreenProps, RootStackParamList } from '../types';
+import { BookableRescueScreenProps, MainStackParamList, RootStackParamList } from '../types';
 import { niceDate, niceTime } from '../components/RescueCard';
 
-type BookableRescueScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookableRescueScreen'>;
+type BookableRescueScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'BookableRescueScreen'>;
 
 export default function BookableRescueScreen({ route }: any) {
   const navigation = useNavigation<BookableRescueScreenNavigationProp>();

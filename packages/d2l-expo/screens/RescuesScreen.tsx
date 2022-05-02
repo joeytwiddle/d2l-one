@@ -25,6 +25,7 @@ import {
   useGetMyRescuesQuery,
 } from '../graphql';
 import useUser from '../hooks/useUser';
+import { MainStackNavigationProp, MainStackScreenProps } from '../types';
 
 function callD2LAPI(hook: any, ...args: any[]) {
   const result = hook(...args);
@@ -199,7 +200,7 @@ function RescuesCalendarView({
   datesToShow: string[];
   rescuesBySiteThenDate: Record<string, Record<string, RescueLite>>;
 }) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<MainStackNavigationProp<'Rescues'>>();
 
   return (
     <FullWidthPageContainer>
@@ -266,7 +267,8 @@ function RescuesCalendarView({
 //  const navigation = useNavigation<FavouriteRescuesTabNavigationProp>();
 
 function RescuesListScreen() {
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
+  const navigation = useNavigation<MainStackNavigationProp<'Rescues'>>();
 
   const { allAreas } = useSiteDataCached();
 

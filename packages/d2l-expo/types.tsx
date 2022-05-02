@@ -4,8 +4,8 @@
  */
 
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { CompositeNavigationProp, CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 
 declare global {
   namespace ReactNavigation {
@@ -46,7 +46,22 @@ export type MainStackScreenProps<Screen extends keyof MainStackParamList> = Comp
 >;
 */
 
-export type MainStackScreenProps<Screen extends keyof MainStackParamList> = NativeStackScreenProps<RootStackParamList>;
+export type MainStackScreenProps<Screen extends keyof MainStackParamList> = CompositeScreenProps<
+  NativeStackScreenProps<MainStackParamList, Screen>,
+  NativeStackScreenProps<RootStackParamList>
+>;
+
+export type MainStackNavigationProp<Screen extends keyof MainStackParamList> = CompositeNavigationProp<
+  NativeStackNavigationProp<MainStackParamList, Screen>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
+
+/*
+export type MainStackScreenProps<Screen extends keyof MainStackParamList> = NativeStackScreenProps<
+  MainStackParamList,
+  Screen
+>;
+*/
 
 // Not working?
 export type BookedRescueScreenProps = NativeStackScreenProps<MainStackParamList, 'BookedRescueScreen'>;
