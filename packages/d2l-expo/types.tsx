@@ -14,12 +14,7 @@ declare global {
 }
 
 export type RootStackParamList = {
-  Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  FavouriteRescuesTab: undefined;
-  BookableRescueScreen: BookableRescueParamList;
-  BookedRescueScreen: BookedRescueParamList;
-  Modal: undefined;
-  NotFound: undefined;
+  Root: NavigatorScreenParams<MainStackParamList> | undefined;
 };
 
 export type BookableRescueParamList = {
@@ -35,17 +30,25 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
   Screen
 >;
 
-export type RootTabParamList = {
+export type MainStackParamList = {
   Dashboard: undefined;
   Rescues: undefined;
+  BookableRescueScreen: BookableRescueParamList;
+  BookedRescueScreen: BookedRescueParamList;
+  Modal: undefined;
+  NotFound: undefined;
 };
 
-export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
-  BottomTabScreenProps<RootTabParamList, Screen>,
+/*
+export type MainStackScreenProps<Screen extends keyof MainStackParamList> = CompositeScreenProps<
+  BottomTabScreenProps<MainStackParamList, Screen>,
   NativeStackScreenProps<RootStackParamList>
 >;
+*/
+
+export type MainStackScreenProps<Screen extends keyof MainStackParamList> = NativeStackScreenProps<RootStackParamList>;
 
 // Not working?
-export type BookedRescueScreenProps = NativeStackScreenProps<RootStackParamList, 'BookedRescueScreen'>;
+export type BookedRescueScreenProps = NativeStackScreenProps<MainStackParamList, 'BookedRescueScreen'>;
 
-export type BookableRescueScreenProps = NativeStackScreenProps<RootStackParamList, 'BookableRescueScreen'>;
+export type BookableRescueScreenProps = NativeStackScreenProps<MainStackParamList, 'BookableRescueScreen'>;

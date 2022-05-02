@@ -13,9 +13,9 @@ import {
   useGetMyRescuesQuery,
 } from '../graphql';
 import useUser from '../hooks/useUser';
-import { RootTabScreenProps } from '../types';
+import { MainStackScreenProps } from '../types';
 
-export default function DashboardScreen({ navigation }: RootTabScreenProps<'Dashboard'>) {
+export default function DashboardScreen({ navigation }: MainStackScreenProps<'Dashboard'>) {
   //const user = useGetUserQuery().data?.me;
   const user = useUser();
 

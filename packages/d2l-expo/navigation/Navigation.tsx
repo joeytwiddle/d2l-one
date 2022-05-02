@@ -20,7 +20,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import RescuesScreen from '../screens/RescuesScreen';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
+import { RootStackParamList, MainStackParamList, MainStackScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -47,22 +47,6 @@ function RootNavigator() {
       {/* Note: If a page is using headerShown: false, then it must use SafeAreaView to avoid overlapping the statusbar */}
       {/* We could bring the main stack in here.  But we use /root so that we can put everything below /app  */}
       <Stack.Screen name="Root" component={MainStackNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen
-          name="BookableRescueScreen"
-          component={BookableRescueScreen}
-          options={{ headerShown: true, headerTitle: 'Rescue' }}
-        />
-        <Stack.Screen
-          name="BookedRescueScreen"
-          component={BookedRescueScreen}
-          options={{ headerShown: true, headerTitle: 'Rescue' }}
-        />
-      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -72,7 +56,7 @@ function RootNavigator() {
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 //const BottomTab = createBottomTabNavigator<RootTabParamList>();
-const MainStack = createNativeStackNavigator<RootTabParamList>();
+const MainStack = createNativeStackNavigator<MainStackParamList>();
 
 function MainStackNavigator(props: any) {
   const colorScheme = useColorScheme();
@@ -94,7 +78,7 @@ function MainStackNavigator(props: any) {
       <MainStack.Screen
         name="Dashboard"
         component={DashboardScreen}
-        options={({ navigation }: RootTabScreenProps<'Dashboard'>) => ({
+        options={({ navigation }: MainStackScreenProps<'Dashboard'>) => ({
           title: 'Dashboard',
           headerShown: false,
           //tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
@@ -119,6 +103,22 @@ function MainStackNavigator(props: any) {
           //tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
+      <MainStack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <MainStack.Group screenOptions={{ presentation: 'modal' }}>
+        <MainStack.Screen name="Modal" component={ModalScreen} />
+      </MainStack.Group>
+      <MainStack.Group screenOptions={{ presentation: 'modal' }}>
+        <MainStack.Screen
+          name="BookableRescueScreen"
+          component={BookableRescueScreen}
+          options={{ headerShown: true, headerTitle: 'Rescue' }}
+        />
+        <MainStack.Screen
+          name="BookedRescueScreen"
+          component={BookedRescueScreen}
+          options={{ headerShown: true, headerTitle: 'Rescue' }}
+        />
+      </MainStack.Group>
     </MainStack.Navigator>
   );
 }
