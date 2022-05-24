@@ -4,7 +4,11 @@ const gsheet = require('./gsheet.js');
 const memoize = require('memoizee');
 const { isoDate, inspectOneLine, shortDateString, deepInspect } = require('../lib/util.js');
 
-const spreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
+const developmentSpreadsheetId = '1rIxLusw6S9E1nnGr4OuaziPmmXp2MYh2uetzZfVGoTo';
+const productionSpreadsheetId = '1OZN8mGjze5YBWEYIQXNwiTsjqVFcywYtF_rwB8oQlnU';
+
+//const spreadsheetId = developmentSpreadsheetId;
+const spreadsheetId = productionSpreadsheetId;
 
 /** @typedef { import("../graphql-types").Rescue } Rescue */
 /** @typedef { import("../graphql-types").UserPublic } UserPublic */
