@@ -73,6 +73,16 @@ But anyway, this notes how the credentials were created:
 
 5. Save the file at `packages/d2l-api/service-account-credentials-development.json`
 
+We also need to provide access to the relevant spreadsheet(s):
+
+1. Note the email address of the service account. For example `main-737@d2l-one-334008.iam.gserviceaccount.com`.
+
+   You can get this from Google Cloud Console, or look inside the service-account-credentials file.
+
+2. Go to the spreadsheet, and hit Share
+
+3. Add the service account's email address with the role "Editor"
+
 ## Deployment
 
 To deploy all the latest code, run:
