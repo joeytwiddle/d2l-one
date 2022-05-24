@@ -49,15 +49,17 @@ export default function DashboardScreen({ navigation }: MainStackScreenProps<'Da
         <PaddedBlock>
           <Text>Welcome {user.name}</Text>
         </PaddedBlock>
-        {availableRescues && availableRescues.length > 0 ? (
+        {availableRescues ? (
           <PaddedBlock>
             <Text>{availableRescues.length} rescues available</Text>
-            <Button
-              title="Start Booking"
-              onPress={() => {
-                navigation.navigate('Rescues');
-              }}
-            ></Button>
+            {availableRescues.length > 0 ? (
+              <Button
+                title="Start Booking"
+                onPress={() => {
+                  navigation.navigate('Rescues');
+                }}
+              ></Button>
+            ) : null}
           </PaddedBlock>
         ) : null}
         {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
