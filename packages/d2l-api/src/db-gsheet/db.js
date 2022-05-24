@@ -127,11 +127,12 @@ async function getUserByCredentials(username, password) {
     return null;
   }
 
-  // For now, if the password is empty/undefined, then we will just accept them for giving the correct username
-  if (userData.passwordHash === password || !userData.passwordHash) {
+  // If the user provides the wrong password, but the account does not require a password, then we allow it
+  if (!userData.passwordHash || userData.passwordHash === password) {
     // User found
 
-    // TODO: If the user provided a password, but no password is set, then we can set the one they provided!
+    // Consider: If the user provided a password, but no password is set, then we could set the one they provided.
+    // But that probably violates POLS
 
     // The object we return will contain most of the user fields, but not the sensitive password data
     const user = JSON.parse(JSON.stringify(userData));
