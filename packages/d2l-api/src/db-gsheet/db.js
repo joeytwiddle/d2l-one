@@ -358,10 +358,14 @@ async function getAllRescueDataUncached(months) {
             //if (siteId === 'KA' || siteId === 'PL') {
             //  console.log('cellBackgroundColor:', cellBackgroundColor);
             //}
+            // The client's sheet has a custom color which is a blueish-grey.  Let's try to catch that too!
+            //     {red: 0.1254902, green: 0.12941177, blue: 0.14117648}
+            const similarIntensity = (a, b) => Math.abs(a - b) < 0.05;
             // Cells with a black background have no data: cellBackgroundColor = {}
             const cellIsGreyOrBlack =
               (green === red && blue === red && red < 1) ||
-              (red === undefined && blue === undefined && green === undefined);
+              (red === undefined && blue === undefined && green === undefined) ||
+              (similarIntensity(red, blue) && similarIntensity(red, green));
             if (cellIsGreyOrBlack) {
               //console.log(`Skipping ${rescueId} ${colIndex} x ${rowIndex}`);
               continue;
@@ -410,6 +414,8 @@ async function getAllRescueDataUncached(months) {
       }
     }
   }
+
+  console.log(`Found ${allRescues.length} rescues with ${allRescues.filter(r => r.rescuer).length} booked`);
 
   return {
     allRescues,
