@@ -42,6 +42,17 @@ export default function LoginScreen() {
     console.warn(errorMessage);
   }
 
+  const submitOnTick = {
+    // Hitting the tick icon in the keyboard on mobile
+    onEndEditing: submit,
+    // For web
+    onKeyPress: (e: any) => {
+      if (e.key === 'Enter') {
+        submit();
+      }
+    },
+  };
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.container}>
@@ -50,7 +61,7 @@ export default function LoginScreen() {
       <View style={styles.smallContainer}>
         <Text style={styles.title}>Login</Text>
       </View>
-      <View style={styles.smallContainer}>
+      <View style={styles.container}>
         {/* I switched to a RNP TextInput because the RN TextInput was too wide for narrow displays */}
         <PaddedBlock>
           <TextInput
@@ -65,26 +76,33 @@ export default function LoginScreen() {
             placeholder="Name"
             value={username}
             onChangeText={setUsername}
-            // Hitting the tick icon in the keyboard on mobile
-            onEndEditing={submit}
-            // For web
-            onKeyPress={(e: any) => {
-              if (e.key === 'Enter') {
-                submit();
-              }
-            }}
+            //{...submitOnTick}
           />
         </PaddedBlock>
         <PaddedBlock>
           <SoftText>Please use your regular booking name</SoftText>
         </PaddedBlock>
+        <PaddedBlock>
+          <TextInput
+            // For React Native TextInput
+            //style={styles.larger}
+            //
+            // For React Native Paper TextInput
+            autoComplete={false}
+            mode="flat"
+            style={styles.wider}
+            //
+            placeholder="000000"
+            value={password}
+            onChangeText={setPassword}
+            {...submitOnTick}
+          />
+        </PaddedBlock>
+        <PaddedBlock>
+          <SoftText>Your 6-digit PIN, or leave blank</SoftText>
+        </PaddedBlock>
       </View>
-      {/*
-        <View style={styles.container}>
-          <TextInput style={styles.larger} secureTextEntry={true} placeholder="Password" value={password} onChangeText={setPassword} />
-        </View>
-         */}
-      <View style={styles.container}>
+      <View style={styles.smallContainer}>
         <Button title="Log in" onPress={submit} disabled={logInMutation.loading || userQuery.loading} />
         <Text>{errorMessage}</Text>
       </View>
