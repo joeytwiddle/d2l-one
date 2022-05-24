@@ -55,12 +55,12 @@ export default function LoginScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.container}>
+      <View style={styles.logoContainer}>
         <Logo size="large" />
       </View>
-      <View style={styles.smallContainer}>
+      {/*<View style={styles.smallContainer}>
         <Text style={styles.title}>Login</Text>
-      </View>
+      </View>*/}
       <View style={styles.container}>
         {/* I switched to a RNP TextInput because the RN TextInput was too wide for narrow displays */}
         <PaddedBlock>
@@ -111,6 +111,11 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  logoContainer: {
+    flex: 0.7,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
