@@ -153,7 +153,7 @@ async function getAllUserDataUncached() {
   const usersById = {};
   for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
     const row = sheetData[rowIndex];
-    const [name, telegramName, telegramUsername, email, role, notes, passwordSalt, passwordHash] = row;
+    const [name, telegramName, telegramUsername, email, role, notes, passwordHash, passwordSalt] = row;
 
     const id = name;
 
