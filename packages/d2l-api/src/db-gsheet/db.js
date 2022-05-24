@@ -153,7 +153,21 @@ async function getAllUserDataUncached() {
   const usersById = {};
   for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
     const row = sheetData[rowIndex];
-    const [name, telegramName, telegramUsername, email, role, notes, passwordHash, passwordSalt] = row;
+    // _ indicated fields in the DB which we do not use in the app
+    const [
+      name,
+      telegramNameCombined,
+      driver_,
+      collectionLocation_,
+      collectionTime_,
+      email,
+      role,
+      notes,
+      passwordHash,
+      passwordSalt,
+    ] = row;
+
+    const [telegramName, telegramUsername] = (telegramNameCombined || '').split(/,[ ]*/);
 
     const id = name;
 
@@ -305,9 +319,9 @@ async function getAllRescueDataUncached(months) {
     //console.log('mapColumnToSite:', JSON.stringify(mapColumnToSite));
     //console.log('mapSiteToColumn:', JSON.stringify(mapSiteToColumn));
 
-    for (let rowIndex = 2; rowIndex < sheetData.length; rowIndex++) {
+    for (let rowIndex = 4; rowIndex < sheetData.length; rowIndex++) {
       const row = sheetData[rowIndex];
-      const dateStr = String(row[0]);
+      const dateStr = String(row[2]);
       // dateStr appears to us as: "Thu 9 Dec"
       const looksLikeDate = dateStr.match(/^[A-Z][a-z][a-z] [0-9]+ [A-Z][a-z][a-z]$/);
       if (!looksLikeDate) continue;
