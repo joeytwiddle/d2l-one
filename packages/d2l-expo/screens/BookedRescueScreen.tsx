@@ -11,6 +11,7 @@ import { Button, LoadingSpinner, SecondaryButton, Text, View } from '../componen
 import {
   Rescue,
   useGetAvailableRescuesForCurrentUserQuery,
+  useGetBookingLimitsForCurrentUserQuery,
   useGetMyRescuesQuery,
   useUnassignSelfFromRescueMutation,
 } from '../graphql';
@@ -31,6 +32,7 @@ export default function BookedRescueScreen({ route }: any) {
   // For clearing the cache
   const availableRescuesQuery = useGetAvailableRescuesForCurrentUserQuery();
   const myRescuesQuery = useGetMyRescuesQuery();
+  const bookingLimitsQuery = useGetBookingLimitsForCurrentUserQuery();
 
   const rescue = myRescues && (myRescues.find((rescue: any) => rescue.id === rescueId) as Rescue);
 
@@ -69,6 +71,7 @@ export default function BookedRescueScreen({ route }: any) {
           navigation.goBack();
           availableRescuesQuery.refetch();
           myRescuesQuery.refetch();
+          bookingLimitsQuery.refetch();
           // Without the delay, the buttons appear enabled again, before we see the updated list
           //setTimeout(() => setRescueBeingBooked(''), 1000);
         })

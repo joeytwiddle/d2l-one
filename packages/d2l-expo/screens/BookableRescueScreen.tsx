@@ -12,6 +12,7 @@ import {
   RescueLite,
   useAssignSelfToRescueMutation,
   useGetAvailableRescuesForCurrentUserQuery,
+  useGetBookingLimitsForCurrentUserQuery,
   useGetMyRescuesQuery,
 } from '../graphql';
 import useUser from '../hooks/useUser';
@@ -33,6 +34,7 @@ export default function BookableRescueScreen({ route }: any) {
   // For clearing the cache
   const availableRescuesQuery = useGetAvailableRescuesForCurrentUserQuery();
   const myRescuesQuery = useGetMyRescuesQuery();
+  const bookingLimitsQuery = useGetBookingLimitsForCurrentUserQuery();
 
   const availableRescues = availableRescuesQuery.data?.availableRescuesForCurrentUser;
 
@@ -86,6 +88,7 @@ export default function BookableRescueScreen({ route }: any) {
         //toast(`You have booked ${rescue.site.fullName} at ${rescue.date}`);
         availableRescuesQuery.refetch();
         myRescuesQuery.refetch();
+        bookingLimitsQuery.refetch();
         setTimeout(() => {
           setIsBooking(false);
           navigation.goBack();
