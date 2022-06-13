@@ -16,9 +16,16 @@ const { GoogleAuth } = require('google-auth-library');
 //
 // https://console.cloud.google.com/apis/credentials/consent?project=d2l-one-334008
 
+const env = process.env.NODE_ENV || 'development';
+
+// OLD
 // This file stores the user's access and refresh tokens, and is created
 // automatically when the authorization flow completes for the first time.
 const TOKEN_PATH = 'google-api-token.json';
+
+// NEW
+// We now use a service account, which does not need to be refreshed
+const SA_CREDENTIALS_PATH = `service-account-credentials.${env}.json`;
 
 // If modifying these scopes, delete the token.json file.  It will be recreated
 // the next time you start the API server (requires your interaction with the
@@ -87,7 +94,7 @@ function authorizeServiceAccount(credentials, callback) {
   // GoogleAuth and JWT both work
 
   const authClient = new GoogleAuth({
-    //keyFile: 'service-account-credentials.json',
+    //keyFile: SA_CREDENTIALS_PATH,
     credentials: {
       client_email,
       private_key,
@@ -114,7 +121,7 @@ function initAuth(callback) {
   });
   */
 
-  fs.readFile('service-account-credentials.json', (err, content) => {
+  fs.readFile(SA_CREDENTIALS_PATH, (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     authorizeServiceAccount(JSON.parse(content.toString()), callback);
   });
