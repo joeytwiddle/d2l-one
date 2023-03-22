@@ -6,7 +6,7 @@ This is a monorepo for d2l development. It contains three packages:
 
 - d2l-expo: A React Native and React Native Web mobile/webapp for users to book their rescues
 
-- d2l-website: Static files for the website as https://d2l.sg/
+- d2l-website: Static files for the website at https://d2l.sg/
 
 It also contains a deployment script, to deploy all three packages to the production AWS server.
 
@@ -23,7 +23,6 @@ It also contains a deployment script, to deploy all three packages to the produc
 - Install yarn
 
   ```
-  # Install yarn
   npm install -g yarn
   ```
 
