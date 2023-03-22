@@ -20,7 +20,7 @@ const spreadsheetId = inProduction ? productionSpreadsheetId : developmentSpread
 /** @typedef { import("../graphql-types").Site } RescueSite */
 
 /**
- * @typedef {Object} SiteGroup
+ * @typedef {Object} SiteGroupWithJSDoc
  * @property {string} groupName
  * @property {string} memberGroup
  * @property {number} bookLimit
@@ -28,9 +28,25 @@ const spreadsheetId = inProduction ? productionSpreadsheetId : developmentSpread
  */
 
 /**
- * @typedef {Object} MemberGroup
+ * @typedef {{
+ *   groupName: string;
+ *   memberGroup: string;
+ *   bookLimit: number;
+ *   sites: string[];
+ * }} SiteGroup
+ */
+
+/**
+ * @typedef {Object} MemberGroupWithJSDoc
  * @property {string} name
  * @property {Record<string, 1>} members
+ */
+
+/**
+ * @typedef {{
+ *   name: string;
+ *   members: Record<string, 1>;
+ * }} MemberGroup
  */
 
 // If we call memoize() directly, typescript-jsdoc thinks that it returns {}.
