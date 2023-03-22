@@ -48,13 +48,22 @@ You will need two terminals open
 
 - In `packages/d2l-expo` run `yarn web` for quick web development.
 
-  Or run `yarn start` for web and mobile development. (Then hit `w` for web development, and scan the QR code for mobile development.)
+  Or run `yarn start` for web and mobile development. (Then hit `w` for web development, or scan the QR code for mobile development.)
+
+  I recommended testing both web and mobile while you are developing (e.g. alternate when testing), to catch issues with any of the platforms as early as possible. At the very least, test all platforms before pushing new changes.
+
+Note that `yarn watch` and `yarn start` will run `graphql-codegen` using our `codegen.yml`. This will:
+
+- Read `schema.gql`
+- Generate `/packages/d2l-api/src/graphql-types.d.ts` (types for the back-end)
+- Generate `/packages/d2l-expo/graphql.tsx` (types and functions which make apollo-client calls to our API)
+- The `postcodegen` script will also show a diff of what has changed in `graphql.tsx`, which may help you to notice issues
 
 ### Coding
 
 I recommend using VSCode because we have already configured some things in the `.vscode` folder. (Format code with prettier, auto-organise imports.)
 
-Open the repo root folder (`code .`), not the individual subfolders, to benefit from the shared configuration. You can do all the coding in one window.
+Open the repo root folder (`code .`) not the individual subfolders, to benefit from the shared configuration. You can do all the coding in one window.
 
 ### Authentication with Google Sheets
 
