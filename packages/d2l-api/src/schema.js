@@ -1,7 +1,7 @@
-var fs = require('fs');
-var { buildSchema } = require('graphql');
+const fs = require('fs');
+const { buildSchema } = require('graphql');
 
 // Construct a schema, using GraphQL schema language
-var schema = buildSchema(fs.readFileSync('./schema.gql', 'utf8'));
+const schema = buildSchema(fs.readFileSync('./schema.gql', 'utf8'));
 
 module.exports = schema;
