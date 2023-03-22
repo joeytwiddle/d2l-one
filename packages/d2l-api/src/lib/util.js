@@ -1,3 +1,5 @@
+// @ts-check
+
 function deepInspect(data) {
   return require('util').inspect(data, { showHidden: false, depth: null, colors: true });
 }

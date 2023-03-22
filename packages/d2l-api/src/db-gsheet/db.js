@@ -1,3 +1,5 @@
+// @ts-check
+
 //const util = require('util');
 const gsheet = require('./gsheet.js');
 // Docs: https://www.npmjs.com/package/memoizee

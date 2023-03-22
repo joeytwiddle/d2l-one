@@ -1,3 +1,5 @@
+// @ts-check
+
 const db = require('./db-gsheet/db.js');
 
 // The root provides a resolver function for each API endpoint
