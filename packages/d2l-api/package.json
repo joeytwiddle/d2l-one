@@ -1,0 +1,44 @@
+{
+  "name": "d2l-api-gql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "yarn install && yarn run codegen",
+    "start": "node .",
+    "watch": "nodemon -e '*' -w src -w index.js -w schema.gql -w codegen.yml -i src/graphql-types.d.ts -d 1 -x 'yarn start' || exit 1",
+    "precodegen": "cp -af ../d2l-expo/graphql.tsx ./graphql.last.tsx || true",
+    "codegen": "graphql-codegen --config codegen.yml",
+    "postcodegen": "( diff --color=always graphql.last.tsx ../d2l-expo/graphql.tsx || true )",
+    "lint": "npx eslint *.js src/**/*.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "express-session": "^1.17.2",
+    "googleapis": "39",
+    "graphql": "^16.0.1",
+    "memoizee": "^0.4.15",
+    "session-file-store": "^1.5.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.3.0",
+    "@graphql-codegen/introspection": "2.1.0",
+    "@graphql-codegen/typescript": "2.4.1",
+    "@graphql-codegen/typescript-operations": "2.2.1",
+    "@graphql-codegen/typescript-react-apollo": "3.2.2",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-graphql": "^0.9.0",
+    "@types/express-session": "^1.17.4",
+    "@types/graphql": "^14.5.0",
+    "@types/memoizee": "^0.4.6",
+    "@types/nodemon": "^1.19.1",
+    "@types/session-file-store": "^1.2.2",
+    "nodemon": "^2.0.15"
+  }
+}

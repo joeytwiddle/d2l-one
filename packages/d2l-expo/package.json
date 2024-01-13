@@ -1,0 +1,63 @@
+{
+  "name": "D2L",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "//": "Tells react where to load the assets from",
+  "//homepage": "https://d2l.sg/app",
+  "homepage": "/app",
+  "scripts": {
+    "preexpo": "yarn install",
+    "expo": "expo",
+    "start": "yarn expo start",
+    "android": "yarn expo start --android",
+    "ios": "yarn expo start --ios",
+    "web": "yarn expo start --web",
+    "build:android:dev": "yarn expo build:android",
+    "build:ios:dev": "yarn expo build:ios",
+    "build:web:dev": "yarn expo build:web",
+    "build:android": "yarn expo build:android --release-channel production",
+    "build:ios": "yarn expo build:ios --release-channel production",
+    "build:web": "WEBPACK_BUILD_MODE=production yarn expo build:web",
+    "eject": "expo eject",
+    "test": "jest --watchAll"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.5.5",
+    "@expo/vector-icons": "^12.0.0",
+    "@react-native-picker/picker": "^2.4.1",
+    "@react-navigation/bottom-tabs": "^6.0.5",
+    "@react-navigation/material-top-tabs": "^6.0.6",
+    "@react-navigation/native": "^6.0.2",
+    "@react-navigation/native-stack": "^6.1.0",
+    "expo": "~43.0.2",
+    "expo-asset": "~8.4.3",
+    "expo-constants": "~12.1.3",
+    "expo-font": "~10.0.3",
+    "expo-linking": "~2.4.2",
+    "expo-splash-screen": "~0.13.5",
+    "expo-status-bar": "~1.1.0",
+    "expo-web-browser": "~10.0.3",
+    "graphql": "^16.0.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-native": "0.64.3",
+    "react-native-pager-view": "5.4.6",
+    "react-native-paper": "^4.10.1",
+    "react-native-safe-area-context": "3.3.2",
+    "react-native-screens": "~3.8.0",
+    "react-native-tab-view": "^3.1.1",
+    "react-native-web": "0.17.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@types/react": "~17.0.21",
+    "@types/react-native": "~0.64.12",
+    "jest-expo": "~43.0.0",
+    "typescript": "~4.3.5"
+  },
+  "private": true
+}

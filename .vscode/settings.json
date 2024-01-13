@@ -1,0 +1,28 @@
+{
+  "editor.rulers": [120],
+  "editor.tabCompletion": "on",
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    // This is causing more issues than it fixes, e.g. removing imports that are temporarily commented out
+    //"source.organizeImports": true,
+    "source.fixAll.eslint": true
+  },
+
+  // Get TypeScript assistance in JS files
+  // Disabled.  It is better to use @ts-check in every file instead.  That will work across various editors and tools.
+  //"js/ts.implicitProjectConfig.checkJs": true,
+
+  // This will scan the entire project for problems (not just open files) https://stackoverflow.com/q/55201424/99777
+  // So it can give you an early warning about errors.  But it is heavy on CPU.
+  //"typescript.tsserver.experimental.enableProjectDiagnostics": true,
+
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true
+
+  //"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  //"typescript.preferences.quoteStyle": "single",
+}

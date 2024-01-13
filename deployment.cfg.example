@@ -1,0 +1,6 @@
+# Copy this file to deployment.cfg and then edit it
+
+SERVER_AUTH="ec2-user@hostname.com"
+SSH_KEY="$HOME/.ssh/d2l_sg_dev_aws.pem"
+#START_FRESH_SSH_AGENT=1
+NODE_USER="node-user"

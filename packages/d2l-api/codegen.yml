@@ -1,0 +1,27 @@
+# Note: An alternative to graphql-codegen might be to generate GQL from TS, rather than TS from GQL https://typegraphql.com/docs/introduction.html
+overwrite: true
+#schema: 'http://localhost:4000/graphql'
+schema: schema.gql
+documents:
+  - schema.gql
+  - src/**/*.gql
+generates:
+  # NOTE: I only want to generate _object_ types for the back-end, but this is actually generating types for queries and mutations too
+  src/graphql-types.d.ts:
+    plugins:
+      - 'typescript'
+    config:
+      skipTypename: true
+  # For the front-end / clients
+  ../d2l-expo/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withHooks: true
+      withComponent: false
+      withHOC: false
+  #./graphql.schema.json:
+  #  plugins:
+  #    - 'introspection'

@@ -1,0 +1,16 @@
+{
+  "name": "d2l-one",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "eslint": "^8.3.0",
+    "prettier": "^2.5.0"
+  },
+  "scripts": {
+    "postinstall": "cd packages/d2l-api && yarn install && cd ../d2l-expo && yarn install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
